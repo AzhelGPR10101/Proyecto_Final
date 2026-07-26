@@ -1,7 +1,7 @@
 # 🔑 Krypton
 ### Gestión Inteligente de Inventario y Facturación para Microempresas de Cuenca
 
-**Metodología:** SCRUM · **Estado:** En Desarrollo · **Instituto:** Tec. Azuay · **Stack:** Java / Swing
+**Metodología:** SCRUM · **Estado:** En Desarrollo · **Instituto:** Tec. Azuay · **Stack:** Java / JavaFX
 
 ---
 
@@ -39,6 +39,9 @@ Optimizar, simplificar y automatizar el control de stock y facturación de las m
 ├── 📁 .github/
 │   └── ISSUE_TEMPLATE/            ← Plantilla de historia de usuario
 └── 📋 Issues, Milestones y Projects → Gestión completa del backlog Scrum
+    └── Cada Sprint es un issue "Epic" (Sprint 1...Sprint 6) que agrupa,
+        como sub-issues nativas de GitHub, sus tareas técnicas e historias
+        de usuario, con barra de progreso automática por sprint.
 ```
 
 ---
@@ -59,25 +62,25 @@ Optimizar, simplificar y automatizar el control de stock y facturación de las m
 
 | Prioridad | Historias | Puntos |
 |-----------|-----------|--------|
-| 🔴 Alta   | 8         | 27 pts |
-| 🟡 Media  | 6         | 22 pts |
+| 🔴 Alta   | 9         | 29 pts |
+| 🟡 Media  | 7         | 27 pts |
 | 🟢 Baja   | 2         | 5 pts  |
-| **Total** | **16**    | **54** |
+| **Total** | **18**    | **61** |
 
-*Historias KRYP-01 a KRYP-16, cubren la totalidad de los requerimientos funcionales RF-01 a RF-15.*
+*Historias KRYP-01 a KRYP-18, cubren la totalidad de los requerimientos funcionales RF-01 a RF-15 (incluye KRYP-17 para RF-04 — gestión de plantillas — y KRYP-18 para RF-12 — exportación e impresión de factura —, agregadas para cerrar los dos únicos requerimientos que no tenían historia asociada).*
 
 ---
 
 ## 🚀 Sprints Planificados
 
-| Sprint   | Fechas            | Objetivo principal                                         |
-|----------|--------------------|--------------------------------------------------------------|
-| Sprint 1 | 29 jun - 12 jul    | Planificación, roles Scrum y requerimientos (RF/RNF)         |
-| Sprint 2 | 13 jul - 26 jul    | Diseño de interfaces y mockups en JavaFX                    |
-| Sprint 3 | 27 jul - 09 ago    | Codificación POO: motor de plantillas y CRUD                |
-| Sprint 4 | 10 ago - 23 ago    | Base de datos MySQL y motor de facturación SRI (PDF)         |
-| Sprint 5 | 24 ago - 30 ago    | Correo automático, Asistente IA y Smart-Auditing             |
-| Sprint 6 | 31 ago - 04 sep    | Pruebas, corrección de errores y entrega final               |
+| Sprint   | Fechas            | Objetivo principal                                    | Historias        |
+|----------|--------------------|---------------------------------------------------------|-------------------|
+| Sprint 1 | 29 jun - 12 jul    | Planificación, roles Scrum y requerimientos (RF/RNF)     | —                 |
+| Sprint 2 | 13 jul - 26 jul    | Diseño de interfaces, mockups y prototipo en JavaFX      | —                 |
+| Sprint 3 | 27 jul - 09 ago    | Codificación POO: motor de plantillas y CRUD             | KRYP-01 a 05, 17  |
+| Sprint 4 | 10 ago - 23 ago    | Base de datos MySQL y motor de facturación SRI (PDF)     | KRYP-06 a 10, 18  |
+| Sprint 5 | 24 ago - 30 ago    | Correo automático, Asistente IA y Smart-Auditing         | KRYP-11 a 16      |
+| Sprint 6 | 31 ago - 04 sep    | Pruebas, corrección de errores y entrega final           | —                 |
 
 ---
 
