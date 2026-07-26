@@ -22,7 +22,7 @@ Optimizar, simplificar y automatizar el control de stock y facturación de las m
 ## 🏗️ Arquitectura del Sistema
 
 ```
-├── App de Escritorio (JavaFX)  → Dashboard, plantillas, productos, facturación
+├── App de Escritorio (Swing)  → Dashboard, plantillas, productos, facturación
 ├── Motor de Plantillas         → Campos y categorías dinámicas por negocio
 ├── Asistente Virtual (IA)      → Consultas por texto/voz sobre datos locales
 ├── Smart-Auditing              → Hilo en segundo plano (stock/vencimientos)
