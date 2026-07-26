@@ -1,7 +1,7 @@
 # 🔑 Krypton
 ### Gestión Inteligente de Inventario y Facturación para Microempresas de Cuenca
 
-**Metodología:** SCRUM · **Estado:** En Desarrollo · **Instituto:** Tec. Azuay · **Stack:** Java / JavaFX
+**Metodología:** SCRUM · **Estado:** En Desarrollo · **Instituto:** Tec. Azuay · **Stack:** Java / Swing
 
 ---
 
