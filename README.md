@@ -67,7 +67,7 @@ Optimizar, simplificar y automatizar el control de stock y facturación de las m
 | 🟢 Baja   | 2         | 5 pts  |
 | **Total** | **18**    | **61** |
 
-*Historias KRYP-01 a KRYP-18, cubren la totalidad de los requerimientos funcionales RF-01 a RF-15 (incluye KRYP-17 para RF-04 — gestión de plantillas — y KRYP-18 para RF-12 — exportación e impresión de factura —, agregadas para cerrar los dos únicos requerimientos que no tenían historia asociada).*
+Historias KRYP-01 a KRYP-18, cubren la totalidad de los requerimientos funcionales RF-01 a RF-15 (incluye KRYP-17 para RF-04 — gestión de plantillas — y KRYP-18 para RF-12 — exportación e impresión de factura)
 
 ---
 
