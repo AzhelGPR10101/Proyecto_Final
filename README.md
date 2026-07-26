@@ -1,47 +1,96 @@
-# Krypton
+# 🔑 Krypton
+### Gestión Inteligente de Inventario y Facturación para Microempresas de Cuenca
 
-Sistema integral de gestión de inventario y facturación comercial para microempresas de Cuenca, desarrollado con Programación Orientada a Objetos (Java) bajo metodología Scrum.
+**Metodología:** SCRUM · **Estado:** En Desarrollo · **Instituto:** Tec. Azuay · **Stack:** Java / JavaFX
 
-## Descripción del proyecto
+---
 
-En Cuenca, las microempresas y pequeños negocios locales suelen depender de métodos manuales, anotaciones físicas u hojas de cálculo no estructuradas para su control operativo. Esto genera pérdidas de stock, sistemas rígidos que no se adaptan a distintos giros de negocio, y una toma de decisiones basada en intuición en lugar de datos.
+## 📌 Descripción del Proyecto
 
-**Krypton** es una aplicación de escritorio (Java + JavaFX) que resuelve esto mediante:
+Software de escritorio que permite a las **microempresas y pequeños negocios de Cuenca** controlar su inventario, facturación y operación diaria sin depender de métodos manuales o plantillas rígidas, mediante una arquitectura de **plantillas maleables** que se adapta a cualquier giro de negocio, un **asistente conversacional con IA** local y un módulo de **auditoría proactiva (Smart-Auditing)**.
 
-- **Motor de plantillas maleables**: permite definir campos y categorías personalizadas en tiempo de ejecución, adaptando el sistema a cualquier tipo de negocio sin reconfiguración costosa.
-- **Gestión avanzada de productos**: CRUD completo con marcas, precios, existencias, estados críticos de stock y galerías de imágenes.
-- **Facturación automatizada**: generación de comprobantes en PDF conforme a normativas del SRI, con envío automático al correo del cliente.
-- **Smart-Auditing**: monitor en segundo plano (hilos de Java) que alerta proactivamente sobre vencimientos próximos o stock bajo el mínimo de seguridad.
-- **Asistente conversacional con IA**: interfaz de voz/texto que responde consultas sobre el negocio, operando exclusivamente sobre datos almacenados localmente.
+> *"Una arquitectura que se adapta al negocio, no el negocio a la arquitectura."*
 
-## Equipo (Metodología Scrum)
+---
 
-| Integrante | Rol Scrum | Responsabilidad principal |
-|---|---|---|
-| Pablo Alvarado | Scrum Master | Adopción del marco ágil, organización de ceremonias, interfaz del Asistente Virtual |
-| Gerard Perez | Product Owner | Gestión del backlog, priorización de historias, diseño visual del sistema |
-| Domenica Crespo | Development Team | Integración de estadísticas y plantillas, pruebas del sistema |
-| Karen Carabajo | Development Team | Lógica de negocio en Java, factura rápida, reportes PDF |
-| Diana Tigre | Development Team | Base de datos relacional, modelado a objetos, componentes JavaFX |
+## 🎯 Objetivo
 
-## Alcance técnico
+Optimizar, simplificar y automatizar el control de stock y facturación de las microempresas de Cuenca mediante Programación Orientada a Objetos, reduciendo pérdidas por desabastecimiento, vencimiento de productos y toma de decisiones basada solo en intuición.
 
-- **Lenguaje / Framework**: Java + JavaFX
-- **Base de datos**: MySQL, operando localmente (sin datos sensibles en servidores externos)
-- **Perfiles de usuario**: Administrador, Encargado de Inventario, Cajero/Facturador
-- **Cumplimiento**: Facturación electrónica conforme a estándares SRI (XML firmado, Web Service SOAP)
+---
 
-## Organización del repositorio
+## 🏗️ Arquitectura del Sistema
 
-El desarrollo se gestiona con Scrum sobre GitHub Issues, Milestones y Projects:
+```
+├── App de Escritorio (JavaFX)  → Dashboard, plantillas, productos, facturación
+├── Motor de Plantillas         → Campos y categorías dinámicas por negocio
+├── Asistente Virtual (IA)      → Consultas por texto/voz sobre datos locales
+├── Smart-Auditing              → Hilo en segundo plano (stock/vencimientos)
+└── Base de Datos               → MySQL local (sin datos en servidores externos)
+```
 
-- **Milestones** = Sprints del cronograma (Sprint 1 a Sprint 6)
-- **Issues** = Historias de usuario (`KRYP-XX`) y tareas técnicas
-- **Labels** = tipo de issue, riesgo de desarrollo y módulo funcional
-- **Project board** = tablero Kanban con campos de Estado, Prioridad y Story Points
+---
 
-Ver la pestaña [Projects](../../projects) para el tablero completo y [Milestones](../../milestones) para el detalle de cada Sprint.
+## 📂 Estructura del Repositorio
 
-## Institución
+```
+📁 Proyecto_Final/
+├── 📄 README.md                    ← Este archivo
+├── 📁 .github/
+│   └── ISSUE_TEMPLATE/            ← Plantilla de historia de usuario
+└── 📋 Issues, Milestones y Projects → Gestión completa del backlog Scrum
+```
 
-Instituto Superior Universitario Tecnológico del Azuay — Tecnología Superior en Desarrollo de Software.
+---
+
+## 👥 Equipo SCRUM
+
+| Rol              | Responsable        | Responsabilidad principal                                  |
+|------------------|---------------------|--------------------------------------------------------------|
+| Scrum Master     | Pablo Alvarado      | Adopción del marco ágil, ceremonias, Asistente Virtual        |
+| Product Owner    | Gerard Perez        | Backlog, priorización de historias, diseño visual             |
+| Dev Team         | Domenica Crespo     | Estadísticas, plantillas, pruebas del sistema                 |
+| Dev Team         | Karen Carabajo      | Lógica de negocio Java, facturación rápida, reportes PDF      |
+| Dev Team         | Diana Tigre         | Base de datos relacional, modelado a objetos, JavaFX          |
+
+---
+
+## 📋 Estado del Backlog
+
+| Prioridad | Historias | Puntos |
+|-----------|-----------|--------|
+| 🔴 Alta   | 8         | 27 pts |
+| 🟡 Media  | 2         | 5 pts  |
+| 🟢 Baja   | 0         | 0 pts  |
+| **Total** | **10**    | **32** |
+
+*Historias KRYP-01 a KRYP-10, cubren los requerimientos RF-01, RF-02, RF-03, RF-07, RF-14 y RF-15. Pendientes de redactar: RF-06, RF-08, RF-09, RF-10, RF-11 y RF-13 (Sprint 5).*
+
+---
+
+## 🚀 Sprints Planificados
+
+| Sprint   | Fechas            | Objetivo principal                                         |
+|----------|--------------------|--------------------------------------------------------------|
+| Sprint 1 | 29 jun - 12 jul    | Planificación, roles Scrum y requerimientos (RF/RNF)         |
+| Sprint 2 | 13 jul - 26 jul    | Diseño de interfaces y mockups en JavaFX                    |
+| Sprint 3 | 27 jul - 09 ago    | Codificación POO: motor de plantillas y CRUD                |
+| Sprint 4 | 10 ago - 23 ago    | Base de datos MySQL y motor de facturación SRI (PDF)         |
+| Sprint 5 | 24 ago - 30 ago    | Correo automático, Asistente IA y Smart-Auditing             |
+| Sprint 6 | 31 ago - 04 sep    | Pruebas, corrección de errores y entrega final               |
+
+---
+
+## 🌍 Contexto
+
+- **Ciudad:** Cuenca, Ecuador
+- **Enfoque:** Microempresas y pequeños negocios locales
+- **Cumplimiento legal:** Facturación electrónica conforme al SRI (XML firmado, Web Service SOAP)
+- **Seguridad:** Datos operados 100% localmente, contraseñas cifradas con jBcrypt
+- **Alineación:** Adaptabilidad comercial · Automatización de procesos · Toma de decisiones basada en datos
+
+---
+
+**Instituto Superior Universitario Tecnológico del Azuay** | Cuenca, Ecuador
+**Carrera:** Tecnología Superior en Desarrollo de Software — Segundo M2A
+**Docente:** Ing. Diana Romero
