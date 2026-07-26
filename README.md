@@ -60,11 +60,11 @@ Optimizar, simplificar y automatizar el control de stock y facturación de las m
 | Prioridad | Historias | Puntos |
 |-----------|-----------|--------|
 | 🔴 Alta   | 8         | 27 pts |
-| 🟡 Media  | 2         | 5 pts  |
-| 🟢 Baja   | 0         | 0 pts  |
-| **Total** | **10**    | **32** |
+| 🟡 Media  | 6         | 22 pts |
+| 🟢 Baja   | 2         | 5 pts  |
+| **Total** | **16**    | **54** |
 
-*Historias KRYP-01 a KRYP-10, cubren los requerimientos RF-01, RF-02, RF-03, RF-07, RF-14 y RF-15. Pendientes de redactar: RF-06, RF-08, RF-09, RF-10, RF-11 y RF-13 (Sprint 5).*
+*Historias KRYP-01 a KRYP-16, cubren la totalidad de los requerimientos funcionales RF-01 a RF-15.*
 
 ---
 
