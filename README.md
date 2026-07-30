@@ -63,11 +63,11 @@ Optimizar, simplificar y automatizar el control de stock y facturación de las m
 | Prioridad | Historias | Puntos |
 |-----------|-----------|--------|
 | 🔴 Alta   | 9         | 29 pts |
-| 🟡 Media  | 7         | 27 pts |
+| 🟡 Media  | 8         | 30 pts |
 | 🟢 Baja   | 2         | 5 pts  |
-| **Total** | **18**    | **61** |
+| **Total** | **19**    | **64** |
 
-Historias KRYP-01 a KRYP-18, cubren la totalidad de los requerimientos funcionales RF-01 a RF-15 (incluye KRYP-17 para RF-04 — gestión de plantillas — y KRYP-18 para RF-12 — exportación e impresión de factura)
+Historias KRYP-01 a KRYP-19, cubren la totalidad de los requerimientos funcionales RF-01 a RF-15, más KRYP-19 (selección y personalización de módulos activos), funcionalidad real del prototipo sin RF dedicado en el documento original.
 
 ---
 
@@ -77,7 +77,7 @@ Historias KRYP-01 a KRYP-18, cubren la totalidad de los requerimientos funcional
 |----------|--------------------|---------------------------------------------------------|-------------------|
 | Sprint 1 | 29 jun - 12 jul    | Planificación, roles Scrum y requerimientos (RF/RNF)     | —                 |
 | Sprint 2 | 13 jul - 26 jul    | Diseño de interfaces, mockups y prototipo en JavaFX      | —                 |
-| Sprint 3 | 27 jul - 09 ago    | Codificación POO: motor de plantillas y CRUD             | KRYP-01 a 05, 17  |
+| Sprint 3 | 27 jul - 09 ago    | Codificación POO: motor de plantillas y CRUD             | KRYP-01 a 05, 17, 19  |
 | Sprint 4 | 10 ago - 23 ago    | Base de datos MySQL y motor de facturación SRI (PDF)     | KRYP-06 a 10, 18  |
 | Sprint 5 | 24 ago - 30 ago    | Correo automático, Asistente IA y Smart-Auditing         | KRYP-11 a 16      |
 | Sprint 6 | 31 ago - 04 sep    | Pruebas, corrección de errores y entrega final           | —                 |
