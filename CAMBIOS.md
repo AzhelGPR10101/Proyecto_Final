@@ -3,8 +3,8 @@
 ## Hecho
 - Conexion.java: agregado getConnection() (JDBC PostgreSQL, jdbc:postgresql://localhost:5432/KryptonBase, usuario postgres). Se mantiene abrir() (db4o) SOLO porque EmpleadoControlador.java y PanelProveedoresModificar.java todavía la usan; no se tocó por instrucción de no modificar vistas.
 - libs/postgresql-42.7.13.jar agregado y enlazado en nbproject/project.properties.
-- sql/01_schema.sql: tu script de KryptonBase tal cual (usuario, negocio, direccion, moneda, modulo, negocio_modulo, cliente, tipo_documento, proveedor, etc). Ejecútalo primero en psql.
-- sql/02_seed.sql: inserta los 5 módulos de tu pantalla de Modulos, moneda Dolar y tipos de documento. Ejecútalo después del schema.
+- sql/01_schema.sql: script completo de KryptonBase (usuario, negocio, direccion, modulo, negocio_modulo, cliente, tipo_documento, proveedor, solicitud_acceso, nota, pago_empleado, etc; ya no incluye moneda). Incluye los seeds de modulo y tipo_documento al final. Ejecútalo primero en psql.
+- sql/02_seed_tasa_iva.sql: inserta las tasas de IVA (15% y 0%). Ejecútalo después del schema.
 - Modelo nuevos: Sesion, UsuarioCuenta, Negocio, Modulo, Cliente.
 - DAO nuevos: UsuarioDAO, NegocioDAO, ModuloDAO, ClienteDAO, ProveedorDAO (reemplaza al db4o).
 - Controladores nuevos: ControladorLogin, ControladorUsuario, ControladorNegocio, ControladorModulo, ControladorCliente.

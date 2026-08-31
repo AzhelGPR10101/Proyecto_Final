@@ -1,6 +1,20 @@
 -- ============================================================
 -- Proyecto ERP - Usuario / Negocio / Modulos
--- Script de creacion de la base en PostgreSQL
+-- Script de creacion COMPLETO y LIMPIO en PostgreSQL.
+--
+-- Incluye: las 31 tablas originales + pago_empleado + las columnas
+-- nuevas que fue trayendo el backup del equipo (producto, cierre_caja,
+-- factura, ingreso, egreso, cliente.activo, empleado.estado).
+--
+-- COMO CORRERLO (borra tu base actual y la crea de cero):
+-- 1) Conectate a la base "postgres" (NO a KryptonBase), porque
+--    Postgres no te deja borrar la base a la que estas conectado.
+--    En pgAdmin: clic en el servidor -> Query Tool sobre "postgres".
+-- 2) Corre SOLO estas 2 lineas primero, una por una:
+--       DROP DATABASE IF EXISTS "KryptonBase";
+--       CREATE DATABASE "KryptonBase";
+-- 3) Conectate ya a "KryptonBase" (clic en ella, Query Tool nueva)
+--    y corre el resto de este archivo completo, de una sola vez.
 --
 -- Nota rapida sobre los IDs: en vez de dejar que Postgres numere
 -- solo (1, 2, 3...) decidimos usar codigos con prefijo, tipo
@@ -61,27 +75,6 @@ CREATE TRIGGER trg_direccion BEFORE INSERT ON direccion
 FOR EACH ROW EXECUTE FUNCTION generar_id_direccion();
 
 
--- MONEDA
--- Catalogo chiquito (Dolar, Peso, Euro...) para que Negocio no
--- guarde el nombre de la moneda como texto libre.
-CREATE TABLE moneda (
-    id_moneda       VARCHAR(10) PRIMARY KEY,
-    nombre_moneda   VARCHAR(50) NOT NULL
-);
-
-CREATE SEQUENCE seq_moneda START 1;
-CREATE OR REPLACE FUNCTION generar_id_moneda() RETURNS TRIGGER AS $$
-BEGIN
-    IF NEW.id_moneda IS NULL THEN
-        NEW.id_moneda := 'MO' || LPAD(nextval('seq_moneda')::TEXT, 2, '0');
-    END IF;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-CREATE TRIGGER trg_moneda BEFORE INSERT ON moneda
-FOR EACH ROW EXECUTE FUNCTION generar_id_moneda();
-
-
 -- NEGOCIO
 -- Cada usuario registra un solo negocio (por eso id_usuario es UNIQUE,
 -- no solo FK -- asi Postgres no deja que un mismo usuario tenga dos negocios).
@@ -89,7 +82,6 @@ CREATE TABLE negocio (
     id_negocio      VARCHAR(10) PRIMARY KEY,
     id_usuario      VARCHAR(10) NOT NULL UNIQUE REFERENCES usuario(id_usuario),
     id_direccion    VARCHAR(10) REFERENCES direccion(id_direccion),
-    id_moneda       VARCHAR(10) NOT NULL REFERENCES moneda(id_moneda),
     nombre_negocio  VARCHAR(150) NOT NULL,
     ruc_negocio     VARCHAR(13) UNIQUE NOT NULL,
     correo_contacto VARCHAR(150),
@@ -179,33 +171,69 @@ FOR EACH ROW EXECUTE FUNCTION generar_id_permiso();
 -- No lleva campo "cargo" a proposito: el cargo que se ve en el
 -- formulario (Cajero/Bodeguero/Gerente) es literalmente el id_rol,
 -- asi que ponerlo aparte hubiera sido guardar el mismo dato dos veces.
+-- Ademas EMPLEADO hereda de USUARIO (antes eran 2 tablas duplicadas con
+-- los mismos campos de persona: cedula, nombres, apellidos, correo,
+-- telefono, foto, contrasena). Ahora la identidad y el login
+-- (usuario/contrasena/correo) SOLO viven en "usuario". "empleado" es la
+-- extension: mismo id que su usuario, y solo los datos propios de ser
+-- empleado de un negocio.
 CREATE TABLE empleado (
-    id_empleado     VARCHAR(10) PRIMARY KEY,
+    id_empleado     VARCHAR(10) PRIMARY KEY REFERENCES usuario(id_usuario),
     id_negocio      VARCHAR(10) NOT NULL REFERENCES negocio(id_negocio),
     id_rol          VARCHAR(10) NOT NULL REFERENCES rol(id_rol),
-    cedula          VARCHAR(10) UNIQUE NOT NULL,
-    nombres         VARCHAR(100) NOT NULL,
-    apellidos       VARCHAR(100) NOT NULL,
-    correo          VARCHAR(150),
-    telefono        VARCHAR(15),
     salario         NUMERIC(10,2),
     fecha_ingreso   DATE DEFAULT CURRENT_DATE,
-    usuario_acceso  VARCHAR(50) UNIQUE NOT NULL,  
-    contrasena      VARCHAR(255) NOT NULL,
-    foto_perfil     VARCHAR(255)        
+    estado          VARCHAR(20) DEFAULT 'activo'
 );
 
-CREATE SEQUENCE seq_empleado START 1;
-CREATE OR REPLACE FUNCTION generar_id_empleado() RETURNS TRIGGER AS $$
+-- PAGO_EMPLEADO: pago de sueldo a un empleado (agregada por el equipo).
+CREATE TABLE pago_empleado (
+    id_pago         VARCHAR(10) PRIMARY KEY,
+    id_empleado     VARCHAR(10) NOT NULL REFERENCES empleado(id_empleado),
+    fecha_pago      DATE DEFAULT CURRENT_DATE,
+    periodo         VARCHAR(50) NOT NULL,
+    monto           NUMERIC(10,2) NOT NULL,
+    observaciones   VARCHAR(255)
+);
+
+CREATE SEQUENCE seq_pago_empleado START 1;
+CREATE OR REPLACE FUNCTION generar_id_pago_empleado() RETURNS TRIGGER AS $$
 BEGIN
-    IF NEW.id_empleado IS NULL THEN
-        NEW.id_empleado := 'EM' || LPAD(nextval('seq_empleado')::TEXT, 2, '0');
+    IF NEW.id_pago IS NULL THEN
+        NEW.id_pago := 'PE' || LPAD(nextval('seq_pago_empleado')::TEXT, 2, '0');
     END IF;
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-CREATE TRIGGER trg_empleado BEFORE INSERT ON empleado
-FOR EACH ROW EXECUTE FUNCTION generar_id_empleado();
+CREATE TRIGGER trg_pago_empleado BEFORE INSERT ON pago_empleado
+FOR EACH ROW EXECUTE FUNCTION generar_id_pago_empleado();
+
+-- SOLICITUD_ACCESO
+-- Cuando alguien se registra marcando "soy empleado", primero se crea su
+-- USUARIO (identidad + login), y la solicitud queda aqui en estado
+-- 'pendiente' hasta que el dueño del negocio la acepte desde
+-- PanelAceptarEmpleados. Al aceptar: se crea la fila en "empleado" (con el
+-- salario que asigne el dueño) y esta solicitud pasa a 'aprobada'.
+CREATE TABLE solicitud_acceso (
+    id_solicitud     VARCHAR(10) PRIMARY KEY,
+    id_usuario       VARCHAR(10) NOT NULL REFERENCES usuario(id_usuario),
+    id_negocio       VARCHAR(10) NOT NULL REFERENCES negocio(id_negocio),
+    id_rol           VARCHAR(10) NOT NULL REFERENCES rol(id_rol),
+    fecha_solicitud  DATE DEFAULT CURRENT_DATE,
+    estado           VARCHAR(20) NOT NULL DEFAULT 'pendiente'  -- pendiente / aprobada / rechazada
+);
+
+CREATE SEQUENCE seq_solicitud START 1;
+CREATE OR REPLACE FUNCTION generar_id_solicitud() RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.id_solicitud IS NULL THEN
+        NEW.id_solicitud := 'SO' || LPAD(nextval('seq_solicitud')::TEXT, 2, '0');
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+CREATE TRIGGER trg_solicitud BEFORE INSERT ON solicitud_acceso
+FOR EACH ROW EXECUTE FUNCTION generar_id_solicitud();
 
 
 -- TASA_IVA
@@ -265,6 +293,9 @@ CREATE TABLE producto (
     costo           NUMERIC(10,2) NOT NULL,
     stock_actual    INT DEFAULT 0,
     stock_minimo    INT DEFAULT 0,
+    stock_maximo    INT DEFAULT 0,
+    ubicacion_pasillo VARCHAR(50),
+    lote            VARCHAR(50),
     fecha_vencimiento DATE,
     estado          VARCHAR(20) DEFAULT 'activo'
 );
@@ -339,7 +370,8 @@ CREATE TABLE cliente (
     nombre_cliente  VARCHAR(150) NOT NULL,
     telefono        VARCHAR(15),
     correo          VARCHAR(150),
-    UNIQUE (id_negocio, numero_documento)  -- que no se repita el mismo documento en un mismo negocio
+    activo          BOOLEAN NOT NULL DEFAULT TRUE,
+    UNIQUE (id_negocio, numero_documento)
 );
 
 CREATE SEQUENCE seq_cliente START 1;
@@ -466,6 +498,7 @@ CREATE TABLE factura (
     num_factura     VARCHAR(50) UNIQUE NOT NULL,
     clave_acceso    VARCHAR(60),
     fecha           DATE DEFAULT CURRENT_DATE,
+    hora            TIME DEFAULT CURRENT_TIME,
     subtotal        NUMERIC(10,2) NOT NULL,
     valor_iva       NUMERIC(10,2) DEFAULT 0,
     descuento       NUMERIC(10,2) DEFAULT 0,
@@ -547,6 +580,7 @@ CREATE TABLE ingreso (
     id_negocio      VARCHAR(10) NOT NULL REFERENCES negocio(id_negocio),
     id_factura      VARCHAR(10) REFERENCES factura(id_factura),
     fecha           DATE DEFAULT CURRENT_DATE,
+    hora            TIME DEFAULT CURRENT_TIME,
     monto           NUMERIC(10,2) NOT NULL,
     concepto        VARCHAR(200)
 );
@@ -572,6 +606,7 @@ CREATE TABLE egreso (
     id_negocio      VARCHAR(10) NOT NULL REFERENCES negocio(id_negocio),
     id_pago         VARCHAR(10) REFERENCES pago_proveedor(id_pago),
     fecha           DATE DEFAULT CURRENT_DATE,
+    hora            TIME DEFAULT CURRENT_TIME,
     monto           NUMERIC(10,2) NOT NULL,
     concepto        VARCHAR(200)
 );
@@ -598,6 +633,8 @@ CREATE TABLE cierre_caja (
     id_empleado     VARCHAR(10) NOT NULL REFERENCES empleado(id_empleado),
     fecha_inicio    TIMESTAMP,
     fecha_fin       TIMESTAMP,
+    monto_inicial   NUMERIC(10,2) DEFAULT 0,
+    notas_apertura  VARCHAR(255),
     total_efectivo  NUMERIC(10,2) DEFAULT 0,
     total_tarjeta   NUMERIC(10,2) DEFAULT 0,
     total_transferencia NUMERIC(10,2) DEFAULT 0,
@@ -622,6 +659,29 @@ FOR EACH ROW EXECUTE FUNCTION generar_id_cierre_caja();
 -- NOTIFICACION
 -- Las alertas automaticas (stock bajo, pagare por vencer, etc.)
 -- que le llegan al usuario dueño.
+-- NOTA: notas libres de un usuario (recordatorios personales, no ligadas a un
+-- negocio). Un usuario puede tener una o varias.
+CREATE TABLE nota (
+    id_nota             VARCHAR(10) PRIMARY KEY,
+    id_usuario          VARCHAR(10) NOT NULL REFERENCES usuario(id_usuario),
+    titulo              VARCHAR(150) NOT NULL,
+    cuerpo              TEXT,
+    fecha_creacion      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    fecha_modificacion  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE SEQUENCE seq_nota START 1;
+CREATE OR REPLACE FUNCTION generar_id_nota() RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.id_nota IS NULL THEN
+        NEW.id_nota := 'NT' || LPAD(nextval('seq_nota')::TEXT, 2, '0');
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+CREATE TRIGGER trg_nota BEFORE INSERT ON nota
+FOR EACH ROW EXECUTE FUNCTION generar_id_nota();
+
 CREATE TABLE notificacion (
     id_notificacion VARCHAR(10) PRIMARY KEY,
     id_usuario      VARCHAR(10) NOT NULL REFERENCES usuario(id_usuario),
@@ -686,3 +746,13 @@ CREATE TABLE factura_producto (
     subtotal        NUMERIC(10,2) NOT NULL,
     PRIMARY KEY (id_factura, id_producto)
 );
+INSERT INTO modulo (nombre_modulo, descripcion) VALUES
+('Catálogo', 'Producto, plantilla de negocio y proveedores.'),
+('Ventas y Facturación', 'Ventas rápidas, facturación SRI y tabla de ventas.'),
+('Finanzas', 'Estadística del negocio y arqueo/cierre de caja.'),
+('Recursos Humanos', 'Gestión de empleados y roles / permisos.'),
+('Configuración', 'Perfil, notificaciones y módulos activos.');
+
+
+INSERT INTO tipo_documento (nombre_tipo_documento) VALUES
+('Cedula'), ('RUC'), ('Pasaporte');
