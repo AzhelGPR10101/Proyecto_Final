@@ -1,52 +1,107 @@
-# 🔑 Krypton
-### Gestión Inteligente de Inventario y Facturación para Microempresas de Cuenca
+# 🔑 Krypton (KTP)
 
-**Metodología:** SCRUM · **Estado:** En Desarrollo · **Instituto:** Tec. Azuay · **Stack:** Java / JavaFX
+### Sistema de gestión para microempresas — inventario, ventas y RRHH
 
----
-
-## 📌 Descripción del Proyecto
-
-Software de escritorio que permite a las **microempresas y pequeños negocios de Cuenca** controlar su inventario, facturación y operación diaria sin depender de métodos manuales o plantillas rígidas, mediante una arquitectura de **plantillas maleables** que se adapta a cualquier giro de negocio, un **asistente conversacional con IA** local y un módulo de **auditoría proactiva (Smart-Auditing)**.
-
-> *"Una arquitectura que se adapta al negocio, no el negocio a la arquitectura."*
+**Stack real:** Java Swing (escritorio) + PostgreSQL · **Instituto:** Tec. Azuay
 
 ---
 
-## 🎯 Objetivo
+## 📌 Descripción
 
-Optimizar, simplificar y automatizar el control de stock y facturación de las microempresas de Cuenca mediante Programación Orientada a Objetos, reduciendo pérdidas por desabastecimiento, vencimiento de productos y toma de decisiones basada solo en intuición.
+KTP es una aplicación de escritorio en Java que le permite a un negocio pequeño llevar su
+inventario, sus ventas, sus compras a proveedores, su caja y su personal desde un solo
+sistema, con roles distintos según quién esté usándolo (dueño, cajero, bodeguero, RRHH).
 
----
-
-## 🏗️ Arquitectura del Sistema
-
-```
-├── App de Escritorio (Swing)  → Dashboard, plantillas, productos, facturación
-├── Motor de Plantillas         → Campos y categorías dinámicas por negocio
-├── Asistente Virtual (IA)      → Consultas por texto/voz sobre datos locales
-├── Smart-Auditing              → Hilo en segundo plano (stock/vencimientos)
-└── Base de Datos               → MySQL local (sin datos en servidores externos)
-```
+Cada usuario que se registra crea su propio negocio (multi-negocio: la misma base de datos
+puede tener varias empresas usando el sistema, cada una viendo solo su propia información).
 
 ---
 
-## 📂 Estructura del Repositorio
+## 🧱 Stack y arquitectura reales
 
-```
-📁 Proyecto_Final/
-├── 📄 README.md                    ← Este archivo
-├── 📁 .github/
-│   └── ISSUE_TEMPLATE/            ← Plantilla de historia de usuario
-└── 📋 Issues, Milestones y Projects → Gestión completa del backlog Scrum
-    └── Cada Sprint es un issue "Epic" (Sprint 1...Sprint 6) que agrupa,
-        como sub-issues nativas de GitHub, sus tareas técnicas e historias
-        de usuario, con barra de progreso automática por sprint.
-```
+- **Interfaz:** Java Swing (NetBeans GUI Builder), no JavaFX.
+- **Base de datos:** PostgreSQL, actualmente alojada en [Neon](https://neon.com) (en línea, no local).
+- **Build:** Apache Ant / proyecto NetBeans estándar (`build.xml`).
+- **Librerías:** driver JDBC de PostgreSQL, JFreeChart (gráficos de estadísticas), JavaMail
+  (correo), OkHttp (cliente HTTP).
+- **Contraseñas:** hash con PBKDF2 + salt (no texto plano, no BCrypt).
+- **PDF y Excel:** el generador de facturas en PDF y el exportador de reportes a Excel están
+  escritos a mano en Java (sin librerías como iText o Apache POI).
 
 ---
 
-## 👥 Equipo SCRUM
+## ✅ Funcionalidades implementadas
+
+**Cuentas y acceso**
+- Registro de usuario + registro de negocio.
+- Login con roles (Dueño, Cajero/Vendedor, Bodeguero, Recursos Humanos), cada rol ve solo los
+  paneles para los que tiene permiso.
+- Recuperación de contraseña por código enviado al correo.
+- Un empleado puede solicitar unirse a un negocio; el dueño aprueba o rechaza la solicitud
+  desde su panel.
+- Selección de qué módulos tiene activos cada negocio (Catálogo, Ventas, Finanzas, RRHH,
+  Configuración).
+
+**Catálogo e inventario**
+- CRUD de productos (categoría, IVA, precio, costo, stock mínimo/máximo, lote, ubicación,
+  fecha de vencimiento).
+- CRUD de proveedores y clientes.
+- Ajustes y movimientos de inventario desde el rol Bodeguero.
+
+**Ventas y compras**
+- Facturación rápida, con historial de facturas y detalle por factura.
+- Factura generada en PDF y envío de la factura por correo al cliente.
+- Registro de compras a proveedores, con pagarés (crédito) y abonos parciales.
+- Apertura y cierre de caja por turno (Cajero), con historial de cierres.
+
+**Recursos Humanos**
+- Gestión de empleados, roles y permisos por negocio.
+- Generación de pagos a empleados y su historial.
+
+**Otros**
+- Notas personales del usuario.
+- Notificaciones automáticas de stock bajo y pagarés por vencer (se generan al iniciar sesión).
+- Estadísticas del negocio con gráficos (JFreeChart) y reportes exportables a Excel.
+- **Asistente virtual con IA** (Groq, modelo `gpt-oss-120b`): responde preguntas sobre los
+  datos reales del negocio (stock, compras a proveedores), entiende comandos de voz y texto, y
+  puede navegar el sistema por ti (ej. "llévame a productos").
+
+---
+
+## ❌ Fuera de alcance (se descartó o nunca se llegó a programar)
+
+Para que el README no prometa cosas que no existen:
+
+- **Facturación electrónica real ante el SRI** (firma XML, web service SOAP): no está
+  implementada. Solo existe un campo `estado_sri` y `clave_acceso` en la base de datos,
+  pensados para una futura integración, pero hoy la factura solo se genera en PDF.
+- **Motor de "plantillas maleables"** para adaptar el modelo de datos a cualquier tipo de
+  negocio: se descartó por complejidad. Todos los negocios usan el mismo modelo fijo de
+  tablas (productos, categorías, etc.).
+- **Auditoría continua en segundo plano:** las notificaciones (stock bajo, pagarés por vencer)
+  se revisan una vez al iniciar sesión, no con un proceso corriendo todo el tiempo.
+- JavaFX, MySQL y BCrypt: mencionados en versiones anteriores de este README, nunca se usaron.
+
+---
+
+## 🚀 Cómo correr el proyecto
+
+**Requisito:** Java 17.
+
+1. Copia `config.properties.example` a `config.properties` y completa los datos de conexión a
+   PostgreSQL (local o Neon) y, si quieres correo/IA, tu correo de aplicación de Gmail y tu
+   API key de Groq.
+2. Abre el proyecto en NetBeans y dale "Run", o compílalo desde consola:
+   ```
+   ant clean jar
+   java -jar dist/ProyectoKTPV51.jar
+   ```
+3. El esquema de base de datos está en `sql/01_schema.sql` (créalo primero) y
+   `sql/02_seed_tasa_iva.sql` (catálogo de IVA).
+
+---
+
+## 👥 Equipo
 
 | Rol              | Responsable        | Responsabilidad principal                                  |
 |------------------|---------------------|--------------------------------------------------------------|
@@ -54,43 +109,7 @@ Optimizar, simplificar y automatizar el control de stock y facturación de las m
 | Product Owner    | Gerard Perez        | Backlog, priorización de historias, diseño visual             |
 | Dev Team         | Domenica Crespo     | Estadísticas, plantillas, pruebas del sistema                 |
 | Dev Team         | Karen Carabajo      | Lógica de negocio Java, facturación rápida, reportes PDF      |
-| Dev Team         | Diana Tigre         | Base de datos relacional, modelado a objetos, JavaFX          |
-
----
-
-## 📋 Estado del Backlog
-
-| Prioridad | Historias | Puntos |
-|-----------|-----------|--------|
-| 🔴 Alta   | 9         | 29 pts |
-| 🟡 Media  | 8         | 30 pts |
-| 🟢 Baja   | 2         | 5 pts  |
-| **Total** | **19**    | **64** |
-
-Historias KRYP-01 a KRYP-19, cubren la totalidad de los requerimientos funcionales RF-01 a RF-15, más KRYP-19 (selección y personalización de módulos activos), funcionalidad real del prototipo sin RF dedicado en el documento original.
-
----
-
-## 🚀 Sprints Planificados
-
-| Sprint   | Fechas            | Objetivo principal                                    | Historias        |
-|----------|--------------------|---------------------------------------------------------|-------------------|
-| Sprint 1 | 29 jun - 12 jul    | Planificación, roles Scrum y requerimientos (RF/RNF)     | —                 |
-| Sprint 2 | 13 jul - 26 jul    | Diseño de interfaces, mockups y prototipo en JavaFX      | —                 |
-| Sprint 3 | 27 jul - 09 ago    | Codificación POO: motor de plantillas y CRUD             | KRYP-01 a 05, 17, 19  |
-| Sprint 4 | 10 ago - 23 ago    | Base de datos MySQL y motor de facturación SRI (PDF)     | KRYP-06 a 10, 18  |
-| Sprint 5 | 24 ago - 30 ago    | Correo automático, Asistente IA y Smart-Auditing         | KRYP-11 a 16      |
-| Sprint 6 | 31 ago - 04 sep    | Pruebas, corrección de errores y entrega final           | —                 |
-
----
-
-## 🌍 Contexto
-
-- **Ciudad:** Cuenca, Ecuador
-- **Enfoque:** Microempresas y pequeños negocios locales
-- **Cumplimiento legal:** Facturación electrónica conforme al SRI (XML firmado, Web Service SOAP)
-- **Seguridad:** Datos operados 100% localmente, contraseñas cifradas con jBcrypt
-- **Alineación:** Adaptabilidad comercial · Automatización de procesos · Toma de decisiones basada en datos
+| Dev Team         | Diana Tigre         | Base de datos relacional, modelado a objetos                  |
 
 ---
 
