@@ -68,22 +68,6 @@ puede tener varias empresas usando el sistema, cada una viendo solo su propia in
 
 ---
 
-## ❌ Fuera de alcance (se descartó o nunca se llegó a programar)
-
-Para que el README no prometa cosas que no existen:
-
-- **Facturación electrónica real ante el SRI** (firma XML, web service SOAP): no está
-  implementada. Solo existe un campo `estado_sri` y `clave_acceso` en la base de datos,
-  pensados para una futura integración, pero hoy la factura solo se genera en PDF.
-- **Motor de "plantillas maleables"** para adaptar el modelo de datos a cualquier tipo de
-  negocio: se descartó por complejidad. Todos los negocios usan el mismo modelo fijo de
-  tablas (productos, categorías, etc.).
-- **Auditoría continua en segundo plano:** las notificaciones (stock bajo, pagarés por vencer)
-  se revisan una vez al iniciar sesión, no con un proceso corriendo todo el tiempo.
-- JavaFX, MySQL y BCrypt: mencionados en versiones anteriores de este README, nunca se usaron.
-
----
-
 ## 🚀 Cómo correr el proyecto
 
 **Requisito:** Java 17.
