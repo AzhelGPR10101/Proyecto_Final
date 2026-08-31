@@ -10,3 +10,14 @@
 
 correo.remitente=tu_correo@gmail.com
 correo.clave=tu_contrasena_de_aplicacion_de_16_caracteres
+
+# Conexion a la base de datos PostgreSQL.
+# Para desarrollo local (Postgres en tu PC) deja host=localhost y sslmode=disable.
+# Para Neon (u otro proveedor en la nube) usa el connection string que te dieron
+# y pon sslmode=require.
+db.host=localhost
+db.port=5432
+db.name=KryptonBase
+db.user=postgres
+db.password=tu_password
+db.sslmode=disable
