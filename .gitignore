@@ -1,0 +1,14 @@
+# Datos sensibles (usar config.properties.example como plantilla)
+config.properties
+
+# Build artifacts de NetBeans/Ant
+/build/
+/dist/
+
+# Configuración privada de NetBeans
+nbproject/private/
+
+# Sistema
+Thumbs.db
+.DS_Store
+*.class

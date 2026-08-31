@@ -1,0 +1,14 @@
+package Modelo;
+
+public enum PermisoSistema {
+    VER_PRODUCTOS,
+    VER_CLIENTES,
+    VER_PROVEEDORES,
+    VER_VENTAS,
+    VER_EMPLEADOS,
+    VER_REPORTES,
+    VER_CONFIGURACION,
+    VER_BODEGA,
+    VER_EGRESOS,
+    VER_NOMINA
+}
