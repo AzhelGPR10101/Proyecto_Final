@@ -79,8 +79,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }
 
     private void centrarCampanaEnTopbar(componentes.PanelNotificaciones panelNotificaciones, javax.swing.JLayeredPane capas) {
-        java.awt.Point origenTopbar = javax.swing.SwingUtilities.convertPoint(panelRedondo1, 0, 0, capas);
-        panelNotificaciones.centrarEnTopbar(origenTopbar.y, panelRedondo1.getHeight());
+        java.awt.Point origenTopbar = javax.swing.SwingUtilities.convertPoint(jMenuBar1, 0, 0, capas);
+        panelNotificaciones.centrarEnTopbar(origenTopbar.y, jMenuBar1.getHeight());
     }
 
     private void mostrarPantallaInicialSegunRol() {
@@ -225,9 +225,6 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jScrollPane2.getViewport().setBackground(fondo);
     }
 
-    // Los items de los menus desplegables (Facturas/Ventas, Compras/Egresos/Pagares,
-    // Configuracion/Historial de Cierre) no tenian ningun estilo propio -- se veian con
-    // el look por defecto de Swing (chico, gris), sin relacion con el resto del topbar.
     private void estilizarMenusDesplegables() {
         javax.swing.JMenuItem[] items = {
             MenuFacturas, MenuVentas, Compras, HistorialEgresos, Pagares, jMenuItem1, HistorialCierreCaja

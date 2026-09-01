@@ -7,7 +7,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,7 +88,12 @@ public class ProductoDAO {
             ps.setDouble(7, p.getPrecioUnitario());
             ps.setInt(8, p.getCantidad());
             ps.setInt(9, p.getStockMinimo());
-            ps.setDate(10, Date.valueOf(LocalDate.now().plusMonths(6)));
+            String fechaVencimiento = p.getFechaVencimiento();
+            if (fechaVencimiento == null || fechaVencimiento.trim().isEmpty()) {
+                ps.setNull(10, java.sql.Types.DATE);
+            } else {
+                ps.setDate(10, Date.valueOf(fechaVencimiento.trim()));
+            }
             ps.setString(11, p.getUbicacionPasillo());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {

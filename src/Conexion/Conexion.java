@@ -15,12 +15,6 @@ import java.util.concurrent.BlockingQueue;
 
 public class Conexion {
 
-    // Pool sencillo de conexiones reales ya abiertas hacia la base. Antes,
-    // getConnection() abria una conexion TCP/TLS nueva contra la base en CADA
-    // llamada (y son 100+ llamadas repartidas en los DAO) -- eso era lo que
-    // hacia lento el login/carga del menu contra una base remota (Neon), no
-    // las consultas en si. Ahora las conexiones se reusan: al hacer close()
-    // no se cierra el socket, se devuelve al pool.
     private static final int TAMANO_POOL = 8;
     private static final BlockingQueue<Connection> POOL = new ArrayBlockingQueue<>(TAMANO_POOL);
 
@@ -82,9 +76,6 @@ public class Conexion {
         return crearProxyDevolutivo(real);
     }
 
-    // Envuelve la conexion real en un proxy que se comporta exactamente igual
-    // (delega todos los metodos), excepto close(): en vez de cerrar el socket,
-    // devuelve la conexion al pool para que la siguiente llamada la reuse.
     private static Connection crearProxyDevolutivo(Connection real) {
         return (Connection) Proxy.newProxyInstance(
                 Connection.class.getClassLoader(),

@@ -55,7 +55,7 @@ public class Validaciones {
         if (fechaStr == null || fechaStr.trim().isEmpty()) {
             return false;
         }
-        java.text.SimpleDateFormat formato = new java.text.SimpleDateFormat("dd/MM/yyyy");
+        java.text.SimpleDateFormat formato = new java.text.SimpleDateFormat("yyyy-MM-dd");
         formato.setLenient(false);
         try {
             formato.parse(fechaStr.trim());

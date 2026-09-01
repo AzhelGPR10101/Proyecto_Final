@@ -69,7 +69,8 @@ public class PanelProductosAgregar extends javax.swing.JPanel {
                 rbConIva.isSelected(),
                 rbSinIva.isSelected(),
                 jtStockMinimo.getText(),
-                txtPasillo.getText()
+                txtPasillo.getText(),
+                txtFechaVencimiento.getFecha()
         );
 
         if (exito) {
@@ -123,6 +124,7 @@ public class PanelProductosAgregar extends javax.swing.JPanel {
         jtPU.setText("");
         jtStockMinimo.setText("");
         txtPasillo.setText("");
+        txtFechaVencimiento.setText("");
         rbConIva.setSelected(true);
     }
 
@@ -152,7 +154,7 @@ public class PanelProductosAgregar extends javax.swing.JPanel {
         jtCatalogo = new componentes.ComboBoxModerno();
         jbCatalogo = new javax.swing.JLabel();
         vencimiento = new javax.swing.JLabel();
-        txtFechaVencimiento = new componentes.TextFieldModerno();
+        txtFechaVencimiento = new componentes.FechaModerna();
         rbConIva = new javax.swing.JRadioButton();
         rbSinIva = new javax.swing.JRadioButton();
         jtPU = new componentes.TextFieldModerno();
@@ -295,7 +297,7 @@ public class PanelProductosAgregar extends javax.swing.JPanel {
         vencimiento.setText("Vencimiento:");
         panelRedondo2.add(vencimiento, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 140, 160, -1));
 
-        txtFechaVencimiento.setBackground(new java.awt.Color(31, 10, 60));
+        txtFechaVencimiento.setColorFondo(new java.awt.Color(31, 10, 60));
         panelRedondo2.add(txtFechaVencimiento, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 170, 300, 40));
 
         rbConIva.setBackground(new java.awt.Color(31, 11, 43));
@@ -408,7 +410,7 @@ public class PanelProductosAgregar extends javax.swing.JPanel {
     private javax.swing.JRadioButton rbSinIva;
     private javax.swing.JTable tablaProductosAgregados;
     private javax.swing.JTextField txtFechElavoracion;
-    private javax.swing.JTextField txtFechaVencimiento;
+    private componentes.FechaModerna txtFechaVencimiento;
     private javax.swing.JTextField txtPasillo;
     private javax.swing.JLabel vencimiento;
     // End of variables declaration//GEN-END:variables

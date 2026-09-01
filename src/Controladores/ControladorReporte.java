@@ -14,7 +14,7 @@ import java.util.List;
 public class ControladorReporte {
 
     public static final String OPCION_TODOS = "Todos";
-    private static final String FORMATO_FECHA = "dd/MM/yyyy";
+    private static final String FORMATO_FECHA = "yyyy-MM-dd";
 
     private final ReporteDAO reporteDAO = new ReporteDAO();
     private final FacturaDAO facturaDAO = new FacturaDAO();
@@ -43,7 +43,7 @@ public class ControladorReporte {
 
     public String validarRango(String desdeStr, String hastaStr) {
         if (!Validaciones.validarFecha(desdeStr) || !Validaciones.validarFecha(hastaStr)) {
-            return "Ingrese fechas válidas con formato dd/mm/aaaa.";
+            return "Ingrese fechas válidas con formato aaaa-mm-dd.";
         }
         Date desde = aSqlDate(desdeStr);
         Date hasta = aSqlDate(hastaStr);

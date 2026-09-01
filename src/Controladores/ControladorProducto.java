@@ -21,7 +21,7 @@ public class ControladorProducto {
         public static boolean registrarProducto(java.awt.Component parent,
             String codigo, String nombre, String catalogo,
             String cantidadStr, String precioStr, boolean conIva, boolean sinIva, String stockMinimoStr,
-            String pasillo) {
+            String pasillo, String fechaVencimiento) {
 
         if (Validaciones.camposVacios(codigo, nombre, catalogo, cantidadStr, precioStr)) {
             JOptionPane.showMessageDialog(parent, "Por favor, complete todos los campos obligatorios (*).", "Campos Vacios", JOptionPane.WARNING_MESSAGE);
@@ -85,7 +85,7 @@ public class ControladorProducto {
         Producto nuevoProducto = new Producto(
                 codigo, nombre.trim(), catalogo.trim(), cantidad, precio, conIva,
                 java.time.LocalDate.now().toString(),
-                java.time.LocalDate.now().plusMonths(6).toString()
+                fechaVencimiento == null ? "" : fechaVencimiento.trim()
         );
 
         int stockMinimo = 0;

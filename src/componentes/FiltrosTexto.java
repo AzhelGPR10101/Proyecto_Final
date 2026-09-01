@@ -116,43 +116,6 @@ public class FiltrosTexto {
         });
     }
 
-    public static void aplicarFormatoFecha(JTextField campo) {
-        ((AbstractDocument) campo.getDocument()).setDocumentFilter(new DocumentFilter() {
-            @Override
-            public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
-                replace(fb, offset, 0, string, attr);
-            }
-
-            @Override
-            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-                if (text == null) text = "";
-                String actual = fb.getDocument().getText(0, fb.getDocument().getLength());
-                StringBuilder soloDigitos = new StringBuilder();
-                for (char c : actual.toCharArray()) {
-                    if (Character.isDigit(c)) soloDigitos.append(c);
-                }
-                String resultadoCrudo = construirResultado(fb, offset, length, text);
-                StringBuilder digitosFinal = new StringBuilder();
-                for (char c : resultadoCrudo.toCharArray()) {
-                    if (Character.isDigit(c)) digitosFinal.append(c);
-                }
-                if (digitosFinal.length() > 8) digitosFinal.setLength(8);
-                StringBuilder formateado = new StringBuilder();
-                for (int i = 0; i < digitosFinal.length(); i++) {
-                    if (i == 4 || i == 6) formateado.append('-');
-                    formateado.append(digitosFinal.charAt(i));
-                }
-                super.remove(fb, 0, fb.getDocument().getLength());
-                super.insertString(fb, 0, formateado.toString(), attrs);
-            }
-
-            @Override
-            public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
-                replace(fb, offset, length, "", null);
-            }
-        });
-    }
-
     private static String construirResultado(DocumentFilter.FilterBypass fb, int offset, int length, String textoNuevo) throws BadLocationException {
         String actual = fb.getDocument().getText(0, fb.getDocument().getLength());
         StringBuilder sb = new StringBuilder(actual);

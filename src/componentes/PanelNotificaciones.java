@@ -101,9 +101,6 @@ public class PanelNotificaciones extends JPanel {
         return panelLista.isVisible() && panelLista.getBounds().contains(x, y);
     }
 
-    // Permite centrar verticalmente la campana dentro de la barra superior real
-    // (en pixeles ya escalados por KryptonAutoEscalador), en vez de un margen fijo
-    // que se veia mal en pantallas con resolucion distinta a la del diseño.
     public void centrarEnTopbar(int yTopbar, int alturaTopbar) {
         centroYTopbar = yTopbar + alturaTopbar / 2;
         revalidate();

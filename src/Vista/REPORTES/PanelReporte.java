@@ -13,7 +13,7 @@ import java.util.List;
 
 public class PanelReporte extends javax.swing.JPanel {
 
-    private static final String FORMATO_FECHA = "dd/MM/yyyy";
+    private static final String FORMATO_FECHA = "yyyy-MM-dd";
     private static final int COLUMNA_ACCION = 7;
 
     private final ControladorReporte controladorReporte = new ControladorReporte();
@@ -39,6 +39,8 @@ public class PanelReporte extends javax.swing.JPanel {
 
         establecerFechasPorDefecto();
         cargarCombos();
+        txtFechaDesde.setAlSeleccionarFecha(this::aplicarFiltro);
+        txtFechaHasta.setAlSeleccionarFecha(this::aplicarFiltro);
         aplicarFiltro();
 
         BtnexpExcel.addActionListener(e -> exportarReporteExcel());
@@ -206,8 +208,8 @@ public class PanelReporte extends javax.swing.JPanel {
         lblhasta = new javax.swing.JLabel();
         lblpromedio = new javax.swing.JLabel();
         lblcedula = new javax.swing.JLabel();
-        txtFechaDesde = new componentes.TextFieldModerno();
-        txtFechaHasta = new componentes.TextFieldModerno();
+        txtFechaDesde = new componentes.FechaModerna();
+        txtFechaHasta = new componentes.FechaModerna();
         txtCliente2 = new componentes.TextFieldModerno();
         cbCedulaCliente = new componentes.ComboBoxModerno();
         txtCliente5 = new componentes.TextFieldModerno();
@@ -276,36 +278,10 @@ public class PanelReporte extends javax.swing.JPanel {
         lblcedula.setText("CLIENTE:");
         panelRedondo2.add(lblcedula, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 40, -1, -1));
 
-        txtFechaDesde.setBackground(new java.awt.Color(31, 10, 60));
-        txtFechaDesde.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 24)); // NOI18N
-        txtFechaDesde.setForeground(new java.awt.Color(255, 255, 255));
-        txtFechaDesde.setText("--/--/----");
-        txtFechaDesde.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtFechaDesdeActionPerformed(evt);
-            }
-        });
-        txtFechaDesde.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtFechaDesdeKeyTyped(evt);
-            }
-        });
+        txtFechaDesde.setColorFondo(new java.awt.Color(31, 10, 60));
         panelRedondo2.add(txtFechaDesde, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 30, 150, 40));
 
-        txtFechaHasta.setBackground(new java.awt.Color(31, 10, 60));
-        txtFechaHasta.setFont(new java.awt.Font("Tw Cen MT Condensed", 0, 24)); // NOI18N
-        txtFechaHasta.setForeground(new java.awt.Color(255, 255, 255));
-        txtFechaHasta.setText("--/--/----");
-        txtFechaHasta.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtFechaHastaActionPerformed(evt);
-            }
-        });
-        txtFechaHasta.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtFechaHastaKeyTyped(evt);
-            }
-        });
+        txtFechaHasta.setColorFondo(new java.awt.Color(31, 10, 60));
         panelRedondo2.add(txtFechaHasta, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 30, 150, 40));
 
         txtCliente2.setEditable(false);
@@ -395,22 +371,6 @@ public class PanelReporte extends javax.swing.JPanel {
         add(BtnexpExcel, new org.netbeans.lib.awtextra.AbsoluteConstraints(800, 90, 200, 50));
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtFechaDesdeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFechaDesdeKeyTyped
-        javax.swing.SwingUtilities.invokeLater(() -> {
-            if (txtFechaDesde.getText().length() == 10) {
-                aplicarFiltro();
-            }
-        });
-    }//GEN-LAST:event_txtFechaDesdeKeyTyped
-
-    private void txtFechaHastaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFechaHastaKeyTyped
-        javax.swing.SwingUtilities.invokeLater(() -> {
-            if (txtFechaHasta.getText().length() == 10) {
-                aplicarFiltro();
-            }
-        });
-    }//GEN-LAST:event_txtFechaHastaKeyTyped
-
     private void txtCliente5KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCliente5KeyTyped
 
     }//GEN-LAST:event_txtCliente5KeyTyped
@@ -439,14 +399,6 @@ public class PanelReporte extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_cbUsuarioActionPerformed
 
-    private void txtFechaHastaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFechaHastaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtFechaHastaActionPerformed
-
-    private void txtFechaDesdeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFechaDesdeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtFechaDesdeActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private componentes.BotonModerno BtnexpExcel;
     private javax.swing.JComboBox<String> cbCedulaCliente;
@@ -466,8 +418,8 @@ public class PanelReporte extends javax.swing.JPanel {
     private javax.swing.JTextField txtCliente;
     private javax.swing.JTextField txtCliente2;
     private javax.swing.JTextField txtCliente5;
-    private javax.swing.JTextField txtFechaDesde;
-    private javax.swing.JTextField txtFechaHasta;
+    private componentes.FechaModerna txtFechaDesde;
+    private componentes.FechaModerna txtFechaHasta;
     // End of variables declaration//GEN-END:variables
 
     private class BotonVerDetalleEditor extends javax.swing.DefaultCellEditor {

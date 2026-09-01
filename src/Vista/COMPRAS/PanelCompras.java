@@ -56,7 +56,6 @@ public class PanelCompras extends javax.swing.JPanel {
  
         cargarProductos();
         actualizarModoPago();
-        componentes.FiltrosTexto.aplicarFormatoFecha(txtFechaVencimiento);
     }
  
     @Override
@@ -248,7 +247,7 @@ Proveedores proveedor = (idxProveedor > 0) ? listaProveedores.get(idxProveedor -
         lblMetodoPago = new javax.swing.JLabel();
         cbMetodoPago = new componentes.ComboBoxModerno();
         lblFechaVencimiento = new javax.swing.JLabel();
-        txtFechaVencimiento = new componentes.TextFieldModerno();
+        txtFechaVencimiento = new componentes.FechaModerna();
         panelRedondo2 = new componentes.PanelRedondo();
         scrollTabla = new javax.swing.JScrollPane();
         tablaDetalle = new javax.swing.JTable();
@@ -388,11 +387,6 @@ Proveedores proveedor = (idxProveedor > 0) ? listaProveedores.get(idxProveedor -
         lblFechaVencimiento.setText("Vence pagaré (AAAA-MM-DD):");
         panelRedondo1.add(lblFechaVencimiento, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 30, 250, 25));
 
-        txtFechaVencimiento.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtFechaVencimientoActionPerformed(evt);
-            }
-        });
         panelRedondo1.add(txtFechaVencimiento, new org.netbeans.lib.awtextra.AbsoluteConstraints(1190, 30, 150, 30));
 
         add(panelRedondo1);
@@ -563,10 +557,6 @@ Proveedores proveedor = (idxProveedor > 0) ? listaProveedores.get(idxProveedor -
         // TODO add your handling code here:
     }//GEN-LAST:event_cbMetodoPagoActionPerformed
 
-    private void txtFechaVencimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFechaVencimientoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtFechaVencimientoActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private componentes.BotonModerno btnAgregar;
     private componentes.BotonModerno btnGuardar;
@@ -603,7 +593,7 @@ Proveedores proveedor = (idxProveedor > 0) ? listaProveedores.get(idxProveedor -
     private componentes.TextFieldModerno txtCantidad;
     private componentes.TextFieldModerno txtCostoUnitario;
     private componentes.TextFieldModerno txtDescuento;
-    private componentes.TextFieldModerno txtFechaVencimiento;
+    private componentes.FechaModerna txtFechaVencimiento;
     private componentes.TextFieldModerno txtNumFacturaProveedor;
     // End of variables declaration//GEN-END:variables
 }
