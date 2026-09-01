@@ -86,7 +86,7 @@ public class PanelHistorialEgresos extends javax.swing.JPanel {
                 String.format("%.2f", e.getMonto())
             });
         }
-        String ruta = System.getProperty("user.home") + java.io.File.separator + "Egresos.xlsx";
+        String ruta = Reportes.CarpetaExportacion.obtenerRuta("Egresos.xlsx");
         Reportes.GeneradorExcel.generar(ruta, "Egresos", encabezados, filas);
         JOptionPane.showMessageDialog(this, "Excel generado en:\n" + ruta);
     } catch (Exception ex) {

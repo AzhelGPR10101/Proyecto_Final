@@ -123,7 +123,7 @@ private void exportarProductosExcel() {
                 p.getFechaVencimiento()
             });
         }
-        String ruta = System.getProperty("user.home") + java.io.File.separator + "Productos.xlsx";
+        String ruta = Reportes.CarpetaExportacion.obtenerRuta("Productos.xlsx");
         Reportes.GeneradorExcel.generar(ruta, "Productos", encabezados, filas);
         JOptionPane.showMessageDialog(this, "Excel generado en:\n" + ruta);
     } catch (Exception ex) {

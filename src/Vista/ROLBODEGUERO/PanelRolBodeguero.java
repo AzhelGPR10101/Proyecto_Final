@@ -265,16 +265,19 @@ public class PanelRolBodeguero extends javax.swing.JPanel {
         panelMasSolicitados.add(iconMasSolicitados, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 8, 32, 32));
 
         lblMasSolNombre1.setBackground(new java.awt.Color(255, 255, 255));
+        lblMasSolNombre1.setForeground(new java.awt.Color(255, 255, 255));
         lblMasSolNombre1.setText("-");
         panelMasSolicitados.add(lblMasSolNombre1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 380, 25));
         panelMasSolicitados.add(lblMasSolCantidad1, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 50, 180, 25));
 
         lblMasSolNombre2.setBackground(new java.awt.Color(255, 255, 255));
+        lblMasSolNombre2.setForeground(new java.awt.Color(255, 255, 255));
         lblMasSolNombre2.setText("-");
         panelMasSolicitados.add(lblMasSolNombre2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 82, 380, 25));
         panelMasSolicitados.add(lblMasSolCantidad2, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 82, 180, 25));
 
         lblMasSolNombre3.setBackground(new java.awt.Color(255, 255, 255));
+        lblMasSolNombre3.setForeground(new java.awt.Color(255, 255, 255));
         lblMasSolNombre3.setText("-");
         panelMasSolicitados.add(lblMasSolNombre3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 114, 380, 25));
         panelMasSolicitados.add(lblMasSolCantidad3, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 114, 180, 25));
@@ -292,16 +295,19 @@ public class PanelRolBodeguero extends javax.swing.JPanel {
         panelStockAgotarse.add(iconStockAgotarse, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 8, 32, 32));
 
         lblAgotNombre1.setBackground(new java.awt.Color(255, 255, 255));
+        lblAgotNombre1.setForeground(new java.awt.Color(255, 255, 255));
         lblAgotNombre1.setText("-");
         panelStockAgotarse.add(lblAgotNombre1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 380, 25));
         panelStockAgotarse.add(lblAgotCantidad1, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 50, 180, 25));
 
         lblAgotNombre2.setBackground(new java.awt.Color(255, 255, 255));
+        lblAgotNombre2.setForeground(new java.awt.Color(255, 255, 255));
         lblAgotNombre2.setText("-");
         panelStockAgotarse.add(lblAgotNombre2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 82, 380, 25));
         panelStockAgotarse.add(lblAgotCantidad2, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 82, 180, 25));
 
         lblAgotNombre3.setBackground(new java.awt.Color(255, 255, 255));
+        lblAgotNombre3.setForeground(new java.awt.Color(255, 255, 255));
         lblAgotNombre3.setText("-");
         panelStockAgotarse.add(lblAgotNombre3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 114, 380, 25));
         panelStockAgotarse.add(lblAgotCantidad3, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 114, 180, 25));

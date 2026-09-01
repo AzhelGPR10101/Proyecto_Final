@@ -63,6 +63,14 @@ public class ControladorSolicitud {
             JOptionPane.showMessageDialog(parent, "Ocurrió un error al enviar tu solicitud.", "Error de Base de Datos", JOptionPane.ERROR_MESSAGE);
             return false;
         }
+
+        Modelo.UsuarioCuenta solicitante = new Controladores.ControladorUsuario().obtenerUsuario(idUsuario);
+        String nombreSolicitante = solicitante != null
+                ? (solicitante.getNombres() + " " + solicitante.getApellidos()).trim()
+                : "Un usuario";
+        String detalleNotif = nombreSolicitante + " solicito acceso al negocio con el rol de " + rol + ".";
+        new ControladorNotificacion().notificarEvento(idNegocio, "SOLICITUD_" + idSolicitud, detalleNotif);
+
         return true;
     }
 

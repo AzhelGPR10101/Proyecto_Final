@@ -375,7 +375,7 @@ Proveedores proveedor = (idxProveedor > 0) ? listaProveedores.get(idxProveedor -
         lblMetodoPago.setText("Método de pago:");
         panelRedondo1.add(lblMetodoPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 30, 140, 25));
 
-        cbMetodoPago.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Efectivo", "Transferencia" }));
+        cbMetodoPago.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Efectivo" }));
         cbMetodoPago.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbMetodoPagoActionPerformed(evt);

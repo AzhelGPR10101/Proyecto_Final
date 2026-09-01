@@ -209,7 +209,7 @@ public class PanelProductosAgregar extends javax.swing.JPanel {
 
         jbCodigo1.setFont(new java.awt.Font("Lucida Bright", 1, 18)); // NOI18N
         jbCodigo1.setForeground(new java.awt.Color(255, 255, 255));
-        jbCodigo1.setText("Codigo:");
+        jbCodigo1.setText("Codigo*:");
         panelRedondo2.add(jbCodigo1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50, -1, -1));
 
         jtCodigo.setBackground(new java.awt.Color(31, 10, 60));
@@ -222,7 +222,7 @@ public class PanelProductosAgregar extends javax.swing.JPanel {
 
         jbCI.setFont(new java.awt.Font("Lucida Bright", 1, 18)); // NOI18N
         jbCI.setForeground(new java.awt.Color(255, 255, 255));
-        jbCI.setText("stock Inicial:");
+        jbCI.setText("stock Inicial*:");
         panelRedondo2.add(jbCI, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 140, -1, -1));
 
         jTextField6.setBackground(new java.awt.Color(31, 10, 60));
@@ -243,7 +243,7 @@ public class PanelProductosAgregar extends javax.swing.JPanel {
 
         lblStockMinimo.setFont(new java.awt.Font("Lucida Bright", 1, 18)); // NOI18N
         lblStockMinimo.setForeground(new java.awt.Color(255, 255, 255));
-        lblStockMinimo.setText("Stock minimo:");
+        lblStockMinimo.setText("Stock minimo*:");
         panelRedondo2.add(lblStockMinimo, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 230, -1, -1));
 
         lblPasillo.setBackground(new java.awt.Color(255, 255, 255));
@@ -273,7 +273,7 @@ public class PanelProductosAgregar extends javax.swing.JPanel {
 
         jbNombre.setFont(new java.awt.Font("Lucida Bright", 1, 18)); // NOI18N
         jbNombre.setForeground(new java.awt.Color(255, 255, 255));
-        jbNombre.setText("Nombre:");
+        jbNombre.setText("Nombre*:");
         panelRedondo2.add(jbNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 50, -1, -1));
 
         jtCatalogo.setBackground(new java.awt.Color(26, 16, 36));
@@ -332,7 +332,7 @@ public class PanelProductosAgregar extends javax.swing.JPanel {
 
         jbPU.setFont(new java.awt.Font("Lucida Bright", 1, 18)); // NOI18N
         jbPU.setForeground(new java.awt.Color(255, 255, 255));
-        jbPU.setText("Precio Unitario:");
+        jbPU.setText("Precio Unitario*:");
         panelRedondo2.add(jbPU, new org.netbeans.lib.awtextra.AbsoluteConstraints(1300, 50, 200, -1));
 
         jButton1.setFont(new java.awt.Font("Lucida Bright", 1, 18)); // NOI18N

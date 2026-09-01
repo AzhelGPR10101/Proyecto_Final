@@ -2,7 +2,6 @@ package Vista;
 
 import Controladores.ControladorReporte;
 import Controladores.ControladorReporte.ResultadoReporte;
-import DAO.FacturaDAO;
 import Modelo.DetalleFactura;
 import Modelo.MovimientoFinanciero;
 
@@ -18,7 +17,6 @@ public class PanelReporte extends javax.swing.JPanel {
     private static final int COLUMNA_ACCION = 7;
 
     private final ControladorReporte controladorReporte = new ControladorReporte();
-    private final FacturaDAO facturaDAO = new FacturaDAO();
 
     private final List<MovimientoFinanciero> movimientosMostrados = new ArrayList<>();
     private componentes.TextFieldModerno txtBuscarTexto;
@@ -161,7 +159,7 @@ public class PanelReporte extends javax.swing.JPanel {
         if (!movimiento.esIngreso()) {
             return;
         }
-        List<DetalleFactura> detalles = facturaDAO.obtenerDetallePorFactura(movimiento.getIdFactura());
+        List<DetalleFactura> detalles = controladorReporte.obtenerDetallePorFactura(movimiento.getIdFactura());
         java.awt.Frame ventanaPadre = (java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(this);
         DialogDetalleFactura dialog = new DialogDetalleFactura(ventanaPadre, movimiento, detalles);
         dialog.setLocationRelativeTo(this);
@@ -186,7 +184,7 @@ public class PanelReporte extends javax.swing.JPanel {
                 String.format("%.2f", m.getMonto())
             });
         }
-        String ruta = System.getProperty("user.home") + java.io.File.separator + "Reporte.xlsx";
+        String ruta = Reportes.CarpetaExportacion.obtenerRuta("Reporte.xlsx");
         Reportes.GeneradorExcel.generar(ruta, "Reporte", encabezados, filas);
         javax.swing.JOptionPane.showMessageDialog(this, "Excel generado en:\n" + ruta);
     } catch (Exception ex) {

@@ -1,6 +1,8 @@
 package Controladores;
 
+import DAO.FacturaDAO;
 import DAO.ReporteDAO;
+import Modelo.DetalleFactura;
 import Modelo.MovimientoFinanciero;
 import Modelo.Sesion;
 import java.sql.Date;
@@ -15,6 +17,11 @@ public class ControladorReporte {
     private static final String FORMATO_FECHA = "dd/MM/yyyy";
 
     private final ReporteDAO reporteDAO = new ReporteDAO();
+    private final FacturaDAO facturaDAO = new FacturaDAO();
+
+    public List<DetalleFactura> obtenerDetallePorFactura(String idFactura) {
+        return facturaDAO.obtenerDetallePorFactura(idFactura);
+    }
 
     public static class ResultadoReporte {
         public final List<MovimientoFinanciero> movimientos;

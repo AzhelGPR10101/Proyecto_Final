@@ -143,7 +143,7 @@ public class PanelHistorialCierreCaja extends javax.swing.JPanel {
                     c.estaAbierta() ? "Abierta" : "Cerrada"
                 });
             }
-            String ruta = System.getProperty("user.home") + java.io.File.separator + "HistorialCierreCaja.xlsx";
+            String ruta = Reportes.CarpetaExportacion.obtenerRuta("HistorialCierreCaja.xlsx");
             Reportes.GeneradorExcel.generar(ruta, "Historial Cierre Caja", encabezados, filas);
             JOptionPane.showMessageDialog(this, "Excel generado en:\n" + ruta);
         } catch (Exception ex) {

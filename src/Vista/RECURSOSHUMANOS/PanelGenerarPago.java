@@ -76,7 +76,9 @@ public class PanelGenerarPago extends javax.swing.JPanel {
     }
 
     private void limpiarFormulario() {
-        txtPeriodo.setText("");
+        if (cmbPeriodo.getItemCount() > 0) {
+            cmbPeriodo.setSelectedIndex(0);
+        }
         txtMonto.setText("");
         txtObservaciones.setText("");
         if (cmbEmpleado.getItemCount() > 0) {
@@ -93,13 +95,13 @@ public class PanelGenerarPago extends javax.swing.JPanel {
         lblEmpleado = new javax.swing.JLabel();
         cmbEmpleado = new componentes.ComboBoxModerno();
         lblPeriodo = new javax.swing.JLabel();
-        txtPeriodo = new componentes.TextFieldModerno();
         lblMonto = new javax.swing.JLabel();
         txtMonto = new componentes.TextFieldModerno();
         lblObservaciones = new javax.swing.JLabel();
         txtObservaciones = new componentes.TextFieldModerno();
         btnGuardarPago = new componentes.BotonModerno();
         btnLimpiar = new componentes.BotonModerno();
+        cmbPeriodo = new javax.swing.JComboBox<>();
         panelRedondo2 = new componentes.PanelRedondo();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -129,7 +131,6 @@ public class PanelGenerarPago extends javax.swing.JPanel {
         lblPeriodo.setForeground(new java.awt.Color(255, 255, 255));
         lblPeriodo.setText("Periodo (ej: Octubre 2026):");
         panelRedondo1.add(lblPeriodo, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 200, 300, 25));
-        panelRedondo1.add(txtPeriodo, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 230, 500, 35));
 
         lblMonto.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
         lblMonto.setForeground(new java.awt.Color(255, 255, 255));
@@ -158,6 +159,9 @@ public class PanelGenerarPago extends javax.swing.JPanel {
             }
         });
         panelRedondo1.add(btnLimpiar, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 480, 230, 45));
+
+        cmbPeriodo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" }));
+        panelRedondo1.add(cmbPeriodo, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 230, 500, 40));
 
         add(panelRedondo1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 130, 620, 700));
 
@@ -213,8 +217,10 @@ public class PanelGenerarPago extends javax.swing.JPanel {
             return;
         }
         Empleado empleado = (Empleado) seleccionado;
+        Object periodoSel = cmbPeriodo.getSelectedItem();
+        String periodo = periodoSel != null ? periodoSel.toString() : "";
         boolean exito = new Controladores.ControladorPagoEmpleado().generarPago(
-                this, empleado.getIdEmpleado(), txtPeriodo.getText(), txtMonto.getText(), txtObservaciones.getText());
+                this, empleado.getIdEmpleado(), periodo, txtMonto.getText(), txtObservaciones.getText());
         if (exito) {
             limpiarFormulario();
         }
@@ -234,6 +240,7 @@ public class PanelGenerarPago extends javax.swing.JPanel {
     private componentes.BotonModerno btnGuardarPago;
     private componentes.BotonModerno btnLimpiar;
     private javax.swing.JComboBox cmbEmpleado;
+    private javax.swing.JComboBox<String> cmbPeriodo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
@@ -248,6 +255,5 @@ public class PanelGenerarPago extends javax.swing.JPanel {
     private componentes.PanelRedondo panelRedondo3;
     private componentes.TextFieldModerno txtMonto;
     private componentes.TextFieldModerno txtObservaciones;
-    private componentes.TextFieldModerno txtPeriodo;
     // End of variables declaration//GEN-END:variables
 }
