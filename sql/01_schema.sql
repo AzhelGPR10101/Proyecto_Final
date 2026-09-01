@@ -297,6 +297,7 @@ CREATE TABLE producto (
     ubicacion_pasillo VARCHAR(50),
     lote            VARCHAR(50),
     fecha_vencimiento DATE,
+    fecha_elaboracion DATE,
     estado          VARCHAR(20) DEFAULT 'activo'
 );
 
@@ -371,6 +372,7 @@ CREATE TABLE cliente (
     telefono        VARCHAR(15),
     correo          VARCHAR(150),
     activo          BOOLEAN NOT NULL DEFAULT TRUE,
+    direccion       VARCHAR(200),
     UNIQUE (id_negocio, numero_documento)
 );
 

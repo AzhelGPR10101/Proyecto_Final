@@ -72,14 +72,15 @@ public class ClienteDAO {
                         return false; // ya existe y esta activo: no se duplica
                     }
                     // Estaba eliminado (inactivo): lo reactivamos con los datos nuevos.
-                    String sqlReactivar = "UPDATE cliente SET nombre_cliente = ?, telefono = ?, correo = ?, activo = TRUE "
+                    String sqlReactivar = "UPDATE cliente SET nombre_cliente = ?, telefono = ?, correo = ?, direccion = ?, activo = TRUE "
                             + "WHERE numero_documento = ? AND id_negocio = ?";
                     try (PreparedStatement psReact = con.prepareStatement(sqlReactivar)) {
                         psReact.setString(1, cliente.getNombreCliente());
                         psReact.setString(2, cliente.getTelefono());
                         psReact.setString(3, cliente.getCorreo());
-                        psReact.setString(4, cliente.getNumeroDocumento());
-                        psReact.setString(5, idNegocio);
+                        psReact.setString(4, cliente.getDireccion());
+                        psReact.setString(5, cliente.getNumeroDocumento());
+                        psReact.setString(6, idNegocio);
                         return psReact.executeUpdate() > 0;
                     }
                 }
@@ -89,7 +90,7 @@ public class ClienteDAO {
             return false;
         }
 
-        String sql = "INSERT INTO cliente (id_negocio, id_tipo_documento, numero_documento, nombre_cliente, telefono, correo) VALUES (?,?,?,?,?,?)";
+        String sql = "INSERT INTO cliente (id_negocio, id_tipo_documento, numero_documento, nombre_cliente, telefono, correo, direccion) VALUES (?,?,?,?,?,?,?)";
         try (Connection con = Conexion.getConnection()) {
             String idTipoDocumento = obtenerOCrearTipoDocumento(con, cliente.getTipoDocumento());
             try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -99,6 +100,7 @@ public class ClienteDAO {
                 ps.setString(4, cliente.getNombreCliente());
                 ps.setString(5, cliente.getTelefono());
                 ps.setString(6, cliente.getCorreo());
+                ps.setString(7, cliente.getDireccion());
                 ps.executeUpdate();
                 return true;
             }
@@ -108,13 +110,14 @@ public class ClienteDAO {
         }
     }
     public boolean modificar(Cliente cliente) {
-        String sql = "UPDATE cliente SET nombre_cliente = ?, telefono = ?, correo = ? WHERE numero_documento = ? AND id_negocio = ?";
+        String sql = "UPDATE cliente SET nombre_cliente = ?, telefono = ?, correo = ?, direccion = ? WHERE numero_documento = ? AND id_negocio = ?";
         try (Connection con = Conexion.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, cliente.getNombreCliente());
             ps.setString(2, cliente.getTelefono());
             ps.setString(3, cliente.getCorreo());
-            ps.setString(4, cliente.getNumeroDocumento());
-            ps.setString(5, Sesion.getIdNegocio());
+            ps.setString(4, cliente.getDireccion());
+            ps.setString(5, cliente.getNumeroDocumento());
+            ps.setString(6, Sesion.getIdNegocio());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -147,7 +150,7 @@ public class ClienteDAO {
     }
 
     public Cliente buscarPorDocumento(String numeroDocumento) {
-        String sql = "SELECT c.id_cliente, c.numero_documento, c.nombre_cliente, c.telefono, c.correo, td.nombre_tipo_documento "
+        String sql = "SELECT c.id_cliente, c.numero_documento, c.nombre_cliente, c.telefono, c.correo, c.direccion, td.nombre_tipo_documento "
                 + "FROM cliente c JOIN tipo_documento td ON c.id_tipo_documento = td.id_tipo_documento "
                 + "WHERE c.numero_documento = ? AND c.id_negocio = ? AND c.activo = TRUE";
         try (Connection con = Conexion.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -167,7 +170,7 @@ public class ClienteDAO {
     public List<Cliente> listarTodos() {
         List<Cliente> lista = new ArrayList<>();
         String idNegocio = Sesion.getIdNegocio();
-        String sql = "SELECT c.id_cliente, c.numero_documento, c.nombre_cliente, c.telefono, c.correo, td.nombre_tipo_documento "
+        String sql = "SELECT c.id_cliente, c.numero_documento, c.nombre_cliente, c.telefono, c.correo, c.direccion, td.nombre_tipo_documento "
                 + "FROM cliente c JOIN tipo_documento td ON c.id_tipo_documento = td.id_tipo_documento "
                 + "WHERE c.numero_documento <> 'CONSFINAL' AND c.activo = TRUE"
                 + (idNegocio != null ? " AND c.id_negocio = ?" : "");
@@ -191,6 +194,7 @@ public class ClienteDAO {
                 rs.getString("nombre_cliente"), rs.getString("telefono"), rs.getString("correo"));
         c.setIdCliente(rs.getString("id_cliente"));
         c.setIdNegocio(Sesion.getIdNegocio());
+        c.setDireccion(rs.getString("direccion"));
         return c;
     }
 

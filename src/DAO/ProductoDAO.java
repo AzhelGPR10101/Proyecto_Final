@@ -76,8 +76,9 @@ public class ProductoDAO {
     public boolean registrar(Producto p) {
         String sql = "INSERT INTO producto "
                 + "(id_negocio, id_categoria, id_tasa_iva, nombre_producto, codigo_barras, "
-                + "precio_venta, costo, stock_actual, stock_minimo, fecha_vencimiento, ubicacion_pasillo) "
-                + "VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+                + "precio_venta, costo, stock_actual, stock_minimo, fecha_vencimiento, ubicacion_pasillo, "
+                + "fecha_elaboracion, lote) "
+                + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
         try (Connection con = Conexion.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, p.getIdNegocio());
             ps.setString(2, p.getIdCategoria());
@@ -95,6 +96,13 @@ public class ProductoDAO {
                 ps.setDate(10, Date.valueOf(fechaVencimiento.trim()));
             }
             ps.setString(11, p.getUbicacionPasillo());
+            String fechaElaboracion = p.getFechaElaboracion();
+            if (fechaElaboracion == null || fechaElaboracion.trim().isEmpty()) {
+                ps.setNull(12, java.sql.Types.DATE);
+            } else {
+                ps.setDate(12, Date.valueOf(fechaElaboracion.trim()));
+            }
+            ps.setString(13, p.getLote());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -105,7 +113,8 @@ public class ProductoDAO {
     public List<Producto> listarPorNegocio(String idNegocio) {
         List<Producto> lista = new ArrayList<>();
         String sql = "SELECT p.codigo_barras, p.nombre_producto, cp.nombre_categoria, "
-                + "p.stock_actual, p.stock_minimo, p.precio_venta, ti.porcentaje, p.fecha_vencimiento "
+                + "p.stock_actual, p.stock_minimo, p.precio_venta, ti.porcentaje, p.fecha_vencimiento, "
+                + "p.fecha_elaboracion, p.ubicacion_pasillo, p.lote "
                 + "FROM producto p "
                 + "JOIN categoria_producto cp ON cp.id_categoria = p.id_categoria "
                 + "JOIN tasa_iva ti ON ti.id_tasa_iva = p.id_tasa_iva "
@@ -123,9 +132,12 @@ public class ProductoDAO {
                     p.setStockMinimo(rs.getInt("stock_minimo"));
                     p.setPrecioUnitario(rs.getDouble("precio_venta"));
                     p.setTieneIva(rs.getDouble("porcentaje") > 0);
-                    p.setFechaElaboracion("");
+                    Date elaboracion = rs.getDate("fecha_elaboracion");
+                    p.setFechaElaboracion(elaboracion == null ? "" : elaboracion.toString());
                     Date vencimiento = rs.getDate("fecha_vencimiento");
                     p.setFechaVencimiento(vencimiento == null ? "" : vencimiento.toString());
+                    p.setUbicacionPasillo(rs.getString("ubicacion_pasillo"));
+                    p.setLote(rs.getString("lote"));
                     lista.add(p);
                 }
             }
@@ -222,7 +234,8 @@ public class ProductoDAO {
         p.setStockMinimo(rs.getInt("stock_minimo"));
         p.setPrecioUnitario(rs.getDouble("precio_venta"));
         p.setTieneIva(rs.getDouble("porcentaje") > 0);
-        p.setFechaElaboracion("");
+        Date elaboracion = rs.getDate("fecha_elaboracion");
+        p.setFechaElaboracion(elaboracion == null ? "" : elaboracion.toString());
         Date vencimiento = rs.getDate("fecha_vencimiento");
         p.setFechaVencimiento(vencimiento == null ? "" : vencimiento.toString());
         p.setUbicacionPasillo(rs.getString("ubicacion_pasillo"));
@@ -234,7 +247,7 @@ public class ProductoDAO {
     public Producto obtenerPorCodigo(String idNegocio, String codigoBarras) {
         String sql = "SELECT p.codigo_barras, p.nombre_producto, cp.nombre_categoria, "
                 + "p.stock_actual, p.stock_minimo, p.precio_venta, ti.porcentaje, p.fecha_vencimiento, "
-                + "p.ubicacion_pasillo, p.lote, p.stock_maximo "
+                + "p.fecha_elaboracion, p.ubicacion_pasillo, p.lote, p.stock_maximo "
                 + "FROM producto p "
                 + "JOIN categoria_producto cp ON cp.id_categoria = p.id_categoria "
                 + "JOIN tasa_iva ti ON ti.id_tasa_iva = p.id_tasa_iva "
@@ -255,7 +268,7 @@ public class ProductoDAO {
         List<Producto> lista = new ArrayList<>();
         String sql = "SELECT p.codigo_barras, p.nombre_producto, cp.nombre_categoria, "
                 + "p.stock_actual, p.stock_minimo, p.precio_venta, ti.porcentaje, p.fecha_vencimiento, "
-                + "p.ubicacion_pasillo, p.lote, p.stock_maximo "
+                + "p.fecha_elaboracion, p.ubicacion_pasillo, p.lote, p.stock_maximo "
                 + "FROM producto p "
                 + "JOIN categoria_producto cp ON cp.id_categoria = p.id_categoria "
                 + "JOIN tasa_iva ti ON ti.id_tasa_iva = p.id_tasa_iva "

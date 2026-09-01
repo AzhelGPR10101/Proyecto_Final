@@ -21,7 +21,7 @@ public class ControladorProducto {
         public static boolean registrarProducto(java.awt.Component parent,
             String codigo, String nombre, String catalogo,
             String cantidadStr, String precioStr, boolean conIva, boolean sinIva, String stockMinimoStr,
-            String pasillo, String fechaVencimiento) {
+            String pasillo, String fechaVencimiento, String fechaElaboracion, String lote) {
 
         if (Validaciones.camposVacios(codigo, nombre, catalogo, cantidadStr, precioStr)) {
             JOptionPane.showMessageDialog(parent, "Por favor, complete todos los campos obligatorios (*).", "Campos Vacios", JOptionPane.WARNING_MESSAGE);
@@ -84,7 +84,7 @@ public class ControladorProducto {
 
         Producto nuevoProducto = new Producto(
                 codigo, nombre.trim(), catalogo.trim(), cantidad, precio, conIva,
-                java.time.LocalDate.now().toString(),
+                fechaElaboracion == null ? "" : fechaElaboracion.trim(),
                 fechaVencimiento == null ? "" : fechaVencimiento.trim()
         );
 
@@ -102,6 +102,7 @@ public class ControladorProducto {
         nuevoProducto.setIdTasaIva(idTasaIva);
         nuevoProducto.setStockMinimo(stockMinimo);
         nuevoProducto.setUbicacionPasillo(pasillo == null ? "" : pasillo.trim());
+        nuevoProducto.setLote(lote == null ? "" : lote.trim());
 
         boolean exito = productoDAO.registrar(nuevoProducto);
         if (exito) {

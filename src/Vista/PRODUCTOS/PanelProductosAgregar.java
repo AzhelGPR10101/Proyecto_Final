@@ -70,7 +70,9 @@ public class PanelProductosAgregar extends javax.swing.JPanel {
                 rbSinIva.isSelected(),
                 jtStockMinimo.getText(),
                 txtPasillo.getText(),
-                txtFechaVencimiento.getFecha()
+                txtFechaVencimiento.getFecha(),
+                txtFechElavoracion.getFecha(),
+                txtLote.getText()
         );
 
         if (exito) {
@@ -125,6 +127,8 @@ public class PanelProductosAgregar extends javax.swing.JPanel {
         jtStockMinimo.setText("");
         txtPasillo.setText("");
         txtFechaVencimiento.setText("");
+        txtFechElavoracion.setText("");
+        txtLote.setText("");
         rbConIva.setSelected(true);
     }
 
@@ -147,8 +151,10 @@ public class PanelProductosAgregar extends javax.swing.JPanel {
         lblStockMinimo = new javax.swing.JLabel();
         lblPasillo = new javax.swing.JLabel();
         txtPasillo = new componentes.TextFieldModerno();
-        txtFechElavoracion = new componentes.TextFieldModerno();
+        txtFechElavoracion = new componentes.FechaModerna();
         elaboracion = new javax.swing.JLabel();
+        lblLote = new javax.swing.JLabel();
+        txtLote = new componentes.TextFieldModerno();
         jtNombre = new componentes.TextFieldModerno();
         jbNombre = new javax.swing.JLabel();
         jtCatalogo = new componentes.ComboBoxModerno();
@@ -262,13 +268,21 @@ public class PanelProductosAgregar extends javax.swing.JPanel {
         });
         panelRedondo2.add(txtPasillo, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 260, 330, 40));
 
-        txtFechElavoracion.setBackground(new java.awt.Color(31, 10, 60));
+        txtFechElavoracion.setColorFondo(new java.awt.Color(31, 10, 60));
         panelRedondo2.add(txtFechElavoracion, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 170, 330, 40));
 
         elaboracion.setFont(new java.awt.Font("Lucida Bright", 1, 18)); // NOI18N
         elaboracion.setForeground(new java.awt.Color(255, 255, 255));
         elaboracion.setText("Elaboración:");
         panelRedondo2.add(elaboracion, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 140, -1, -1));
+
+        lblLote.setFont(new java.awt.Font("Lucida Bright", 1, 18)); // NOI18N
+        lblLote.setForeground(new java.awt.Color(255, 255, 255));
+        lblLote.setText("Lote:");
+        panelRedondo2.add(lblLote, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 230, -1, -1));
+
+        txtLote.setBackground(new java.awt.Color(31, 10, 60));
+        panelRedondo2.add(txtLote, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 260, 300, 40));
 
         jtNombre.setBackground(new java.awt.Color(31, 10, 60));
         panelRedondo2.add(jtNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 80, 330, 40));
@@ -402,6 +416,7 @@ public class PanelProductosAgregar extends javax.swing.JPanel {
     private javax.swing.JTextField jtPU;
     private javax.swing.JTextField jtStockMinimo;
     private javax.swing.JLabel lblListaProductos;
+    private javax.swing.JLabel lblLote;
     private javax.swing.JLabel lblPasillo;
     private javax.swing.JLabel lblStockMinimo;
     private componentes.PanelRedondo panelRedondo1;
@@ -409,8 +424,9 @@ public class PanelProductosAgregar extends javax.swing.JPanel {
     private javax.swing.JRadioButton rbConIva;
     private javax.swing.JRadioButton rbSinIva;
     private javax.swing.JTable tablaProductosAgregados;
-    private javax.swing.JTextField txtFechElavoracion;
+    private componentes.FechaModerna txtFechElavoracion;
     private componentes.FechaModerna txtFechaVencimiento;
+    private javax.swing.JTextField txtLote;
     private javax.swing.JTextField txtPasillo;
     private javax.swing.JLabel vencimiento;
     // End of variables declaration//GEN-END:variables

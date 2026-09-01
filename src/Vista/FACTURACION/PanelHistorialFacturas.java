@@ -38,13 +38,6 @@ public class PanelHistorialFacturas extends javax.swing.JPanel {
         });
 
         jcbTipoCliente.addActionListener(e -> aplicarFiltro());
-
-        javax.swing.JButton btnExportarPdf = new javax.swing.JButton("Exportar / Enviar PDF");
-        btnExportarPdf.setBackground(new java.awt.Color(80, 40, 110));
-        btnExportarPdf.setForeground(java.awt.Color.WHITE);
-        btnExportarPdf.setFont(new java.awt.Font("sansserif", java.awt.Font.BOLD, 12));
-        btnExportarPdf.addActionListener(e -> exportarFacturaSeleccionada());
-        add(btnExportarPdf, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 70, 220, 30));
     }
 
     private void exportarVentasExcel() {
@@ -317,7 +310,7 @@ public class PanelHistorialFacturas extends javax.swing.JPanel {
     }//GEN-LAST:event_FiltroHistorialActionPerformed
 
     private void btnExportarPDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportarPDFActionPerformed
-        // TODO add your handling code here:
+        exportarFacturaSeleccionada();
     }//GEN-LAST:event_btnExportarPDFActionPerformed
 
     private void BtnExportarExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnExportarExcelActionPerformed
