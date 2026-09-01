@@ -66,21 +66,10 @@ public class PanelFacturacion extends javax.swing.JPanel {
     private String idEmpleadoActual;
 
     private void cargarEmpleados() {
-    if (Modelo.Sesion.esDueno()) {
-        idEmpleadoActual = new DAO.EmpleadoDAO().asegurarEmpleadoDueno(
-                Modelo.Sesion.getIdUsuario(), Modelo.Sesion.getIdNegocio());
-        LblEmpleadoFactura.setText(Modelo.Sesion.getNombreUsuario() + " " + Modelo.Sesion.getApellidosUsuario());
-    } else {
-        Modelo.Empleado empleadoSesion = new DAO.EmpleadoDAO().buscarPorCedula(Modelo.Sesion.getCedulaUsuario());
-        if (empleadoSesion != null) {
-            idEmpleadoActual = empleadoSesion.getIdEmpleado();
-            LblEmpleadoFactura.setText(empleadoSesion.getNombres() + " " + empleadoSesion.getApellidos());
-        } else {
-            idEmpleadoActual = null;
-            LblEmpleadoFactura.setText(Modelo.Sesion.getNombreUsuario() + " " + Modelo.Sesion.getApellidosUsuario());
-        }
+        Controladores.EmpleadoControlador.EmpleadoActual actual = Controladores.EmpleadoControlador.resolverEmpleadoDeSesion();
+        idEmpleadoActual = actual.idEmpleado;
+        LblEmpleadoFactura.setText(actual.nombreCompleto);
     }
-}
 
     private void actualizarTotales() {
         double descuento = 0;
@@ -566,43 +555,24 @@ public class PanelFacturacion extends javax.swing.JPanel {
             return;
         }
 
-        int yaAgregado = 0;
-        for (Modelo.DetalleFactura d : listaDetalles) {
-            if (d.getIdProducto().equals(seleccionado.getCodigo())) {
-                yaAgregado += d.getCantidad();
-            }
-        }
+        Controladores.ControladorFactura.ResultadoAgregarCarrito resultado
+                = controladorFactura.agregarAlCarrito(listaDetalles, seleccionado, cantidad);
 
-        if (cantidad + yaAgregado > seleccionado.getCantidad()) {
-            int disponibleReal = seleccionado.getCantidad() - yaAgregado;
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "No hay suficiente stock de \"" + seleccionado.getNombre() + "\". Disponible: "
-                    + (disponibleReal < 0 ? 0 : disponibleReal) + " unidades.",
+        if (!resultado.ok) {
+            javax.swing.JOptionPane.showMessageDialog(this, resultado.error,
                     "Cantidad no disponible", javax.swing.JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        int filaExistente = -1;
-        for (int i = 0; i < listaDetalles.size(); i++) {
-            if (listaDetalles.get(i).getIdProducto().equals(seleccionado.getCodigo())) {
-                filaExistente = i;
-                break;
-            }
-        }
-
         String textoIva = seleccionado.isTieneIva() ? "15%" : "0%";
+        Modelo.DetalleFactura detalle = resultado.detalle;
 
-        if (filaExistente != -1) {
+        if (resultado.indiceActualizado != -1) {
             // El producto ya estaba en el carrito: sumamos cantidad en vez de duplicar fila
-            Modelo.DetalleFactura existente = listaDetalles.get(filaExistente);
-            int nuevaCantidad = existente.getCantidad() + cantidad;
-            Modelo.DetalleFactura actualizado = controladorFactura.crearDetalle(seleccionado, nuevaCantidad);
-            listaDetalles.set(filaExistente, actualizado);
-
-            modeloTabla.setValueAt(actualizado.getCantidad(), filaExistente, 3);
-            modeloTabla.setValueAt(String.format("%.2f", actualizado.getSubtotal()), filaExistente, 6);
+            listaDetalles.set(resultado.indiceActualizado, detalle);
+            modeloTabla.setValueAt(detalle.getCantidad(), resultado.indiceActualizado, 3);
+            modeloTabla.setValueAt(String.format("%.2f", detalle.getSubtotal()), resultado.indiceActualizado, 6);
         } else {
-            Modelo.DetalleFactura detalle = controladorFactura.crearDetalle(seleccionado, cantidad);
             listaDetalles.add(detalle);
 
             int numItem = modeloTabla.getRowCount() + 1;
@@ -709,14 +679,10 @@ public class PanelFacturacion extends javax.swing.JPanel {
     }//GEN-LAST:event_IVAActionPerformed
 
     private void BtnBuscar2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBuscar2ActionPerformed
-        String texto = txt_cliente_buscar1.getText().trim().toLowerCase();
+        String texto = txt_cliente_buscar1.getText().trim();
         JCCliente.removeAllItems();
-        for (Modelo.Cliente c : controladorCliente.listarTodos()) {
-            if (texto.isEmpty()
-                    || (c.getNombre() + " " + c.getApellido()).toLowerCase().contains(texto)
-                    || c.getCedula().toLowerCase().contains(texto)) {
-                JCCliente.addItem(c);
-            }
+        for (Modelo.Cliente c : controladorCliente.filtrarClientes(texto)) {
+            JCCliente.addItem(c);
         }
     }//GEN-LAST:event_BtnBuscar2ActionPerformed
 

@@ -200,7 +200,7 @@ public class PanelHistorialFacturas extends javax.swing.JPanel {
                 int row = JThistorial.getSelectedRow();
                 if (row >= 0 && panel.listaFacturas != null && row < panel.listaFacturas.size()) {
                     Factura f = panel.listaFacturas.get(row);
-                    java.util.List<Modelo.DetalleFactura> detalles = new DAO.FacturaDAO().obtenerDetallePorFactura(f.getIdFactura());
+                    java.util.List<Modelo.DetalleFactura> detalles = panel.controladorFactura.obtenerDetallePorFactura(f.getIdFactura());
                     Modelo.MovimientoFinanciero movimiento = new Modelo.MovimientoFinanciero(
                             Modelo.MovimientoFinanciero.TIPO_INGRESO, f.getFecha(), f.getNumFactura(), "Factura",
                             f.getNombreEmpleado(), f.getMetodoPago(), f.getTotal(), f.getIdFactura());

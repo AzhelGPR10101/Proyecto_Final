@@ -407,24 +407,22 @@ public class MenuPrincipal extends javax.swing.JFrame {
             return;
         }
 
-        DAO.PermisoDAO permisoDAO = new DAO.PermisoDAO();
-
         boolean esBodeguero = "Bodeguero".equalsIgnoreCase(Modelo.Sesion.getRolUsuario());
         PRODUCTOS.setVisible(PRODUCTOS.isVisible()
-                && (permisoDAO.tienePermiso(idRol, Modelo.PermisoSistema.VER_PRODUCTOS.name()) || esBodeguero));
-        CLIENTES.setVisible(CLIENTES.isVisible() && permisoDAO.tienePermiso(idRol, Modelo.PermisoSistema.VER_CLIENTES.name()));
-        PROVEEDORES.setVisible(PROVEEDORES.isVisible() && permisoDAO.tienePermiso(idRol, Modelo.PermisoSistema.VER_PROVEEDORES.name()));
-        VENTASYFACTURAS.setVisible(VENTASYFACTURAS.isVisible() && permisoDAO.tienePermiso(idRol, Modelo.PermisoSistema.VER_VENTAS.name()));
-        CAJA.setVisible(CAJA.isVisible() && permisoDAO.tienePermiso(idRol, Modelo.PermisoSistema.VER_VENTAS.name()));
-        EMPLEADOS.setVisible(EMPLEADOS.isVisible() && permisoDAO.tienePermiso(idRol, Modelo.PermisoSistema.VER_EMPLEADOS.name()));
-        RH.setVisible(RH.isVisible() && permisoDAO.tienePermiso(idRol, Modelo.PermisoSistema.VER_NOMINA.name()));
-        REPORTES.setVisible(REPORTES.isVisible() && permisoDAO.tienePermiso(idRol, Modelo.PermisoSistema.VER_REPORTES.name()));
-        BODEGA.setVisible(BODEGA.isVisible() && permisoDAO.tienePermiso(idRol, Modelo.PermisoSistema.VER_BODEGA.name()));
+                && (Controladores.ControladorPermiso.tienePermiso(idRol, Modelo.PermisoSistema.VER_PRODUCTOS.name()) || esBodeguero));
+        CLIENTES.setVisible(CLIENTES.isVisible() && Controladores.ControladorPermiso.tienePermiso(idRol, Modelo.PermisoSistema.VER_CLIENTES.name()));
+        PROVEEDORES.setVisible(PROVEEDORES.isVisible() && Controladores.ControladorPermiso.tienePermiso(idRol, Modelo.PermisoSistema.VER_PROVEEDORES.name()));
+        VENTASYFACTURAS.setVisible(VENTASYFACTURAS.isVisible() && Controladores.ControladorPermiso.tienePermiso(idRol, Modelo.PermisoSistema.VER_VENTAS.name()));
+        CAJA.setVisible(CAJA.isVisible() && Controladores.ControladorPermiso.tienePermiso(idRol, Modelo.PermisoSistema.VER_VENTAS.name()));
+        EMPLEADOS.setVisible(EMPLEADOS.isVisible() && Controladores.ControladorPermiso.tienePermiso(idRol, Modelo.PermisoSistema.VER_EMPLEADOS.name()));
+        RH.setVisible(RH.isVisible() && Controladores.ControladorPermiso.tienePermiso(idRol, Modelo.PermisoSistema.VER_NOMINA.name()));
+        REPORTES.setVisible(REPORTES.isVisible() && Controladores.ControladorPermiso.tienePermiso(idRol, Modelo.PermisoSistema.VER_REPORTES.name()));
+        BODEGA.setVisible(BODEGA.isVisible() && Controladores.ControladorPermiso.tienePermiso(idRol, Modelo.PermisoSistema.VER_BODEGA.name()));
         boolean esCajero = "Cajero".equalsIgnoreCase(Modelo.Sesion.getRolUsuario())
                 || "Vendedor".equalsIgnoreCase(Modelo.Sesion.getRolUsuario());
         EgresosProductos.setVisible(EgresosProductos.isVisible()
                 && !esCajero
-                && permisoDAO.tienePermiso(idRol, Modelo.PermisoSistema.VER_EGRESOS.name()));
+                && Controladores.ControladorPermiso.tienePermiso(idRol, Modelo.PermisoSistema.VER_EGRESOS.name()));
     }
 
     public void mostrarUsuario(String nombreUsuario) {

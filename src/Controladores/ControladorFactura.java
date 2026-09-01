@@ -47,6 +47,56 @@ public class ControladorFactura {
         return "F-" + System.currentTimeMillis();
     }
 
+    public static class ResultadoAgregarCarrito {
+        public final boolean ok;
+        public final String error;
+        public final int indiceActualizado;
+        public final DetalleFactura detalle;
+
+        private ResultadoAgregarCarrito(boolean ok, String error, int indiceActualizado, DetalleFactura detalle) {
+            this.ok = ok;
+            this.error = error;
+            this.indiceActualizado = indiceActualizado;
+            this.detalle = detalle;
+        }
+
+        static ResultadoAgregarCarrito error(String mensaje) {
+            return new ResultadoAgregarCarrito(false, mensaje, -1, null);
+        }
+
+        static ResultadoAgregarCarrito exito(int indiceActualizado, DetalleFactura detalle) {
+            return new ResultadoAgregarCarrito(true, null, indiceActualizado, detalle);
+        }
+    }
+
+    public ResultadoAgregarCarrito agregarAlCarrito(List<DetalleFactura> listaActual, Producto producto, int cantidad) {
+        int yaAgregado = 0;
+        int filaExistente = -1;
+        for (int i = 0; i < listaActual.size(); i++) {
+            if (listaActual.get(i).getIdProducto().equals(producto.getCodigo())) {
+                yaAgregado += listaActual.get(i).getCantidad();
+                filaExistente = i;
+            }
+        }
+
+        if (cantidad + yaAgregado > producto.getCantidad()) {
+            int disponibleReal = producto.getCantidad() - yaAgregado;
+            return ResultadoAgregarCarrito.error(
+                    "No hay suficiente stock de \"" + producto.getNombre() + "\". Disponible: "
+                    + (disponibleReal < 0 ? 0 : disponibleReal) + " unidades.");
+        }
+
+        if (filaExistente != -1) {
+            int nuevaCantidad = listaActual.get(filaExistente).getCantidad() + cantidad;
+            return ResultadoAgregarCarrito.exito(filaExistente, crearDetalle(producto, nuevaCantidad));
+        }
+        return ResultadoAgregarCarrito.exito(-1, crearDetalle(producto, cantidad));
+    }
+
+    public List<DetalleFactura> obtenerDetallePorFactura(String idFactura) {
+        return facturaDAO.obtenerDetallePorFactura(idFactura);
+    }
+
     public boolean registrarFactura(java.awt.Component parent, String numFactura,
             String fecha, Cliente cliente, String metodoPago,
             List<DetalleFactura> detalles, double descuento, String idEmpleado) {

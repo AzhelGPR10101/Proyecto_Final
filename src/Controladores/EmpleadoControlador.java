@@ -161,4 +161,29 @@ public class EmpleadoControlador {
         }
         return reactivado;
     }
+
+    public static class EmpleadoActual {
+        public final String idEmpleado;
+        public final String nombreCompleto;
+
+        public EmpleadoActual(String idEmpleado, String nombreCompleto) {
+            this.idEmpleado = idEmpleado;
+            this.nombreCompleto = nombreCompleto;
+        }
+    }
+
+    public static EmpleadoActual resolverEmpleadoDeSesion() {
+        String nombreSesion = Modelo.Sesion.getNombreUsuario() + " " + Modelo.Sesion.getApellidosUsuario();
+        if (Modelo.Sesion.esDueno()) {
+            String idEmpleado = empleadoDAO.asegurarEmpleadoDueno(
+                    Modelo.Sesion.getIdUsuario(), Modelo.Sesion.getIdNegocio());
+            return new EmpleadoActual(idEmpleado, nombreSesion);
+        }
+        Modelo.Empleado empleadoSesion = empleadoDAO.buscarPorCedula(Modelo.Sesion.getCedulaUsuario());
+        if (empleadoSesion != null) {
+            return new EmpleadoActual(empleadoSesion.getIdEmpleado(),
+                    empleadoSesion.getNombres() + " " + empleadoSesion.getApellidos());
+        }
+        return new EmpleadoActual(null, nombreSesion);
+    }
 }
