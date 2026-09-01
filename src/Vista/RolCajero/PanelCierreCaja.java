@@ -112,7 +112,7 @@ public class PanelCierreCaja extends javax.swing.JPanel {
         if (montoContado == null || turno == null) {
             return;
         }
-        double diferencia = montoContado - turno.getMontoEsperado();
+        double diferencia = controlador.calcularDiferencia(montoContado, turno);
         lblCrearcuenta4.setText(String.format("$%.2f", diferencia));
         if (diferencia > 0) {
             lblCrearcuenta4.setForeground(COLOR_VERDE);
@@ -129,7 +129,7 @@ public class PanelCierreCaja extends javax.swing.JPanel {
             return;
         }
 
-        double diferencia = montoContado - turno.getMontoEsperado();
+        double diferencia = controlador.calcularDiferencia(montoContado, turno);
         String mensaje = diferencia == 0
                 ? "La caja cuadra exactamente. ¿Confirmar cierre?"
                 : (diferencia > 0

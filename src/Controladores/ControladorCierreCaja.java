@@ -54,8 +54,12 @@ public class ControladorCierreCaja {
         return turno;
     }
 
+    public double calcularDiferencia(double montoContado, CierreCaja turno) {
+        return montoContado - turno.getMontoEsperado();
+    }
+
     public boolean cerrarTurno(CierreCaja turno, double montoContado) {
-        double diferencia = montoContado - turno.getMontoEsperado();
+        double diferencia = calcularDiferencia(montoContado, turno);
         turno.setMontoReal(montoContado);
         turno.setDiferencia(diferencia);
         return cierreCajaDAO.cerrarTurno(turno);

@@ -14,8 +14,6 @@ import javax.swing.JOptionPane;
 
 public class ControladorCompra {
 
-    private static final double PORCENTAJE_IVA = 0.15;
-
     private final CompraDAO compraDAO = new CompraDAO();
     private final ProveedorDAO proveedorDAO = new ProveedorDAO();
     private final ProductoDAO productoDAO = new ProductoDAO();
@@ -25,7 +23,7 @@ public class ControladorCompra {
         for (DetalleCompra d : detalles) {
             subtotal += d.getSubtotal();
         }
-        double valorIva = subtotal * PORCENTAJE_IVA;
+        double valorIva = subtotal * productoDAO.obtenerPorcentajeIvaVigente();
         double total = subtotal + valorIva - descuento;
         return new double[]{subtotal, valorIva, total};
     }
@@ -35,8 +33,53 @@ public class ControladorCompra {
         return new DetalleCompra(producto.getCodigo(), producto.getNombre(), cantidad, costoUnitario, subtotal);
     }
 
+    public static class ResultadoAgregarCarrito {
+        public final int indiceActualizado;
+        public final DetalleCompra detalle;
+
+        private ResultadoAgregarCarrito(int indiceActualizado, DetalleCompra detalle) {
+            this.indiceActualizado = indiceActualizado;
+            this.detalle = detalle;
+        }
+    }
+
+    public ResultadoAgregarCarrito agregarAlCarrito(List<DetalleCompra> listaActual, Producto producto,
+            int cantidad, double costoUnitario) {
+        int filaExistente = -1;
+        for (int i = 0; i < listaActual.size(); i++) {
+            if (listaActual.get(i).getIdProducto().equals(producto.getCodigo())) {
+                filaExistente = i;
+                break;
+            }
+        }
+
+        if (filaExistente >= 0) {
+            DetalleCompra existente = listaActual.get(filaExistente);
+            int nuevaCantidad = existente.getCantidad() + cantidad;
+            existente.setCantidad(nuevaCantidad);
+            existente.setCostoUnitario(costoUnitario);
+            existente.setSubtotal(nuevaCantidad * costoUnitario);
+            return new ResultadoAgregarCarrito(filaExistente, existente);
+        }
+        return new ResultadoAgregarCarrito(-1, crearDetalle(producto, cantidad, costoUnitario));
+    }
+
     public List<Proveedores> listarProveedores() {
         return proveedorDAO.listarTodos();
+    }
+
+    public List<Proveedores> filtrarProveedores(String texto) {
+        List<Proveedores> todos = listarProveedores();
+        List<Proveedores> filtrados = new ArrayList<>();
+        String textoLower = texto == null ? "" : texto.trim().toLowerCase();
+        for (Proveedores p : todos) {
+            if (textoLower.isEmpty()
+                    || p.getNombreEmpresa().toLowerCase().contains(textoLower)
+                    || (p.getRuc() != null && p.getRuc().toLowerCase().contains(textoLower))) {
+                filtrados.add(p);
+            }
+        }
+        return filtrados;
     }
 
     public List<Producto> listarProductos() {

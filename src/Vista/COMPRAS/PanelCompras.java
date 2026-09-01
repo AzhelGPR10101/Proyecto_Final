@@ -91,22 +91,13 @@ public class PanelCompras extends javax.swing.JPanel {
     }
  
     private void filtrarProveedores() {
-        String texto = txtBuscarProveedor.getText().trim().toLowerCase();
-        List<Proveedores> todos = controladorCompra.listarProveedores();
-        List<Proveedores> filtrados = new ArrayList<>();
-        for (Proveedores p : todos) {
-            if (texto.isEmpty()
-                    || p.getNombreEmpresa().toLowerCase().contains(texto)
-                    || (p.getRuc() != null && p.getRuc().toLowerCase().contains(texto))) {
-                filtrados.add(p);
-            }
-        }
-        listaProveedores = filtrados;
+        String texto = txtBuscarProveedor.getText().trim();
+        listaProveedores = controladorCompra.filtrarProveedores(texto);
         llenarComboProveedores(listaProveedores);
 
         // Autocompletar: si la busqueda deja un unico proveedor coincidiendo,
         // se selecciona automaticamente en el combo para agilizar el registro.
-        if (!texto.isEmpty() && filtrados.size() == 1) {
+        if (!texto.isEmpty() && listaProveedores.size() == 1) {
             cbProveedor.setSelectedIndex(1);
         }
     }
@@ -148,27 +139,15 @@ public class PanelCompras extends javax.swing.JPanel {
             return;
         }
  
-        DetalleCompra detalle = controladorCompra.crearDetalle(seleccionado, cantidad, costo);
- 
-        int filaExistente = -1;
-        for (int i = 0; i < listaDetalles.size(); i++) {
-            if (listaDetalles.get(i).getIdProducto().equals(detalle.getIdProducto())) {
-                filaExistente = i;
-                break;
-            }
-        }
- 
-        if (filaExistente >= 0) {
-            DetalleCompra existente = listaDetalles.get(filaExistente);
-            int nuevaCantidad = existente.getCantidad() + detalle.getCantidad();
-            existente.setCantidad(nuevaCantidad);
-            existente.setCostoUnitario(costo);
-            existente.setSubtotal(nuevaCantidad * costo);
- 
-            modeloTabla.setValueAt(nuevaCantidad, filaExistente, 1);
-            modeloTabla.setValueAt(String.format("$%.2f", costo), filaExistente, 2);
-            modeloTabla.setValueAt(String.format("$%.2f", existente.getSubtotal()), filaExistente, 3);
- 
+        Controladores.ControladorCompra.ResultadoAgregarCarrito resultado
+                = controladorCompra.agregarAlCarrito(listaDetalles, seleccionado, cantidad, costo);
+        DetalleCompra detalle = resultado.detalle;
+
+        if (resultado.indiceActualizado >= 0) {
+            modeloTabla.setValueAt(detalle.getCantidad(), resultado.indiceActualizado, 1);
+            modeloTabla.setValueAt(String.format("$%.2f", detalle.getCostoUnitario()), resultado.indiceActualizado, 2);
+            modeloTabla.setValueAt(String.format("$%.2f", detalle.getSubtotal()), resultado.indiceActualizado, 3);
+
             JOptionPane.showMessageDialog(this, "Ese producto ya estaba en la lista, se sumó la cantidad.");
         } else {
             listaDetalles.add(detalle);
@@ -178,7 +157,7 @@ public class PanelCompras extends javax.swing.JPanel {
                 String.format("$%.2f", detalle.getSubtotal())
             });
         }
- 
+
         txtCantidad.setText("");
         actualizarTotales();
     }
