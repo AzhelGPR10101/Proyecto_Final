@@ -97,6 +97,32 @@ puede tener varias empresas usando el sistema, cada una viendo solo su propia in
 
 ---
 
+## 📋 Estado del Backlog
+
+| Prioridad    | Historias | Puntos |
+|--------------|-----------|--------|
+| 🔴 Muy Alta  | 1         | 5 pts  |
+| 🟠 Alta      | 8         | 24 pts |
+| 🟡 Media     | 8         | 30 pts |
+| 🟢 Baja      | 2         | 5 pts  |
+| **Total**    | **19**    | **64** |
+
+*Historias KRYP-01 a KRYP-19, cubren los 16 requerimientos funcionales del proyecto. Backlog cerrado: las 19 historias están terminadas.*
+
+---
+
+## 🚀 Sprints (Metodología Scrum)
+
+| Sprint   | Fechas              | Historias                  |
+|----------|---------------------|-----------------------------|
+| Sprint 1 | 25 jul - 07 ago     | KRYP-02, 03, 04, 05        |
+| Sprint 2 | 08 ago - 21 ago     | KRYP-06, 07, 08, 09, 10    |
+| Sprint 3 | 22 ago - 04 sep     | KRYP-01, 11 a 19           |
+
+*Seguimiento completo del backlog (historias, story points, responsables y estado) en el [GitHub Project "SCRUM KRYPTON"](https://github.com/users/AzhelGPR10101/projects/2).*
+
+---
+
 **Instituto Superior Universitario Tecnológico del Azuay** | Cuenca, Ecuador
 **Carrera:** Tecnología Superior en Desarrollo de Software — Segundo M2A
 **Docente:** Ing. Diana Romero
