@@ -437,6 +437,10 @@ public class FechaModerna extends JLabel {
                 14
         ));
 
+        boton.setMargin(
+                new Insets(0, 0, 0, 0)
+        );
+
         boton.setFocusPainted(false);
 
         boton.setBorderPainted(false);
