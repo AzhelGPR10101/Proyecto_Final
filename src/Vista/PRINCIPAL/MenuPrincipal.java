@@ -13,6 +13,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private final Vista.REPORTES.PanelEstadistica panelEstadisticaInstancia = new Vista.REPORTES.PanelEstadistica();
     private final Controladores.ControladorEstadistica controladorEstadisticaInicio = new Controladores.ControladorEstadistica();
     private Controladores.ControladorEstadistica.TipoPeriodo periodoActualInicio = Controladores.ControladorEstadistica.TipoPeriodo.HOY;
+    private final java.util.Map<String, java.util.function.Supplier<javax.swing.JComponent>> fabricasPanel = new java.util.HashMap<>();
+    private final java.util.Set<String> panelesCargados = new java.util.HashSet<>();
 
     public MenuPrincipal() {
         initComponents();
@@ -23,23 +25,22 @@ public class MenuPrincipal extends javax.swing.JFrame {
         estilizarMenusDesplegables();
 
         jlbUsuarioActivo.setText(usuarioActivo);
-        Panelcontenido.add(new Vista.FACTURACION.PanelHistorialFacturas(), "historialFacturas");
         Panelcontenido.add(panelEstadisticaInstancia, "Estadisticas");
-        Panelcontenido.add(new Vista.FACTURACION.PanelFacturacion(), "PanelFacturacion");
-        Panelcontenido.add(new Vista.REPORTES.PanelReporte(), "Reporte");
-
-        Panelcontenido.add(new Vista.CLIENTES.PanelClientes(), "Clientes");
-        Panelcontenido.add(new Vista.EMPLEADOS.PanelEmpleados(), "Empleados");
-        Panelcontenido.add(new Vista.PRODUCTOS.PanelProductos(), "Productos");
-        Panelcontenido.add(new Vista.PROVEEDORES.PanelProveedores(), "Proveedores");
-        Panelcontenido.add(new Vista.CONFIGURACION.PanelConfiguracion(), "Configuracion");
-        Panelcontenido.add(new Vista.COMPRAS.PanelCompras(), "PanelCompras");
-        Panelcontenido.add(new Vista.COMPRAS.PanelPagares(), "PanelPagares");
-        Panelcontenido.add(new Vista.COMPRAS.PanelHistorialEgresos(), "PanelHistorialEgresos");
-        Panelcontenido.add(new Vista.ROLBODEGUERO.PanelRolBodeguero(), "DashboardBodeguero");
-        Panelcontenido.add(new Vista.RolCajero.PanelHistorialCierreCaja(), "HistorialCierreCaja");
-        Panelcontenido.add(new Vista.RolCajero.PanelCajero(), "Cajero");
-        Panelcontenido.add(new Vista.RECURSOSHUMANOS.PanelDashboardRH(), "DashboardRH");
+        registrarPanelDiferido("historialFacturas", Vista.FACTURACION.PanelHistorialFacturas::new);
+        registrarPanelDiferido("PanelFacturacion", Vista.FACTURACION.PanelFacturacion::new);
+        registrarPanelDiferido("Reporte", Vista.REPORTES.PanelReporte::new);
+        registrarPanelDiferido("Clientes", Vista.CLIENTES.PanelClientes::new);
+        registrarPanelDiferido("Empleados", Vista.EMPLEADOS.PanelEmpleados::new);
+        registrarPanelDiferido("Productos", Vista.PRODUCTOS.PanelProductos::new);
+        registrarPanelDiferido("Proveedores", Vista.PROVEEDORES.PanelProveedores::new);
+        registrarPanelDiferido("Configuracion", Vista.CONFIGURACION.PanelConfiguracion::new);
+        registrarPanelDiferido("PanelCompras", Vista.COMPRAS.PanelCompras::new);
+        registrarPanelDiferido("PanelPagares", Vista.COMPRAS.PanelPagares::new);
+        registrarPanelDiferido("PanelHistorialEgresos", Vista.COMPRAS.PanelHistorialEgresos::new);
+        registrarPanelDiferido("DashboardBodeguero", Vista.ROLBODEGUERO.PanelRolBodeguero::new);
+        registrarPanelDiferido("HistorialCierreCaja", Vista.RolCajero.PanelHistorialCierreCaja::new);
+        registrarPanelDiferido("Cajero", Vista.RolCajero.PanelCajero::new);
+        registrarPanelDiferido("DashboardRH", Vista.RECURSOSHUMANOS.PanelDashboardRH::new);
         panelNotasInstancia.setAlGuardarOEliminar(() -> {
             cargarListaNotas();
             if (dialogoNotas != null) {
@@ -84,20 +85,19 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }
 
     private void mostrarPantallaInicialSegunRol() {
-        CardLayout cl = (CardLayout) Panelcontenido.getLayout();
         String rol = Modelo.Sesion.getRolUsuario();
 
         if ("Bodeguero".equalsIgnoreCase(rol)) {
-            cl.show(Panelcontenido, "DashboardBodeguero");
+            mostrarPanel("DashboardBodeguero");
         } else if ("Recursos Humanos".equalsIgnoreCase(rol)
                 || "RRHH".equalsIgnoreCase(rol)
                 || "Talento Humano".equalsIgnoreCase(rol)) {
-            cl.show(Panelcontenido, "DashboardRH");
+            mostrarPanel("DashboardRH");
         } else if ("Vendedor".equalsIgnoreCase(rol) || "Cajero".equalsIgnoreCase(rol)) {
-            cl.show(Panelcontenido, "PanelFacturacion");
+            mostrarPanel("PanelFacturacion");
         } else {
             cargarDashboardPrincipal();
-            cl.show(Panelcontenido, "card2");
+            mostrarPanel("card2");
         }
 
         for (java.awt.Component tarjeta : Panelcontenido.getComponents()) {
@@ -282,75 +282,68 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }
 
     private void activarClickEnNombreDeApartado() {
-        CardLayout cl = (CardLayout) Panelcontenido.getLayout();
-
         PRODUCTOS.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                cl.show(Panelcontenido, "Productos");
+                mostrarPanel("Productos");
             }
         });
         CLIENTES.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                cl.show(Panelcontenido, "Clientes");
+                mostrarPanel("Clientes");
             }
         });
         EMPLEADOS.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                cl.show(Panelcontenido, "Empleados");
+                mostrarPanel("Empleados");
             }
         });
         PROVEEDORES.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                cl.show(Panelcontenido, "Proveedores");
+                mostrarPanel("Proveedores");
             }
         });
         VENTASYFACTURAS.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                cl.show(Panelcontenido, "PanelFacturacion");
+                mostrarPanel("PanelFacturacion");
             }
         });
         BODEGA.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                cl.show(Panelcontenido, "DashboardBodeguero");
+                mostrarPanel("DashboardBodeguero");
             }
         });
 
         RH.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                cl.show(Panelcontenido, "DashboardRH");
+                mostrarPanel("DashboardRH");
             }
         });
     }
 
     private void activarNavegacionCaja() {
         panelAperturaCajaInstancia.setAlAbrirCaja(() -> {
-            CardLayout cl = (CardLayout) Panelcontenido.getLayout();
-            cl.show(Panelcontenido, "CierreCaja");
+            mostrarPanel("CierreCaja");
             panelCierreCajaInstancia.cargarDatosDeHoy();
         });
         panelAperturaCajaInstancia.setAlCancelar(() -> {
-            CardLayout cl = (CardLayout) Panelcontenido.getLayout();
-            cl.show(Panelcontenido, "card2");
+            mostrarPanel("card2");
         });
         panelCierreCajaInstancia.setAlCerrar(() -> {
-            CardLayout cl = (CardLayout) Panelcontenido.getLayout();
-            cl.show(Panelcontenido, "card2");
+            mostrarPanel("card2");
         });
         panelCierreCajaInstancia.setAlCancelar(() -> {
-            CardLayout cl = (CardLayout) Panelcontenido.getLayout();
-            cl.show(Panelcontenido, "card2");
+            mostrarPanel("card2");
         });
     }
 
     private void abrirPanelDeCaja() {
-        CardLayout cl = (CardLayout) Panelcontenido.getLayout();
         Controladores.ControladorCierreCaja.EstadoTurno estado
                 = new Controladores.ControladorCierreCaja().obtenerEstadoTurno();
         if (estado == Controladores.ControladorCierreCaja.EstadoTurno.SIN_ABRIR) {
-            cl.show(Panelcontenido, "AperturaCaja");
+            mostrarPanel("AperturaCaja");
             panelAperturaCajaInstancia.cargarDatos();
         } else {
-            cl.show(Panelcontenido, "CierreCaja");
+            mostrarPanel("CierreCaja");
             panelCierreCajaInstancia.cargarDatosDeHoy();
         }
     }
@@ -392,6 +385,26 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 }
             });
         }
+    }
+
+    private void registrarPanelDiferido(String tag, java.util.function.Supplier<javax.swing.JComponent> fabrica) {
+        fabricasPanel.put(tag, fabrica);
+    }
+
+    private void mostrarPanel(String tag) {
+        if (!panelesCargados.contains(tag) && fabricasPanel.containsKey(tag)) {
+            javax.swing.JComponent panel = fabricasPanel.get(tag).get();
+            Panelcontenido.add(panel, tag);
+            panel.addComponentListener(new java.awt.event.ComponentAdapter() {
+                @Override
+                public void componentShown(java.awt.event.ComponentEvent e) {
+                    ajustarAlturaScrollA(panel);
+                }
+            });
+            panelesCargados.add(tag);
+        }
+        CardLayout cl = (CardLayout) Panelcontenido.getLayout();
+        cl.show(Panelcontenido, tag);
     }
 
     private void ajustarAlturaScrollA(java.awt.Component tarjeta) {
@@ -1032,8 +1045,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }
 
     private void CAJAMouseClicked(java.awt.event.MouseEvent evt) {
-        CardLayout cl = (CardLayout) Panelcontenido.getLayout();
-        cl.show(Panelcontenido, "Cajero");
+        mostrarPanel("Cajero");
     }
 
     private void BODEGAMouseClicked(java.awt.event.MouseEvent evt) {
@@ -1044,8 +1056,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }
 
     private void EMPLEADOSMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EMPLEADOSMouseClicked
-        CardLayout cl = (CardLayout) Panelcontenido.getLayout();
-        cl.show(Panelcontenido, "Empleados");
+        mostrarPanel("Empleados");
     }//GEN-LAST:event_EMPLEADOSMouseClicked
 
     private void INICIOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_INICIOActionPerformed
@@ -1062,8 +1073,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_BtnAgregarNotaActionPerformed
 
     private void BtnVerStatsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnVerStatsActionPerformed
-        CardLayout cl = (CardLayout) Panelcontenido.getLayout();
-        cl.show(Panelcontenido, "Estadisticas");
+        mostrarPanel("Estadisticas");
     }//GEN-LAST:event_BtnVerStatsActionPerformed
 
     private void INICIOMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_INICIOMouseClicked
@@ -1093,8 +1103,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_VENTASYFACTURASMouseEntered
 
     private void BtnVerStatsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnVerStatsMouseClicked
-        CardLayout cl = (CardLayout) Panelcontenido.getLayout();
-        cl.show(Panelcontenido, "estadisticas");
+        mostrarPanel("estadisticas");
     }//GEN-LAST:event_BtnVerStatsMouseClicked
 
     private void CLIENTESMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CLIENTESMouseEntered
@@ -1102,13 +1111,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_CLIENTESMouseEntered
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        CardLayout cl = (CardLayout) Panelcontenido.getLayout();
-        cl.show(Panelcontenido, "Configuracion");
+        mostrarPanel("Configuracion");
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void HistorialCierreCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HistorialCierreCajaActionPerformed
-        CardLayout cl = (CardLayout) Panelcontenido.getLayout();
-        cl.show(Panelcontenido, "HistorialCierreCaja");
+        mostrarPanel("HistorialCierreCaja");
     }//GEN-LAST:event_HistorialCierreCajaActionPerformed
 
     private void PRODUCTOSMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PRODUCTOSMouseEntered
@@ -1116,43 +1123,35 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_PRODUCTOSMouseEntered
 
     private void PRODUCTOSMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PRODUCTOSMouseClicked
-        CardLayout cl = (CardLayout) Panelcontenido.getLayout();
-        cl.show(Panelcontenido, "Productos");
+        mostrarPanel("Productos");
     }//GEN-LAST:event_PRODUCTOSMouseClicked
 
     private void PROVEEDORESMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PROVEEDORESMouseClicked
-        CardLayout cl = (CardLayout) Panelcontenido.getLayout();
-        cl.show(Panelcontenido, "Proveedores");
+        mostrarPanel("Proveedores");
     }//GEN-LAST:event_PROVEEDORESMouseClicked
 
     private void CLIENTESMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CLIENTESMouseClicked
-        CardLayout cl = (CardLayout) Panelcontenido.getLayout();
-        cl.show(Panelcontenido, "Clientes");
+        mostrarPanel("Clientes");
     }//GEN-LAST:event_CLIENTESMouseClicked
 
     private void MenuVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuVentasActionPerformed
-        CardLayout cl = (CardLayout) Panelcontenido.getLayout();
-        cl.show(Panelcontenido, "historialFacturas");
+        mostrarPanel("historialFacturas");
     }//GEN-LAST:event_MenuVentasActionPerformed
 
     private void MenuFacturasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuFacturasActionPerformed
-        CardLayout cl = (CardLayout) Panelcontenido.getLayout();
-        cl.show(Panelcontenido, "PanelFacturacion");
+        mostrarPanel("PanelFacturacion");
     }//GEN-LAST:event_MenuFacturasActionPerformed
 
     private void ComprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComprasActionPerformed
-        CardLayout cl = (CardLayout) Panelcontenido.getLayout();
-        cl.show(Panelcontenido, "PanelCompras");
+        mostrarPanel("PanelCompras");
     }//GEN-LAST:event_ComprasActionPerformed
 
     private void HistorialEgresosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HistorialEgresosActionPerformed
-        CardLayout cl = (CardLayout) Panelcontenido.getLayout();
-        cl.show(Panelcontenido, "PanelHistorialEgresos");
+        mostrarPanel("PanelHistorialEgresos");
     }//GEN-LAST:event_HistorialEgresosActionPerformed
 
     private void PagaresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PagaresActionPerformed
-        CardLayout cl = (CardLayout) Panelcontenido.getLayout();
-        cl.show(Panelcontenido, "PanelPagares");
+        mostrarPanel("PanelPagares");
     }//GEN-LAST:event_PagaresActionPerformed
 
     private void EgresosProductosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EgresosProductosMouseEntered
@@ -1160,8 +1159,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_EgresosProductosMouseEntered
 
     private void REPORTESMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_REPORTESMouseClicked
-        CardLayout cl = (CardLayout) Panelcontenido.getLayout();
-        cl.show(Panelcontenido, "Reporte");
+        mostrarPanel("Reporte");
     }//GEN-LAST:event_REPORTESMouseClicked
 
     public static void main(String args[]) {
