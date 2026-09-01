@@ -60,6 +60,7 @@ public class DialogModificarCliente extends JDialog {
         txtCedula.setForeground(COLOR_TEXTO);
         txtDireccion = new JTextField(18);
         txtTelefono = new JTextField(18);
+        componentes.FiltrosTexto.aplicarSoloNumeros(txtTelefono, 10);
         txtCorreo = new JTextField(18);
 
         txtNombre.addKeyListener(new java.awt.event.KeyAdapter() {

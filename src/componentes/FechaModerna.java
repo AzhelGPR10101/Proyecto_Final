@@ -307,6 +307,29 @@ public class FechaModerna extends JLabel {
 
             }
 
+            // El GridLayout(7,7) de Swing recalcula las columnas segun cuantos
+            // componentes se agreguen (usa filas=7 fijas y columnas = ceil(total/7)),
+            // asi que si el total de celdas varia de un mes a otro, las columnas
+            // dejan de coincidir con los 7 dias de la semana del encabezado y se
+            // desalinean. Rellenamos con celdas vacias hasta completar siempre
+            // 42 casillas de dias (6 filas x 7 columnas), para que el total sea
+            // siempre 49 y las columnas queden fijas en 7 en todos los meses.
+            int celdasUsadas =
+                    posicionInicial + cantidadDias;
+
+            int celdasRestantes =
+                    42 - celdasUsadas;
+
+            for (int i = 0;
+                    i < celdasRestantes;
+                    i++) {
+
+                calendario.add(
+                        new JLabel("")
+                );
+
+            }
+
             titulo.setText(
                     new SimpleDateFormat(
                             "MMMM yyyy"

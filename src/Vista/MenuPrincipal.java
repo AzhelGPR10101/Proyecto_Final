@@ -64,15 +64,22 @@ public class MenuPrincipal extends javax.swing.JFrame {
         componentes.PanelNotificaciones panelNotificaciones = new componentes.PanelNotificaciones();
         capas.add(panelNotificaciones, javax.swing.JLayeredPane.PALETTE_LAYER);
         panelNotificaciones.setBounds(0, 0, capas.getWidth(), capas.getHeight());
+        centrarCampanaEnTopbar(panelNotificaciones, capas);
         addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
             public void componentResized(java.awt.event.ComponentEvent e) {
                 asistenteFlotante.setBounds(0, 0, capas.getWidth(), capas.getHeight());
                 panelNotificaciones.setBounds(0, 0, capas.getWidth(), capas.getHeight());
+                centrarCampanaEnTopbar(panelNotificaciones, capas);
             }
         });
         activarDashboardPrincipal();
         mostrarPantallaInicialSegunRol();
+    }
+
+    private void centrarCampanaEnTopbar(componentes.PanelNotificaciones panelNotificaciones, javax.swing.JLayeredPane capas) {
+        java.awt.Point origenTopbar = javax.swing.SwingUtilities.convertPoint(panelRedondo1, 0, 0, capas);
+        panelNotificaciones.centrarEnTopbar(origenTopbar.y, panelRedondo1.getHeight());
     }
 
     private void mostrarPantallaInicialSegunRol() {

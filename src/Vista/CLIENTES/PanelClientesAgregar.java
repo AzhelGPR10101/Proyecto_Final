@@ -22,6 +22,7 @@ public class PanelClientesAgregar extends javax.swing.JPanel {
         ((componentes.TextFieldModerno) txtApellido).setPlaceholder("Apellidos");
         ((componentes.TextFieldModerno) txtCedula1).setPlaceholder("Documento");
         ((componentes.TextFieldModerno) txtTelefono).setPlaceholder("Teléfono");
+        componentes.FiltrosTexto.aplicarSoloNumeros(txtTelefono, 10);
         ((componentes.TextFieldModerno) txtCorreo).setPlaceholder("Correo electrónico");
         ((componentes.TextFieldModerno) txtDireccion).setPlaceholder("Dirección");
     }

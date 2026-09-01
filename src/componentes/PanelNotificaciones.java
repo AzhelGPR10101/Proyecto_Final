@@ -15,6 +15,7 @@ public class PanelNotificaciones extends JPanel {
     private final JPanel contenedorItems;
     private final ControladorNotificacion controlador = new ControladorNotificacion();
     private boolean abierto = false;
+    private int centroYTopbar = -1;
 
     public PanelNotificaciones() {
         setOpaque(false);
@@ -100,11 +101,21 @@ public class PanelNotificaciones extends JPanel {
         return panelLista.isVisible() && panelLista.getBounds().contains(x, y);
     }
 
+    // Permite centrar verticalmente la campana dentro de la barra superior real
+    // (en pixeles ya escalados por KryptonAutoEscalador), en vez de un margen fijo
+    // que se veia mal en pantallas con resolucion distinta a la del diseño.
+    public void centrarEnTopbar(int yTopbar, int alturaTopbar) {
+        centroYTopbar = yTopbar + alturaTopbar / 2;
+        revalidate();
+        repaint();
+    }
+
     @Override
     public void doLayout() {
         super.doLayout();
         int margen = 20;
-        campana.setLocation(getWidth() - campana.getWidth() - margen, margen);
+        int y = centroYTopbar >= 0 ? centroYTopbar - campana.getHeight() / 2 : margen;
+        campana.setLocation(getWidth() - campana.getWidth() - margen, y);
         badge.setLocation(campana.getX() + campana.getWidth() - 12, campana.getY() - 4);
         panelLista.setLocation(getWidth() - panelLista.getWidth() - margen, campana.getY() + campana.getHeight() + 8);
     }
