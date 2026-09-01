@@ -3,6 +3,9 @@ package Vista;
 
 public class PanelNotas extends javax.swing.JPanel {
 
+    private static final java.time.format.DateTimeFormatter FORMATO_FECHA
+            = java.time.format.DateTimeFormatter.ofPattern("dd / MM / yy");
+
     private final Controladores.ControladorNota controladorNota = new Controladores.ControladorNota();
     private String idNotaActual = null;
     private Runnable alGuardarOEliminar;
@@ -21,6 +24,7 @@ public class PanelNotas extends javax.swing.JPanel {
         txtTitulonota.setText("");
         txtAreacuerpo.setText("");
         btnEliminar.setVisible(false);
+        lblfechaactual.setText(java.time.LocalDate.now().format(FORMATO_FECHA));
     }
 
     public void cargarNota(Modelo.Nota nota) {
@@ -28,6 +32,18 @@ public class PanelNotas extends javax.swing.JPanel {
         txtTitulonota.setText(nota.getTitulo());
         txtAreacuerpo.setText(nota.getCuerpo());
         btnEliminar.setVisible(true);
+        lblfechaactual.setText(formatearFecha(nota.getFechaCreacion()));
+    }
+
+    private String formatearFecha(String fechaCreacion) {
+        if (fechaCreacion == null || fechaCreacion.length() < 10) {
+            return java.time.LocalDate.now().format(FORMATO_FECHA);
+        }
+        try {
+            return java.time.LocalDate.parse(fechaCreacion.substring(0, 10)).format(FORMATO_FECHA);
+        } catch (Exception e) {
+            return fechaCreacion;
+        }
     }
 
     @SuppressWarnings("unchecked")

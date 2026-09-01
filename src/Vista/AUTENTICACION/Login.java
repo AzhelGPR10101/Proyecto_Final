@@ -15,6 +15,8 @@ public class Login extends javax.swing.JFrame {
         txtUsuario.setPlaceholder("Correo electrónico");
         txtContrasenia.setPlaceholder("Contraseña");
 
+        txtUsuario.addActionListener(evt -> BtnIngresar.doClick());
+        txtContrasenia.addActionListener(evt -> BtnIngresar.doClick());
     }
 
     @SuppressWarnings("unchecked")

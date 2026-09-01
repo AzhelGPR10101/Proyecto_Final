@@ -20,6 +20,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         new Thread(() -> new Controladores.ControladorNotificacion().revisarYGenerarNotificaciones()).start();
         setLocationRelativeTo(null);
         estilizarActividadReciente();
+        estilizarMenusDesplegables();
 
         jlbUsuarioActivo.setText(usuarioActivo);
         Panelcontenido.add(new Vista.FACTURACION.PanelHistorialFacturas(), "historialFacturas");
@@ -222,6 +223,29 @@ public class MenuPrincipal extends javax.swing.JFrame {
         txtActividadReciente.setWrapStyleWord(true);
         jScrollPane2.setBorder(null);
         jScrollPane2.getViewport().setBackground(fondo);
+    }
+
+    // Los items de los menus desplegables (Facturas/Ventas, Compras/Egresos/Pagares,
+    // Configuracion/Historial de Cierre) no tenian ningun estilo propio -- se veian con
+    // el look por defecto de Swing (chico, gris), sin relacion con el resto del topbar.
+    private void estilizarMenusDesplegables() {
+        javax.swing.JMenuItem[] items = {
+            MenuFacturas, MenuVentas, Compras, HistorialEgresos, Pagares, jMenuItem1, HistorialCierreCaja
+        };
+        java.awt.Color fondo = new java.awt.Color(70, 20, 90);
+        java.awt.Color fondoHover = new java.awt.Color(90, 45, 120);
+        java.awt.Font fuente = new java.awt.Font("Lucida Bright", java.awt.Font.PLAIN, 15);
+        javax.swing.UIManager.put("MenuItem.selectionBackground", fondoHover);
+        javax.swing.UIManager.put("MenuItem.selectionForeground", java.awt.Color.WHITE);
+        for (javax.swing.JMenuItem item : items) {
+            item.setFont(fuente);
+            item.setForeground(java.awt.Color.WHITE);
+            item.setBackground(fondo);
+            item.setOpaque(true);
+            item.setBorderPainted(false);
+            item.setPreferredSize(new java.awt.Dimension(260, 42));
+            item.setIconTextGap(0);
+        }
     }
 
     private void cargarListaNotas() {
