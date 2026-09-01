@@ -271,7 +271,7 @@ public class PanelConfiguracion extends javax.swing.JPanel {
         jLabel17 = new javax.swing.JLabel();
         txtContrasenia = new componentes.TextFieldModerno();
         BtnCambiar = new componentes.BotonModerno();
-        chkVozIA = new javax.swing.JCheckBox();
+        chkVozIA = new componentes.CheckBoxModerno();
         botonModerno4 = new componentes.BotonModerno();
         botonModerno5 = new componentes.BotonModerno();
         lblCodigo = new javax.swing.JLabel();
@@ -538,7 +538,7 @@ public class PanelConfiguracion extends javax.swing.JPanel {
     private componentes.BotonModerno botonModerno5;
     private componentes.BotonModerno btnAgregarCategoria;
     private componentes.BotonModerno btnEliminarCategoria;
-    private javax.swing.JCheckBox chkVozIA;
+    private componentes.CheckBoxModerno chkVozIA;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel13;

@@ -48,26 +48,6 @@ public class ControladorCategoriaProducto {
         return eliminado;
     }
 
-    public boolean actualizarCategoria(java.awt.Component parent, String idNegocio, String idCategoria, String nuevoNombre) {
-        if (nuevoNombre == null || nuevoNombre.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(parent, "El nombre de la categoría es obligatorio.", "Campo Vacío", JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-        String nombre = nuevoNombre.trim();
-        if (idNegocio != null && categoriaDAO.existeNombre(idNegocio, nombre)) {
-            JOptionPane.showMessageDialog(parent, "Ya existe otra categoría con ese nombre.", "Categoría Duplicada", JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-        CategoriaProducto categoriaActualizada = new CategoriaProducto();
-        categoriaActualizada.setIdCategoria(idCategoria);
-        categoriaActualizada.setNombreCategoria(nombre);
-        boolean exito = categoriaDAO.actualizar(categoriaActualizada);
-        if (!exito) {
-            JOptionPane.showMessageDialog(parent, "No se pudo renombrar la categoría.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        return exito;
-    }
-
     public List<CategoriaProducto> listarCategorias(String idNegocio) {
         if (idNegocio == null) {
             return new java.util.ArrayList<>();

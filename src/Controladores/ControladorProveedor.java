@@ -13,44 +13,6 @@ public class ControladorProveedor {
         return proveedorDAO.guardar(nuevoProveedor);
     }
 
-    public boolean registrarProveedor(java.awt.Component parent, String ruc, String empresa,
-            String contacto, String telefono, String correo, String direccion) {
-
-        if (empresa.isEmpty() || contacto.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(parent,
-                    "Los campos Nombre Empresa y Nombre Contacto son obligatorios.",
-                    "Campos Incompletos", javax.swing.JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-        if (!Controladores.Validaciones.validarRuc(ruc)) {
-            javax.swing.JOptionPane.showMessageDialog(parent,
-                    "El RUC ingresado es inválido. Debe contener exactamente 13 dígitos numéricos.",
-                    "Error de Validación", javax.swing.JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-        if (!Controladores.Validaciones.validarTelefono(telefono)) {
-            javax.swing.JOptionPane.showMessageDialog(parent,
-                    "El número de teléfono debe tener exactamente 10 dígitos numéricos.",
-                    "Error de Validación", javax.swing.JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-        if (!Controladores.Validaciones.validarCorreo(correo)) {
-            javax.swing.JOptionPane.showMessageDialog(parent,
-                    "Por favor, ingrese un correo electrónico válido (ej: usuario@ejemplo.com).",
-                    "Error de Validación", javax.swing.JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-
-        Modelo.Proveedores nuevo = new Modelo.Proveedores(ruc, empresa, contacto, telefono, correo, direccion);
-        boolean guardado = guardar(nuevo);
-        if (!guardado) {
-            javax.swing.JOptionPane.showMessageDialog(parent,
-                    "El RUC ya se encuentra registrado o no hay un negocio activo en la sesión.",
-                    "No se pudo registrar", javax.swing.JOptionPane.WARNING_MESSAGE);
-        }
-        return guardado;
-    }
-
     public Proveedores buscarPorRuc(String ruc) {
         return proveedorDAO.buscarPorRuc(ruc);
     }
