@@ -67,8 +67,12 @@ public class CompraDAO {
                 + "VALUES (?,?,?,?,?,?)";
         String sqlPagare = "INSERT INTO pagare (id_compra, monto_total, saldo_pendiente, fecha_vencimiento, estado) "
                 + "VALUES (?,?,?,?,'pendiente')";
+        String sqlPagareContado = "INSERT INTO pagare (id_compra, monto_total, saldo_pendiente, fecha_vencimiento, estado) "
+                + "VALUES (?,?,0,NULL,'pagado') RETURNING id_pagare";
+        String sqlPagoProveedor = "INSERT INTO pago_proveedor (id_pagare, id_metodo_pago, monto, fecha_pago) "
+                + "VALUES (?,?,?,CURRENT_DATE) RETURNING id_pago";
         String sqlEgreso = "INSERT INTO egreso (id_negocio, id_pago, fecha, monto, concepto) "
-                + "VALUES (?,NULL,CURRENT_DATE,?,?)";
+                + "VALUES (?,?,CURRENT_DATE,?,?)";
 
         try (Connection con = Conexion.getConnection()) {
             con.setAutoCommit(false);
@@ -136,12 +140,32 @@ public class CompraDAO {
                         con.rollback();
                         return null;
                     }
+                    String idPagare;
+                    try (PreparedStatement ps = con.prepareStatement(sqlPagareContado)) {
+                        ps.setString(1, idCompra);
+                        ps.setDouble(2, total);
+                        try (ResultSet rs = ps.executeQuery()) {
+                            rs.next();
+                            idPagare = rs.getString(1);
+                        }
+                    }
+                    String idPago;
+                    try (PreparedStatement ps = con.prepareStatement(sqlPagoProveedor)) {
+                        ps.setString(1, idPagare);
+                        ps.setString(2, idMetodoPago);
+                        ps.setDouble(3, total);
+                        try (ResultSet rs = ps.executeQuery()) {
+                            rs.next();
+                            idPago = rs.getString(1);
+                        }
+                    }
                     String concepto = "Compra de contado - Factura Prov. " + numFacturaProveedor
                             + " - " + nombreProveedorConcepto + " (" + metodoPagoNombre + ")";
                     try (PreparedStatement ps = con.prepareStatement(sqlEgreso)) {
                         ps.setString(1, idNegocio);
-                        ps.setDouble(2, total);
-                        ps.setString(3, concepto);
+                        ps.setString(2, idPago);
+                        ps.setDouble(3, total);
+                        ps.setString(4, concepto);
                         ps.executeUpdate();
                     }
                 } else {
@@ -199,7 +223,7 @@ public class CompraDAO {
                             prov, new ArrayList<>(),
                             rs.getDouble("subtotal"), rs.getDouble("valor_iva"),
                             rs.getDouble("descuento"), rs.getDouble("total"),
-                            estadoPagare == null ? "Contado" : "Crédito",
+                            "pendiente".equals(estadoPagare) ? "Crédito" : "Contado",
                             estadoPagare
                     );
                     lista.add(c);

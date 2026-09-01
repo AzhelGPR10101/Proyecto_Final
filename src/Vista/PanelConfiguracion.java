@@ -33,6 +33,7 @@ public class PanelConfiguracion extends javax.swing.JPanel {
         cargarDatosUsuario();
         cargarCategorias();
         cargarModulos();
+        chkVozIA.setSelected(componentes.AsistenteFlotante.vozActiva);
 
         lstCategorias.addListSelectionListener(evt -> {
             if (!evt.getValueIsAdjusting()) {
@@ -253,7 +254,6 @@ public class PanelConfiguracion extends javax.swing.JPanel {
         jLabel9 = new javax.swing.JLabel();
         txtnombrenegocio = new componentes.TextFieldModerno();
         jLabel10 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
         txtnombreUsuario = new componentes.TextFieldModerno();
         jLabel13 = new javax.swing.JLabel();
         txtApellidoUsuario = new componentes.TextFieldModerno();
@@ -271,6 +271,7 @@ public class PanelConfiguracion extends javax.swing.JPanel {
         jLabel17 = new javax.swing.JLabel();
         txtContrasenia = new componentes.TextFieldModerno();
         BtnCambiar = new componentes.BotonModerno();
+        chkVozIA = new javax.swing.JCheckBox();
         botonModerno4 = new componentes.BotonModerno();
         botonModerno5 = new componentes.BotonModerno();
         lblCodigo = new javax.swing.JLabel();
@@ -336,19 +337,14 @@ public class PanelConfiguracion extends javax.swing.JPanel {
 
         jLabel9.setFont(new java.awt.Font("Lucida Bright", 1, 14)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel9.setText("Asistente IA");
-        panelRedondo1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(860, 670, 340, 40));
+        jLabel9.setText("Activar Voz de IA");
+        panelRedondo1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 640, 170, 40));
         panelRedondo1.add(txtnombrenegocio, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 320, 500, 40));
 
         jLabel10.setFont(new java.awt.Font("Lucida Bright", 1, 14)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(255, 255, 255));
         jLabel10.setText("Modulos");
         panelRedondo1.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 380, 340, 40));
-
-        jLabel12.setFont(new java.awt.Font("Lucida Bright", 1, 14)); // NOI18N
-        jLabel12.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel12.setText("Confirmar antes de eliminar siempre");
-        panelRedondo1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(860, 620, 340, 40));
 
         txtnombreUsuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -442,6 +438,13 @@ public class PanelConfiguracion extends javax.swing.JPanel {
         });
         panelRedondo1.add(BtnCambiar, new org.netbeans.lib.awtextra.AbsoluteConstraints(1506, 560, 100, 40));
 
+        chkVozIA.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkVozIAActionPerformed(evt);
+            }
+        });
+        panelRedondo1.add(chkVozIA, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 640, 200, 30));
+
         add(panelRedondo1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 100, 1690, 750));
 
         botonModerno4.setText("GUARDAR CAMBIOS");
@@ -516,6 +519,10 @@ public class PanelConfiguracion extends javax.swing.JPanel {
         cambiarContrasenia();
     }//GEN-LAST:event_BtnCambiarActionPerformed
 
+    private void chkVozIAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkVozIAActionPerformed
+        componentes.AsistenteFlotante.vozActiva = chkVozIA.isSelected();
+    }//GEN-LAST:event_chkVozIAActionPerformed
+
     private void botonModerno4ActionPerformed(java.awt.event.ActionEvent evt) {
         guardarCambios();
     }
@@ -531,9 +538,9 @@ public class PanelConfiguracion extends javax.swing.JPanel {
     private componentes.BotonModerno botonModerno5;
     private componentes.BotonModerno btnAgregarCategoria;
     private componentes.BotonModerno btnEliminarCategoria;
+    private javax.swing.JCheckBox chkVozIA;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;

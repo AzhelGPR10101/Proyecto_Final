@@ -13,7 +13,7 @@ public class AsistenteFlotante extends JPanel {
     private final JButton botonMicrofono;
     private final JLabel etiquetaEstado;
     private boolean abierto = false;
-    private boolean vozActiva = true;
+    public static boolean vozActiva = true;
     private boolean grabando = false;
     private javax.swing.JPanel panelContenido;
     private final java.util.List<String[]> historialConversacion = new java.util.ArrayList<>();
@@ -149,6 +149,9 @@ public class AsistenteFlotante extends JPanel {
     private void alternarChat() {
         abierto = !abierto;
         panelChat.setVisible(abierto);
+        if (!abierto) {
+            Vista.IA.VozAsistente.detener();
+        }
     }
 
     private void enviarMensaje(java.awt.event.ActionEvent e) {
