@@ -1,11 +1,20 @@
 package Vista.IA;
 
+import Controladores.ControladorPermiso;
 import DAO.CompraDAO;
+import DAO.EstadisticaDAO;
 import DAO.ProductoDAO;
 import Modelo.Compra;
+import Modelo.MovimientoDiario;
+import Modelo.PermisoSistema;
 import Modelo.Producto;
+import Modelo.Sesion;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.format.TextStyle;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class ContextoNegocio {
@@ -17,30 +26,51 @@ public class ContextoNegocio {
             return "No hay una empresa/negocio activo en la sesion todavia.";
         }
 
+        String idRol = Sesion.getIdRolUsuario();
         StringBuilder sb = new StringBuilder();
 
-        try {
-            agregarProductos(sb, idNegocio);
-        } catch (Exception e) {
-            sb.append("(No se pudo leer productos: ").append(e.getMessage()).append(")\n");
+        if (idRol == null || ControladorPermiso.tienePermiso(idRol, PermisoSistema.VER_PRODUCTOS.name())) {
+            try {
+                agregarProductos(sb, idNegocio);
+            } catch (Exception e) {
+                sb.append("(No se pudo leer productos: ").append(e.getMessage()).append(")\n");
+            }
         }
 
-        try {
-            agregarCompras(sb, idNegocio);
-        } catch (Exception e) {
-            sb.append("(No se pudo leer compras: ").append(e.getMessage()).append(")\n");
+        if (idRol == null || ControladorPermiso.tienePermiso(idRol, PermisoSistema.VER_PROVEEDORES.name())) {
+            try {
+                agregarCompras(sb, idNegocio);
+            } catch (Exception e) {
+                sb.append("(No se pudo leer compras: ").append(e.getMessage()).append(")\n");
+            }
         }
 
-        try {
-            agregarVentas(sb, idNegocio);
-        } catch (Exception e) {
-            sb.append("(No se pudo leer ventas: ").append(e.getMessage()).append(")\n");
+        if (idRol == null || ControladorPermiso.tienePermiso(idRol, PermisoSistema.VER_VENTAS.name())) {
+            try {
+                agregarVentas(sb, idNegocio);
+            } catch (Exception e) {
+                sb.append("(No se pudo leer ventas: ").append(e.getMessage()).append(")\n");
+            }
         }
 
-        try {
-            agregarEgresos(sb, idNegocio);
-        } catch (Exception e) {
-            sb.append("(No se pudo leer egresos: ").append(e.getMessage()).append(")\n");
+        if (idRol == null || ControladorPermiso.tienePermiso(idRol, PermisoSistema.VER_EGRESOS.name())) {
+            try {
+                agregarEgresos(sb, idNegocio);
+            } catch (Exception e) {
+                sb.append("(No se pudo leer egresos: ").append(e.getMessage()).append(")\n");
+            }
+        }
+
+        if (idRol == null || ControladorPermiso.tienePermiso(idRol, PermisoSistema.VER_REPORTES.name())) {
+            try {
+                agregarResumenMensual(sb, idNegocio);
+            } catch (Exception e) {
+                sb.append("(No se pudo leer el resumen mensual: ").append(e.getMessage()).append(")\n");
+            }
+        }
+
+        if (sb.length() == 0) {
+            sb.append("Tu rol actual no tiene permisos para consultar informacion del negocio con el asistente.");
         }
 
         return sb.toString();
@@ -66,11 +96,23 @@ public class ContextoNegocio {
             sb.append("\n");
         }
 
-        sb.append("Productos con stock bajo (menos de ").append(STOCK_MINIMO).append(" unidades): ");
+        sb.append("Productos AGOTADOS (stock en 0, URGENTE): ");
+        boolean hayAgotados = false;
+        for (Producto p : productos) {
+            if (p.getCantidad() <= 0) {
+                sb.append(p.getNombre()).append(", ");
+                hayAgotados = true;
+            }
+        }
+        sb.append(hayAgotados ? "\n" : "Ninguno.\n");
+
+        sb.append("Productos con stock bajo (por debajo de su stock minimo configurado): ");
         boolean hayBajos = false;
         for (Producto p : productos) {
-            if (p.getCantidad() < STOCK_MINIMO) {
-                sb.append(p.getNombre()).append(" (").append(p.getCantidad()).append("), ");
+            int minimo = p.getStockMinimo() > 0 ? p.getStockMinimo() : STOCK_MINIMO;
+            if (p.getCantidad() > 0 && p.getCantidad() < minimo) {
+                sb.append(p.getNombre()).append(" (").append(p.getCantidad())
+                        .append(" de minimo ").append(minimo).append("), ");
                 hayBajos = true;
             }
         }
@@ -114,7 +156,6 @@ public class ContextoNegocio {
                 .append(" por $").append(String.format("%.2f", ultima.getTotal())).append("\n");
     }
 
-    // NUEVO metodo en ContextoNegocio.java
     private static void agregarVentas(StringBuilder sb, String idNegocio) {
         List<Modelo.Factura> facturas = new DAO.FacturaDAO().listarPorNegocio(idNegocio);
         sb.append("\n=== VENTAS / FACTURAS (").append(facturas.size()).append(" en total) ===\n");
@@ -142,5 +183,36 @@ public class ContextoNegocio {
             totalEgresos += e.getMonto(); 
         }
         sb.append("Total de egresos: $").append(String.format("%.2f", totalEgresos)).append("\n");
+    }
+
+    private static void agregarResumenMensual(StringBuilder sb, String idNegocio) {
+        EstadisticaDAO estadisticaDAO = new EstadisticaDAO();
+        Locale espanol = new Locale("es", "ES");
+        LocalDate hoy = LocalDate.now();
+
+        sb.append("\n=== RESUMEN POR MES (ultimos 6 meses, ganancias/gastos/productos vendidos) ===\n");
+
+        for (int i = 5; i >= 0; i--) {
+            YearMonth ym = YearMonth.from(hoy).minusMonths(i);
+            LocalDate desde = ym.atDay(1);
+            LocalDate hasta = ym.equals(YearMonth.from(hoy)) ? hoy : ym.atEndOfMonth();
+
+            List<MovimientoDiario> dias = estadisticaDAO.listarPorDia(idNegocio, desde, hasta);
+            double ganancias = 0, gastos = 0;
+            int vendidos = 0;
+            for (MovimientoDiario m : dias) {
+                ganancias += m.getGanancias();
+                gastos += m.getGastos();
+                vendidos += m.getProductosVendidos();
+            }
+
+            String nombreMes = ym.getMonth().getDisplayName(TextStyle.FULL, espanol);
+            nombreMes = Character.toUpperCase(nombreMes.charAt(0)) + nombreMes.substring(1);
+
+            sb.append("- ").append(nombreMes).append(" ").append(ym.getYear())
+                    .append(": ganancias $").append(String.format("%.2f", ganancias))
+                    .append(", gastos $").append(String.format("%.2f", gastos))
+                    .append(", productos vendidos: ").append(vendidos).append("\n");
+        }
     }
 }

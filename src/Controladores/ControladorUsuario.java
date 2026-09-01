@@ -34,6 +34,10 @@ public class ControladorUsuario {
                     "Contraseña Inválida", JOptionPane.ERROR_MESSAGE);
             return null;
         }
+        if (!Controladores.Validaciones.validarTelefono(telefono)) {
+            JOptionPane.showMessageDialog(parent, "El teléfono debe ser un número celular ecuatoriano válido (09XXXXXXXX).", "Error de Validación", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
                 if (usuarioDAO.existeCorreoOCedula(correo, cedula)) {
             JOptionPane.showMessageDialog(parent, "Ya existe un usuario registrado con esa cédula o ese correo.", "Registro Duplicado", JOptionPane.WARNING_MESSAGE);
             return null;

@@ -4,6 +4,7 @@ import Conexion.Conexion;
 import Modelo.Bodeguero;
 import Modelo.Cajero;
 import Modelo.Empleado;
+import Modelo.Recursos_Humanos;
 import Modelo.Rol;
 import java.sql.Connection;
 import java.sql.Date;
@@ -20,7 +21,7 @@ public class EmpleadoDAO {
 
     private static final String SELECT_BASE =
             "SELECT e.id_empleado, e.id_rol, e.salario, e.fecha_ingreso, e.estado, r.nombre_rol, "
-            + "u.cedula, u.nombres, u.apellidos, u.correo, u.contrasena "
+            + "u.cedula, u.nombres, u.apellidos, u.correo, u.contrasena, u.telefono "
             + "FROM empleado e "
             + "JOIN usuario u ON u.id_usuario = e.id_empleado "
             + "JOIN rol r ON r.id_rol = e.id_rol ";
@@ -42,7 +43,7 @@ public class EmpleadoDAO {
     public boolean actualizar(Empleado empleado) {
 
         String password = empleado.getPassword();
-        String sqlUsuario = "UPDATE usuario SET nombres=?, apellidos=?, correo=?"
+        String sqlUsuario = "UPDATE usuario SET nombres=?, apellidos=?, correo=?, telefono=?"
                 + (password != null && !password.trim().isEmpty() ? ", contrasena=?" : "")
                 + " WHERE cedula=?";
         String sqlEmpleado = "UPDATE empleado SET salario=? "
@@ -56,8 +57,9 @@ public class EmpleadoDAO {
                     ps.setString(i++, empleado.getNombres());
                     ps.setString(i++, empleado.getApellidos());
                     ps.setString(i++, empleado.getCorreo());
+                    ps.setString(i++, empleado.getTelefono());
                     if (password != null && !password.trim().isEmpty()) {
-                        ps.setString(i++, password.trim());
+                        ps.setString(i++, Seguridad.Hasher.hashear(password.trim()));
                     }
                     ps.setString(i, empleado.getCedula());
                     ps.executeUpdate();
@@ -209,6 +211,10 @@ public class EmpleadoDAO {
         Empleado emp;
         if ("Bodegero".equalsIgnoreCase(nombreRol) || "Bodeguero".equalsIgnoreCase(nombreRol)) {
             emp = new Bodeguero();
+        } else if ("Recursos Humanos".equalsIgnoreCase(nombreRol)
+                || "RRHH".equalsIgnoreCase(nombreRol)
+                || "Talento Humano".equalsIgnoreCase(nombreRol)) {
+            emp = new Recursos_Humanos();
         } else {
             emp = new Cajero();
         }
@@ -224,10 +230,24 @@ public class EmpleadoDAO {
         if (fechaIngreso != null) {
             emp.setFechaContratacion(FORMATO_FECHA.format(fechaIngreso));
         }
+        emp.setTelefono(rs.getString("telefono"));
         emp.setUsername(rs.getString("correo"));
         emp.setRol(nombreRol);
         String estado = rs.getString("estado");
         emp.setEstado(estado == null ? "activo" : estado);
         return emp;
+    }
+
+    public String obtenerIdNegocioDeEmpleado(String idEmpleado) {
+        String sql = "SELECT id_negocio FROM empleado WHERE id_empleado = ?";
+        try (Connection con = Conexion.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, idEmpleado);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getString(1) : null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

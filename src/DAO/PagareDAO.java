@@ -82,4 +82,31 @@ public class PagareDAO {
             return ps.executeUpdate() > 0;
         }
     }
+
+    public List<Object[]> listarPorVencerParaNotificar(String idNegocio) {
+        List<Object[]> lista = new ArrayList<>();
+        String sql = "SELECT pg.id_pagare, pg.saldo_pendiente, pg.fecha_vencimiento, "
+                + "p.nombre_proveedor, p.apellido_proveedor "
+                + "FROM pagare pg "
+                + "JOIN compra c ON c.id_compra = pg.id_compra "
+                + "JOIN proveedor p ON p.id_proveedor = c.id_proveedor "
+                + "WHERE c.id_negocio = ? AND pg.estado = 'pendiente' "
+                + "AND pg.fecha_vencimiento IS NOT NULL "
+                + "AND pg.fecha_vencimiento <= CURRENT_DATE + INTERVAL '3 days'";
+        try (Connection con = Conexion.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, idNegocio);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String apellido = rs.getString("apellido_proveedor");
+                    String proveedor = rs.getString("nombre_proveedor")
+                            + (apellido == null || apellido.isEmpty() ? "" : " " + apellido);
+                    lista.add(new Object[]{rs.getString("id_pagare"), proveedor,
+                        rs.getDouble("saldo_pendiente"), rs.getDate("fecha_vencimiento").toString()});
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
 }

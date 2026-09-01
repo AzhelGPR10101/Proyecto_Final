@@ -323,4 +323,22 @@ public List<DetalleFactura> obtenerDetallePorFactura(String idFactura) {
         }
     }
 
+    public List<Object[]> listarSriPendientesParaNotificar(String idNegocio) {
+        List<Object[]> lista = new ArrayList<>();
+        String sql = "SELECT id_factura, num_factura, fecha, total FROM factura "
+                + "WHERE id_negocio = ? AND estado_sri = 'Pendiente' "
+                + "AND fecha <= CURRENT_DATE - INTERVAL '1 day'";
+        try (Connection con = Conexion.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, idNegocio);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(new Object[]{rs.getString("id_factura"), rs.getString("num_factura"),
+                        rs.getDate("fecha").toString(), rs.getDouble("total")});
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
 }

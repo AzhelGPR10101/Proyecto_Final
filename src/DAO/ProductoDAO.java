@@ -42,6 +42,38 @@ public class ProductoDAO {
         return null;
     }
 
+    public double obtenerPorcentajeIvaVigente() {
+        String sql = "SELECT porcentaje FROM tasa_iva WHERE porcentaje > 0 ORDER BY porcentaje DESC LIMIT 1";
+        try (Connection con = Conexion.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble(1) / 100.0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.15;
+    }
+
+    public List<Object[]> listarStockBajoParaNotificar(String idNegocio) {
+        List<Object[]> lista = new ArrayList<>();
+        String sql = "SELECT id_producto, nombre_producto, stock_actual, stock_minimo FROM producto "
+                + "WHERE id_negocio = ? AND estado = 'activo' AND stock_actual <= stock_minimo";
+        try (Connection con = Conexion.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, idNegocio);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(new Object[]{rs.getString("id_producto"), rs.getString("nombre_producto"),
+                        rs.getInt("stock_actual"), rs.getInt("stock_minimo")});
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
     public boolean registrar(Producto p) {
         String sql = "INSERT INTO producto "
                 + "(id_negocio, id_categoria, id_tasa_iva, nombre_producto, codigo_barras, "

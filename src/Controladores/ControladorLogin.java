@@ -53,7 +53,7 @@ public class ControladorLogin {
                         "Cuenta desactivada", JOptionPane.WARNING_MESSAGE);
                 return ResultadoLogin.EMPLEADO_INACTIVO;
             }
-            String idNegocioEmpleado = obtenerIdNegocioDeEmpleado(idUsuario);
+            String idNegocioEmpleado = empleadoDAO.obtenerIdNegocioDeEmpleado(idUsuario);
             Sesion.iniciar(idUsuario, idNegocioEmpleado, usuario.getNombres());
             Sesion.setRolUsuario(empleado.getRol());
             Sesion.setIdRolUsuario(empleado.getIdRol());
@@ -71,18 +71,5 @@ public class ControladorLogin {
         Sesion.guardarDatosUsuario(usuario.getCedula(), usuario.getApellidos(), usuario.getCorreo(),
                 usuario.getTelefono(), usuario.getFotoPerfil());
         return ResultadoLogin.DUENIO_SIN_NEGOCIO;
-    }
-
-    private String obtenerIdNegocioDeEmpleado(String idUsuario) {
-        String sql = "SELECT id_negocio FROM empleado WHERE id_empleado = ?";
-        try (java.sql.Connection con = Conexion.Conexion.getConnection(); java.sql.PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, idUsuario);
-            try (java.sql.ResultSet rs = ps.executeQuery()) {
-                return rs.next() ? rs.getString(1) : null;
-            }
-        } catch (java.sql.SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 }

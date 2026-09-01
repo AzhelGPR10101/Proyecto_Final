@@ -12,9 +12,8 @@ import java.util.List;
 
 public class ControladorFactura {
 
-    private static final double PORCENTAJE_IVA = 0.15;
-
     private final FacturaDAO facturaDAO = new FacturaDAO();
+    private final DAO.ProductoDAO productoDAO = new DAO.ProductoDAO();
 
     public double[] calcularTotales(List<DetalleFactura> detalles, double descuento) {
         double subtotal = 0;
@@ -30,7 +29,7 @@ public class ControladorFactura {
     public DetalleFactura crearDetalle(String idProducto, String nombreProducto,
             int cantidad, double precioUnitario, boolean tieneIva) {
         double subtotal = cantidad * precioUnitario;
-        double valorIva = tieneIva ? subtotal * PORCENTAJE_IVA : 0;
+        double valorIva = tieneIva ? subtotal * productoDAO.obtenerPorcentajeIvaVigente() : 0;
         return new DetalleFactura(idProducto, nombreProducto, cantidad, precioUnitario, subtotal, valorIva);
     }
 
@@ -101,7 +100,12 @@ public class ControladorFactura {
 
         boolean exito = idFactura != null;
         if (exito) {
-            JOptionPane.showMessageDialog(parent, "Factura guardada exitosamente!");
+            nuevaFactura.setIdFactura(idFactura);
+            nuevaFactura.setFecha(fecha);
+
+            String avisoCorreo = enviarFacturaPorCorreoSiCorresponde(nuevaFactura);
+
+            JOptionPane.showMessageDialog(parent, "Factura guardada exitosamente!" + avisoCorreo);
             new ControladorNotificacion().notificarEvento(idNegocio,
                     "VENTA_" + idFactura,
                     "Se registro una venta (factura " + numFactura + ") por $" + String.format("%.2f", totales[2]) + ".");
@@ -109,6 +113,22 @@ public class ControladorFactura {
             JOptionPane.showMessageDialog(parent, "Error al guardar la factura (revisa que haya stock suficiente).");
         }
         return exito;
+    }
+
+    private String enviarFacturaPorCorreoSiCorresponde(Factura factura) {
+        String correo = factura.getCliente() != null ? factura.getCliente().getCorreo() : null;
+        if (correo == null || correo.trim().isEmpty() || !Correo.EmailService.hayCorreoConfigurado()) {
+            return "";
+        }
+        try {
+            String ruta = Reportes.CarpetaExportacion.obtenerRuta("Factura_" + factura.getNumFactura() + ".pdf");
+            Reportes.GeneradorPDFFactura.generar(factura, ruta);
+            Correo.EmailService.enviarFacturaPorCorreo(factura, ruta);
+            return "\nSe envio la factura al correo del cliente.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "\nNo se pudo enviar la factura por correo (revisa la conexion a internet). Puedes reenviarla despues desde Historial de Facturas.";
+        }
     }
 
     public List<Factura> listarTodas() {

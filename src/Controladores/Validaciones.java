@@ -79,7 +79,7 @@ public class Validaciones {
     }
 
     public static boolean validarTelefono(String telefono) {
-        return telefono != null && telefono.matches("^\\d{10}$");
+        return telefono != null && telefono.matches("^09\\d{8}$");
     }
 
     public static boolean validarCorreo(String correo) {

@@ -67,7 +67,7 @@ public class PanelHistorialFacturas extends javax.swing.JPanel {
                     f.getEstadoSri()
                 });
             }
-            String ruta = System.getProperty("user.home") + java.io.File.separator + "Ventas.xlsx";
+            String ruta = Reportes.CarpetaExportacion.obtenerRuta("Ventas.xlsx");
             Reportes.GeneradorExcel.generar(ruta, "Ventas", encabezados, filas);
             JOptionPane.showMessageDialog(this, "Excel generado en:\n" + ruta);
         } catch (Exception ex) {
@@ -85,12 +85,12 @@ public class PanelHistorialFacturas extends javax.swing.JPanel {
         Factura f = listaFacturas.get(row);
         try {
             String nombreArchivo = "Factura_" + f.getNumFactura() + ".pdf";
-            String ruta = System.getProperty("user.home") + java.io.File.separator + nombreArchivo;
+            String ruta = Reportes.CarpetaExportacion.obtenerRuta(nombreArchivo);
             Reportes.GeneradorPDFFactura.generar(f, ruta);
 
             String correoCliente = f.getCliente() != null ? f.getCliente().getCorreo() : null;
             if (correoCliente != null && !correoCliente.trim().isEmpty() && Correo.EmailService.hayCorreoConfigurado()) {
-                Correo.EmailService.enviarFacturaPorCorreo(correoCliente, f.getCliente().getNombre(), f.getNumFactura(), ruta);
+                Correo.EmailService.enviarFacturaPorCorreo(f, ruta);
                 JOptionPane.showMessageDialog(this, "PDF generado en:\n" + ruta + "\n\nEnviado también al correo del cliente.");
             } else {
                 JOptionPane.showMessageDialog(this, "PDF generado en:\n" + ruta);

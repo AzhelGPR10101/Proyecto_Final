@@ -114,4 +114,28 @@ public class NegocioDAO {
             return false;
         }
     }
+
+    public Negocio buscarPorIdNegocio(String idNegocio) {
+        String sql = "SELECT n.id_negocio, n.id_usuario, n.nombre_negocio, n.ruc_negocio, n.correo_contacto "
+                + "FROM negocio n "
+                + "WHERE n.id_negocio = ?";
+        try (Connection con = Conexion.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, idNegocio);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Negocio n = new Negocio();
+                    n.setIdNegocio(rs.getString("id_negocio"));
+                    n.setIdUsuario(rs.getString("id_usuario"));
+                    n.setNombreNegocio(rs.getString("nombre_negocio"));
+                    n.setRucNegocio(rs.getString("ruc_negocio"));
+                    n.setCorreoContacto(rs.getString("correo_contacto"));
+                    return n;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
