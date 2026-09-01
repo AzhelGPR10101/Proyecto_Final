@@ -36,7 +36,7 @@ public class PanelAperturaCaja extends javax.swing.JPanel {
     }
 
     public void cargarDatos() {
-        txtCajeroResponsable.setText(Vista.MenuPrincipal.usuarioActivo);
+        txtCajeroResponsable.setText(Vista.PRINCIPAL.MenuPrincipal.usuarioActivo);
         txtFechaHora.setText(java.time.LocalDateTime.now()
                 .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
         txtMontoInicial.setText("");

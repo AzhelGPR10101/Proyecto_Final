@@ -1,4 +1,4 @@
-package Vista;
+package Vista.AUTENTICACION;
 
 import Controladores.RecuperacionControlador;
 import componentes.BotonModerno;

@@ -1,5 +1,5 @@
 
-package Vista;
+package Vista.AUTENTICACION;
 
 import java.awt.Window;
 import javax.swing.DefaultListModel;
@@ -287,7 +287,7 @@ public class PanelRegistroNegocio extends javax.swing.JPanel {
         guardarCatalogosEnBD(idNegocio);
 
         JFrame frameRegistro = new JFrame("Registro");
-        componentes.escalado.KryptonVentanaScrollable.agregarConScroll(frameRegistro, new Vista.PanelModulos());
+        componentes.escalado.KryptonVentanaScrollable.agregarConScroll(frameRegistro, new Vista.PRINCIPAL.PanelModulos());
         frameRegistro.setSize(1280, 1080);
         frameRegistro.setLocationRelativeTo(null);
         frameRegistro.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -301,7 +301,7 @@ public class PanelRegistroNegocio extends javax.swing.JPanel {
 
     private void BtnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRegresarActionPerformed
         JFrame frameRegistro = new JFrame("Registro");
-    componentes.escalado.KryptonVentanaScrollable.agregarConScroll(frameRegistro, new Vista.PanelRegistroUsuario());
+    componentes.escalado.KryptonVentanaScrollable.agregarConScroll(frameRegistro, new PanelRegistroUsuario());
     frameRegistro.setSize(1280, 1080);
     frameRegistro.setLocationRelativeTo(null);
     frameRegistro.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

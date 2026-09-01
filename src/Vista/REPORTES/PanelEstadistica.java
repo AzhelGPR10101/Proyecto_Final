@@ -1,5 +1,5 @@
 
-package Vista;
+package Vista.REPORTES;
 
 import Controladores.ControladorEstadistica;
 import Controladores.ControladorEstadistica.ResultadoEstadistica;

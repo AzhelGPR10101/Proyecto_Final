@@ -1,5 +1,5 @@
 
-package Vista;
+package Vista.CONFIGURACION;
 
 import Modelo.Negocio;
 import Modelo.Sesion;
@@ -193,7 +193,7 @@ public class PanelConfiguracion extends javax.swing.JPanel {
         javax.swing.Timer temporizador = new javax.swing.Timer(5000, evt -> {
             Sesion.cerrar();
             java.awt.Window ventanaActual = javax.swing.SwingUtilities.getWindowAncestor(this);
-            Vista.Login login = new Vista.Login();
+            Vista.AUTENTICACION.Login login = new Vista.AUTENTICACION.Login();
             login.setVisible(true);
             login.setLocationRelativeTo(null);
             if (ventanaActual != null) {

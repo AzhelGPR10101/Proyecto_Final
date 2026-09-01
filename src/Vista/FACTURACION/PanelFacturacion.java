@@ -1,4 +1,4 @@
-package Vista;
+package Vista.FACTURACION;
 
 public class PanelFacturacion extends javax.swing.JPanel {
 
@@ -638,7 +638,7 @@ public class PanelFacturacion extends javax.swing.JPanel {
         double[] totales = controladorFactura.calcularTotales(listaDetalles, descuento);
 
         java.awt.Frame ventanaPadre = (java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(this);
-        Vista.DialogCobro dialog = new Vista.DialogCobro(ventanaPadre, totales[2]);
+        DialogCobro dialog = new DialogCobro(ventanaPadre, totales[2]);
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
 

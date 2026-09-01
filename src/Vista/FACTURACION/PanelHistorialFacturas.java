@@ -1,4 +1,4 @@
-package Vista;
+package Vista.FACTURACION;
 
 import Controladores.ControladorFactura;
 import Modelo.Factura;

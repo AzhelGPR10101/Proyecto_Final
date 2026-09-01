@@ -1,5 +1,5 @@
 
-package Vista;
+package Vista.PRINCIPAL;
 
 public class PanelModulos extends javax.swing.JPanel {
 

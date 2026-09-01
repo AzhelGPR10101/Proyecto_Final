@@ -1,4 +1,4 @@
-package Vista;
+package Vista.REPORTES;
 
 import Controladores.ControladorReporte;
 import Controladores.ControladorReporte.ResultadoReporte;
@@ -161,7 +161,7 @@ public class PanelReporte extends javax.swing.JPanel {
         }
         List<DetalleFactura> detalles = controladorReporte.obtenerDetallePorFactura(movimiento.getIdFactura());
         java.awt.Frame ventanaPadre = (java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(this);
-        DialogDetalleFactura dialog = new DialogDetalleFactura(ventanaPadre, movimiento, detalles);
+        Vista.FACTURACION.DialogDetalleFactura dialog = new Vista.FACTURACION.DialogDetalleFactura(ventanaPadre, movimiento, detalles);
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }

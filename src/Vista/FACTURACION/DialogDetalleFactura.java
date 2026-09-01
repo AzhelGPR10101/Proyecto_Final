@@ -1,4 +1,4 @@
-package Vista;
+package Vista.FACTURACION;
 
 import Modelo.DetalleFactura;
 import Modelo.MovimientoFinanciero;

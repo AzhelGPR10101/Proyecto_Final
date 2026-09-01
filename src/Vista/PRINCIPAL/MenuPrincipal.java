@@ -1,4 +1,4 @@
-package Vista;
+package Vista.PRINCIPAL;
 
 import java.awt.CardLayout;
 
@@ -10,7 +10,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private final Vista.RolCajero.PanelCierreCaja panelCierreCajaInstancia = new Vista.RolCajero.PanelCierreCaja();
     private javax.swing.JDialog dialogoNotas;
     private java.util.List<Modelo.Nota> notasActuales = new java.util.ArrayList<>();
-    private final Vista.PanelEstadistica panelEstadisticaInstancia = new Vista.PanelEstadistica();
+    private final Vista.REPORTES.PanelEstadistica panelEstadisticaInstancia = new Vista.REPORTES.PanelEstadistica();
     private final Controladores.ControladorEstadistica controladorEstadisticaInicio = new Controladores.ControladorEstadistica();
     private Controladores.ControladorEstadistica.TipoPeriodo periodoActualInicio = Controladores.ControladorEstadistica.TipoPeriodo.HOY;
 
@@ -22,16 +22,16 @@ public class MenuPrincipal extends javax.swing.JFrame {
         estilizarActividadReciente();
 
         jlbUsuarioActivo.setText(usuarioActivo);
-        Panelcontenido.add(new PanelHistorialFacturas(), "historialFacturas");
+        Panelcontenido.add(new Vista.FACTURACION.PanelHistorialFacturas(), "historialFacturas");
         Panelcontenido.add(panelEstadisticaInstancia, "Estadisticas");
-        Panelcontenido.add(new PanelFacturacion(), "PanelFacturacion");
-        Panelcontenido.add(new PanelReporte(), "Reporte");
+        Panelcontenido.add(new Vista.FACTURACION.PanelFacturacion(), "PanelFacturacion");
+        Panelcontenido.add(new Vista.REPORTES.PanelReporte(), "Reporte");
 
         Panelcontenido.add(new Vista.CLIENTES.PanelClientes(), "Clientes");
         Panelcontenido.add(new Vista.EMPLEADOS.PanelEmpleados(), "Empleados");
         Panelcontenido.add(new Vista.PRODUCTOS.PanelProductos(), "Productos");
         Panelcontenido.add(new Vista.PROVEEDORES.PanelProveedores(), "Proveedores");
-        Panelcontenido.add(new PanelConfiguracion(), "Configuracion");
+        Panelcontenido.add(new Vista.CONFIGURACION.PanelConfiguracion(), "Configuracion");
         Panelcontenido.add(new Vista.COMPRAS.PanelCompras(), "PanelCompras");
         Panelcontenido.add(new Vista.COMPRAS.PanelPagares(), "PanelPagares");
         Panelcontenido.add(new Vista.COMPRAS.PanelHistorialEgresos(), "PanelHistorialEgresos");
@@ -1050,7 +1050,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_INICIOMouseClicked
 
     private void CERRARSESIONMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CERRARSESIONMouseClicked
-        Login login = new Login();
+        Vista.AUTENTICACION.Login login = new Vista.AUTENTICACION.Login();
         login.setVisible(true);
         login.setLocationRelativeTo(null);
         Vista.IA.VozAsistente.detener();

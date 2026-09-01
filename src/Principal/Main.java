@@ -1,6 +1,6 @@
 package Principal;
 
-import Vista.Login;
+import Vista.AUTENTICACION.Login;
 import java.awt.Color;
 import javax.swing.BorderFactory;
 import javax.swing.UIManager;

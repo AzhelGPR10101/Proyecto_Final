@@ -1,5 +1,5 @@
 
-package Vista;
+package Vista.AUTENTICACION;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -131,15 +131,15 @@ public class Login extends javax.swing.JFrame {
             case DUENIO_CON_NEGOCIO:
             case EMPLEADO_ACTIVO:
                 autenticado = true;
-                MenuPrincipal.usuarioActivo = Modelo.Sesion.getNombreUsuario();
-                MenuPrincipal menu = new MenuPrincipal();
+                Vista.PRINCIPAL.MenuPrincipal.usuarioActivo = Modelo.Sesion.getNombreUsuario();
+                Vista.PRINCIPAL.MenuPrincipal menu = new Vista.PRINCIPAL.MenuPrincipal();
                 menu.setVisible(true);
                 this.dispose();
                 break;
             case DUENIO_SIN_NEGOCIO:
                 autenticado = true;
                 JFrame frameNegocio = new JFrame("Registro de Negocio");
-                componentes.escalado.KryptonVentanaScrollable.agregarConScroll(frameNegocio, new Vista.PanelRegistroNegocio());
+                componentes.escalado.KryptonVentanaScrollable.agregarConScroll(frameNegocio, new PanelRegistroNegocio());
                 frameNegocio.setSize(1920, 1080);
                 frameNegocio.setLocationRelativeTo(null);
                 frameNegocio.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -159,7 +159,7 @@ public class Login extends javax.swing.JFrame {
 
     private void btnregistrarseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnregistrarseActionPerformed
          JFrame frameRegistro = new JFrame("Registro");
-    componentes.escalado.KryptonVentanaScrollable.agregarConScroll(frameRegistro, new Vista.PanelRegistroUsuario());
+    componentes.escalado.KryptonVentanaScrollable.agregarConScroll(frameRegistro, new PanelRegistroUsuario());
     frameRegistro.setSize(1280, 1020);
     frameRegistro.setLocationRelativeTo(null);
     frameRegistro.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

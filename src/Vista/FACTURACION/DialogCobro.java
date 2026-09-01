@@ -1,4 +1,4 @@
-package Vista;
+package Vista.FACTURACION;
 
 import javax.swing.*;
 import java.awt.*;
