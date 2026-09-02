@@ -51,6 +51,18 @@ public class Validaciones {
         }
     }
 
+    public static final double SUELDO_BASICO_UNIFICADO_ECUADOR = 460.0;
+    public static final double SUELDO_MAXIMO_PERMITIDO = 5000.0;
+
+    public static boolean validarSueldoBase(String sueldoStr) {
+        try {
+            double sueldo = Double.parseDouble(sueldoStr);
+            return sueldo >= SUELDO_BASICO_UNIFICADO_ECUADOR && sueldo <= SUELDO_MAXIMO_PERMITIDO;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
     public static boolean validarFecha(String fechaStr) {
         if (fechaStr == null || fechaStr.trim().isEmpty()) {
             return false;

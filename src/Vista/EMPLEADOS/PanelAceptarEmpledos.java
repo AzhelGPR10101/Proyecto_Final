@@ -14,7 +14,16 @@ public class PanelAceptarEmpledos extends javax.swing.JPanel {
         initComponents();
         cargarSolicitudes();
         componentes.EstiloTablaKrypton.aplicar(jtblSolicitudes);
+        iniciarAutoRefresco();
+    }
 
+    private void iniciarAutoRefresco() {
+        javax.swing.Timer timer = new javax.swing.Timer(60000, evt -> {
+            if (isShowing() && !jtblSolicitudes.isEditing()) {
+                cargarSolicitudes();
+            }
+        });
+        timer.start();
     }
 
     @Override

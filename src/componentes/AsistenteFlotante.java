@@ -15,7 +15,7 @@ public class AsistenteFlotante extends JPanel {
     private boolean abierto = false;
     public static boolean vozActiva = true;
     private boolean grabando = false;
-    private javax.swing.JPanel panelContenido;
+    private java.util.function.Consumer<String> navegador;
     private final java.util.List<String[]> historialConversacion = new java.util.ArrayList<>();
     private static final java.util.Map<String, String> MAPA_PANELES = new java.util.HashMap<>();
 
@@ -26,15 +26,21 @@ public class AsistenteFlotante extends JPanel {
         MAPA_PANELES.put("EMPLEADOS", "Empleados");
         MAPA_PANELES.put("PROVEEDORES", "Proveedores");
         MAPA_PANELES.put("FACTURACION", "PanelFacturacion");
+        MAPA_PANELES.put("VENTAS", "PanelFacturacion");
         MAPA_PANELES.put("HISTORIAL_FACTURAS", "historialFacturas");
         MAPA_PANELES.put("COMPRAS", "PanelCompras");
         MAPA_PANELES.put("PAGARES", "PanelPagares");
         MAPA_PANELES.put("EGRESOS", "PanelHistorialEgresos");
         MAPA_PANELES.put("CONFIGURACION", "Configuracion");
+        MAPA_PANELES.put("BODEGA", "DashboardBodeguero");
+        MAPA_PANELES.put("CAJA", "Cajero");
+        MAPA_PANELES.put("HISTORIAL_CIERRE_CAJA", "HistorialCierreCaja");
+        MAPA_PANELES.put("RECURSOS_HUMANOS", "DashboardRH");
+        MAPA_PANELES.put("INICIO", "Estadisticas");
     }
 
-    public void setPanelContenido(javax.swing.JPanel panelContenido) {
-        this.panelContenido = panelContenido;
+    public void setNavegador(java.util.function.Consumer<String> navegador) {
+        this.navegador = navegador;
     }
 
     public AsistenteFlotante() {
@@ -239,9 +245,8 @@ public class AsistenteFlotante extends JPanel {
                     if (m.find()) {
                         textoFinal = respuesta.substring(0, m.start()).trim();
                         String destino = MAPA_PANELES.get(m.group(1));
-                        if (destino != null && panelContenido != null) {
-                            CardLayout cl = (CardLayout) panelContenido.getLayout();
-                            cl.show(panelContenido, destino);
+                        if (destino != null && navegador != null) {
+                            navegador.accept(destino);
                         }
                     }
 

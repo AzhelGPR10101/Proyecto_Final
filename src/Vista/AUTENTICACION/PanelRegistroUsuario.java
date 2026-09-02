@@ -12,6 +12,7 @@ public class PanelRegistroUsuario extends javax.swing.JPanel {
         initComponents();
         actualizarVisibilidadCamposEmpleado();
         componentes.FiltrosTexto.aplicarSoloNumeros(txtcedula, 10);
+        componentes.FiltrosTexto.aplicarSoloNumeros(txttelefono, 10);
         txtcedula.setPlaceholder("Cédula");
         txtnombre.setPlaceholder("Nombres");
         txtapellido.setPlaceholder("Apellidos");

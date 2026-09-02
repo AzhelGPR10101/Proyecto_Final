@@ -97,8 +97,11 @@ public class ControladorSolicitud {
     }
 
     public boolean aprobar(java.awt.Component parent, String idSolicitud, String sueldoStr) {
-        if (!Validaciones.validarSueldo(sueldoStr)) {
-            JOptionPane.showMessageDialog(parent, "Ingresa un sueldo válido antes de aceptar.", "Sueldo Inválido", JOptionPane.WARNING_MESSAGE);
+        if (!Validaciones.validarSueldoBase(sueldoStr)) {
+            JOptionPane.showMessageDialog(parent,
+                    String.format("El sueldo debe estar entre $%.2f (Salario Básico Unificado) y $%.2f.",
+                            Validaciones.SUELDO_BASICO_UNIFICADO_ECUADOR, Validaciones.SUELDO_MAXIMO_PERMITIDO),
+                    "Sueldo Inválido", JOptionPane.WARNING_MESSAGE);
             return false;
         }
         double sueldo = Double.parseDouble(sueldoStr.trim());

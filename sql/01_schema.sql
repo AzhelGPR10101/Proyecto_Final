@@ -34,7 +34,8 @@ CREATE TABLE usuario (
     correo          VARCHAR(150) UNIQUE NOT NULL,
     contrasena      VARCHAR(255) NOT NULL,
     telefono        VARCHAR(15),
-    foto_perfil     VARCHAR(255)
+    foto_perfil     VARCHAR(255),
+    sesion_activa   BOOLEAN DEFAULT FALSE
 );
 
 -- secuencia + funcion + trigger para que id_usuario se autogenere como US01, US02...

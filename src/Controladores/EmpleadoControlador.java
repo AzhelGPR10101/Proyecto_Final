@@ -23,8 +23,12 @@ public class EmpleadoControlador {
             return false;
         }
 
-        if (!Controladores.Validaciones.validarSueldo(sueldoStr)) {
-            JOptionPane.showMessageDialog(parent, "El sueldo ingresado no es válido. Debe ser un número correcto.", "Sueldo Inválido", JOptionPane.ERROR_MESSAGE);
+        if (!Controladores.Validaciones.validarSueldoBase(sueldoStr)) {
+            JOptionPane.showMessageDialog(parent,
+                    String.format("El sueldo debe estar entre $%.2f (Salario Básico Unificado) y $%.2f.",
+                            Controladores.Validaciones.SUELDO_BASICO_UNIFICADO_ECUADOR,
+                            Controladores.Validaciones.SUELDO_MAXIMO_PERMITIDO),
+                    "Sueldo Inválido", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 

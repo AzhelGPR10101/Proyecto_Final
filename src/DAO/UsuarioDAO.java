@@ -123,6 +123,30 @@ public class UsuarioDAO {
         }
     }
 
+    public boolean intentarIniciarSesion(String idUsuario) {
+        String sql = "UPDATE usuario SET sesion_activa = TRUE WHERE id_usuario = ? AND sesion_activa = FALSE";
+        try (Connection con = Conexion.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, idUsuario);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean cerrarSesion(String idUsuario) {
+        String sql = "UPDATE usuario SET sesion_activa = FALSE WHERE id_usuario = ?";
+        try (Connection con = Conexion.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, idUsuario);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public boolean eliminar(String idUsuario) {
         String sql = "DELETE FROM usuario WHERE id_usuario = ?";
         try (Connection con = Conexion.getConnection();

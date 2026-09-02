@@ -10,6 +10,12 @@ public class Main {
    public static void main(String[] args) {
         System.setProperty("sun.java2d.uiScale", "1.0");
         aplicarTemaVisual();
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            String idUsuario = Modelo.Sesion.getIdUsuario();
+            if (idUsuario != null) {
+                new DAO.UsuarioDAO().cerrarSesion(idUsuario);
+            }
+        }));
         Login acceso = new Login();
         acceso.setVisible(true);
     }
@@ -55,6 +61,8 @@ public class Main {
         UIManager.put("ScrollBar.thumb", borde);
         UIManager.put("ScrollBar.thumbShadow", borde);
         UIManager.put("ScrollBar.track", fondoPopup);
+        UIManager.put("ScrollBar.width", 10);
+        UIManager.put("ScrollBarUI", componentes.escalado.EstiloScrollBarModerno.class.getName());
 
         UIManager.put("TextField.selectionBackground", seleccion);
         UIManager.put("TextField.selectionForeground", texto);

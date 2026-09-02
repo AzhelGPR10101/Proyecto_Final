@@ -27,7 +27,17 @@ public class PanelEmpleadosBuscar extends javax.swing.JPanel {
     });
 
     jcbOrden.addActionListener(e -> aplicarFiltro());
+    iniciarAutoRefresco();
 }
+
+    private void iniciarAutoRefresco() {
+        javax.swing.Timer timer = new javax.swing.Timer(60000, evt -> {
+            if (isShowing()) {
+                aplicarFiltro();
+            }
+        });
+        timer.start();
+    }
 
     @Override
     public void setVisible(boolean visible) {

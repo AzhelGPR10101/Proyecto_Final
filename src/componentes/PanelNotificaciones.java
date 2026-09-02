@@ -88,6 +88,8 @@ public class PanelNotificaciones extends JPanel {
         panelLista.add(scroll, BorderLayout.CENTER);
 
         revisarEnSegundoPlano();
+        javax.swing.Timer timerAutoRefresco = new javax.swing.Timer(60000, evt -> revisarEnSegundoPlano());
+        timerAutoRefresco.start();
     }
 
     @Override

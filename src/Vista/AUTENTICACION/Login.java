@@ -24,9 +24,10 @@ public class Login extends javax.swing.JFrame {
         java.awt.Component contenido = getContentPane().getComponent(0);
         javax.swing.JScrollPane scroll = new javax.swing.JScrollPane(contenido);
         scroll.setBorder(null);
-        scroll.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroll.getVerticalScrollBar().setUnitIncrement(24);
+        scroll.getHorizontalScrollBar().setUnitIncrement(24);
 
         getContentPane().removeAll();
         getContentPane().setLayout(new java.awt.BorderLayout());

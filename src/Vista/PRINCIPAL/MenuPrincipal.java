@@ -64,9 +64,10 @@ public class MenuPrincipal extends javax.swing.JFrame {
         avisarSiSeCerroCajaVencidaAutomaticamente();
         actualizarEstadoFacturacionPorCaja();
         activarNotas();
+        iniciarVigilanciaDeCuentaActiva();
 
         componentes.AsistenteFlotante asistenteFlotante = new componentes.AsistenteFlotante();
-        asistenteFlotante.setPanelContenido(Panelcontenido);
+        asistenteFlotante.setNavegador(this::navegarA);
         javax.swing.JLayeredPane capas = getLayeredPane();
         capas.add(asistenteFlotante, javax.swing.JLayeredPane.PALETTE_LAYER);
         asistenteFlotante.setBounds(0, 0, capas.getWidth(), capas.getHeight());
@@ -438,6 +439,14 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
     private void registrarPanelDiferido(String tag, java.util.function.Supplier<javax.swing.JComponent> fabrica) {
         fabricasPanel.put(tag, fabrica);
+    }
+
+    public void navegarA(String tag) {
+        if ("PanelFacturacion".equals(tag)) {
+            irAFacturacionSiCorresponde();
+            return;
+        }
+        mostrarPanel(tag);
     }
 
     private void mostrarPanel(String tag) {
@@ -1130,12 +1139,42 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_INICIOMouseClicked
 
     private void CERRARSESIONMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CERRARSESIONMouseClicked
+        new DAO.UsuarioDAO().cerrarSesion(Modelo.Sesion.getIdUsuario());
         Vista.AUTENTICACION.Login login = new Vista.AUTENTICACION.Login();
         login.setVisible(true);
         login.setLocationRelativeTo(null);
         Vista.IA.VozAsistente.detener();
         this.dispose();
     }//GEN-LAST:event_CERRARSESIONMouseClicked
+
+    private void iniciarVigilanciaDeCuentaActiva() {
+        if (Modelo.Sesion.getRolUsuario() == null) {
+            return;
+        }
+        javax.swing.Timer timer = new javax.swing.Timer(30000, evt -> {
+            String idUsuario = Modelo.Sesion.getIdUsuario();
+            new Thread(() -> {
+                Modelo.Empleado empleado = new DAO.EmpleadoDAO().buscarPorId(idUsuario);
+                boolean sigueActivo = empleado != null && empleado.isActivo();
+                if (!sigueActivo) {
+                    javax.swing.SwingUtilities.invokeLater(this::forzarCierrePorCuentaDesactivada);
+                }
+            }).start();
+        });
+        timer.start();
+    }
+
+    private void forzarCierrePorCuentaDesactivada() {
+        new DAO.UsuarioDAO().cerrarSesion(Modelo.Sesion.getIdUsuario());
+        Vista.IA.VozAsistente.detener();
+        javax.swing.JOptionPane.showMessageDialog(this,
+                "Tu cuenta fue desactivada por el administrador. Se cerrará tu sesión.",
+                "Cuenta desactivada", javax.swing.JOptionPane.WARNING_MESSAGE);
+        Vista.AUTENTICACION.Login login = new Vista.AUTENTICACION.Login();
+        login.setVisible(true);
+        login.setLocationRelativeTo(null);
+        this.dispose();
+    }
 
     private void EMPLEADOSMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EMPLEADOSMouseEntered
 
