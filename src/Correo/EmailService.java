@@ -15,7 +15,7 @@ import javax.mail.internet.MimeMessage;
 
 public class EmailService {
 
-    private static final String NOMBRE_REMITENTE = "Sistema de Seguridad";
+    private static final String NOMBRE_REMITENTE = "Krypton";
 
     private static final String SMTP_HOST = "smtp.gmail.com";
     private static final String SMTP_PORT = "587";
@@ -80,7 +80,22 @@ public class EmailService {
                 + "<p>Tu código de verificación es: <b style='font-size:18px; color:#6B21A8;'>" + codigo + "</b></p>"
                 + "<p>Si no solicitaste este cambio, ignora este mensaje.</p>";
 
-        message.setContent(contenidoHtml, "text/html; charset=utf-8");
+        String contenidoTexto = "Recuperación de Contraseña\n\n"
+                + "Hola " + saludo + ",\n\n"
+                + "Tu código de verificación es: " + codigo + "\n\n"
+                + "Si no solicitaste este cambio, ignora este mensaje.";
+
+        javax.mail.internet.MimeBodyPart parteTexto = new javax.mail.internet.MimeBodyPart();
+        parteTexto.setText(contenidoTexto, "utf-8");
+
+        javax.mail.internet.MimeBodyPart parteHtml = new javax.mail.internet.MimeBodyPart();
+        parteHtml.setContent(contenidoHtml, "text/html; charset=utf-8");
+
+        javax.mail.internet.MimeMultipart contenidoAlternativo = new javax.mail.internet.MimeMultipart("alternative");
+        contenidoAlternativo.addBodyPart(parteTexto);
+        contenidoAlternativo.addBodyPart(parteHtml);
+
+        message.setContent(contenidoAlternativo);
 
         Transport.send(message);
     }
