@@ -286,7 +286,7 @@ FOR EACH ROW EXECUTE FUNCTION generar_id_categoria_producto();
 CREATE TABLE producto (
     id_producto     VARCHAR(10) PRIMARY KEY,
     id_negocio      VARCHAR(10) NOT NULL REFERENCES negocio(id_negocio),
-    id_categoria    VARCHAR(10) NOT NULL REFERENCES categoria_producto(id_categoria),
+    id_categoria    VARCHAR(10) REFERENCES categoria_producto(id_categoria) ON DELETE SET NULL,
     id_tasa_iva     VARCHAR(10) NOT NULL REFERENCES tasa_iva(id_tasa_iva),
     nombre_producto VARCHAR(150) NOT NULL,
     codigo_barras   VARCHAR(50) UNIQUE,
