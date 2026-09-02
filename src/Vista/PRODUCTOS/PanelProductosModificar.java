@@ -216,8 +216,7 @@ class ButtonEditorProducto extends javax.swing.DefaultCellEditor {
                 }
 
                 if (encontrado != null) {
-                    Vista.PRODUCTOS.DialogModificarProducto dialog = new Vista.PRODUCTOS.DialogModificarProducto(encontrado);
-                    dialog.setVisible(true);
+                    Vista.PRODUCTOS.PanelDialogModificarProducto.mostrar(encontrado);
 
                     javax.swing.SwingUtilities.invokeLater(() -> {
                         Vista.PRODUCTOS.PanelProductosModificar.cargarTablaModificar(tabla);

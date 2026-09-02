@@ -678,11 +678,9 @@ public class PanelFacturacion extends javax.swing.JPanel {
         double[] totales = controladorFactura.calcularTotales(listaDetalles, descuento);
 
         java.awt.Frame ventanaPadre = (java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(this);
-        DialogCobro dialog = new DialogCobro(ventanaPadre, totales[2]);
-        dialog.setLocationRelativeTo(this);
-        dialog.setVisible(true);
+        PanelDialogCobro.ResultadoCobro resultadoCobro = PanelDialogCobro.mostrar(ventanaPadre, totales[2]);
 
-        if (!dialog.isConfirmado()) {
+        if (!resultadoCobro.confirmado()) {
             return;
         }
 
@@ -697,7 +695,7 @@ public class PanelFacturacion extends javax.swing.JPanel {
 
         boolean exito = controladorFactura.registrarFactura(
                 this, NumeroFactura.getText(), fecha, clienteFinal,
-                dialog.getMetodoPago(), listaDetalles, descuento, idEmpleadoSeleccionado
+                resultadoCobro.metodoPago(), listaDetalles, descuento, idEmpleadoSeleccionado
         );
 
         if (exito) {

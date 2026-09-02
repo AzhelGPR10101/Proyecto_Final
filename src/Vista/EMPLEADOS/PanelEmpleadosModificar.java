@@ -204,8 +204,7 @@ public static void cargarTablaModificar(javax.swing.JTable tabla) {
 
                 Modelo.Empleado empleado = Controladores.EmpleadoControlador.buscarEmpleadoPorCedula(cedula);
                 if (empleado != null) {
-                    Vista.EMPLEADOS.DialogModificarEmpleado dialogo = new Vista.EMPLEADOS.DialogModificarEmpleado(empleado);
-                    dialogo.setVisible(true);
+                    Vista.EMPLEADOS.PanelDialogModificarEmpleado.mostrar(empleado);
                 } else {
                     javax.swing.JOptionPane.showMessageDialog(null, "No se encontró el empleado con cédula: " + cedula, "Empleado no encontrado", javax.swing.JOptionPane.WARNING_MESSAGE);
                 }

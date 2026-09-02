@@ -191,8 +191,7 @@ private void aplicarFiltro() {
 
                 Modelo.Proveedores proveedor = new Controladores.ControladorProveedor().buscarPorRuc(ruc);
                 if (proveedor != null) {
-                    Vista.PROVEEDORES.DialogModificarProveedor dialogo = new Vista.PROVEEDORES.DialogModificarProveedor(proveedor);
-                    dialogo.setVisible(true);
+                    Vista.PROVEEDORES.PanelDialogModificarProveedor.mostrar(proveedor);
                 }
 
                 javax.swing.SwingUtilities.invokeLater(() -> {

@@ -198,9 +198,7 @@ public class PanelHistorialFacturas extends javax.swing.JPanel {
                             Modelo.MovimientoFinanciero.TIPO_INGRESO, f.getFecha(), f.getNumFactura(), "Factura",
                             f.getNombreEmpleado(), f.getMetodoPago(), f.getTotal(), f.getIdFactura());
                     java.awt.Frame ventanaPadre = (java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(panel);
-                    DialogDetalleFactura dialog = new DialogDetalleFactura(ventanaPadre, movimiento, detalles);
-                    dialog.setLocationRelativeTo(panel);
-                    dialog.setVisible(true);
+                    PanelDialogDetalleFactura.mostrar(ventanaPadre, movimiento, detalles);
                 }
             }
             isPushed = false;

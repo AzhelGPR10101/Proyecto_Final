@@ -2,18 +2,35 @@ package Vista.FACTURACION;
 
 public class PanelDialogDetalleFactura extends javax.swing.JPanel {
 
+    private javax.swing.JDialog ventana;
+
     public PanelDialogDetalleFactura() {
         initComponents();
         componentes.EstiloTablaKrypton.aplicar(tablaDetalle);
         tablaDetalle.setRowHeight(28);
         scrollTabla.getViewport().setBackground(componentes.EstiloTablaKrypton.FONDO_TABLA);
+        btnCerrar.addActionListener(e -> ventana.dispose());
+    }
+
+    public static void mostrar(java.awt.Frame parent, Modelo.MovimientoFinanciero movimiento,
+            java.util.List<Modelo.DetalleFactura> detalles) {
+        PanelDialogDetalleFactura panel = new PanelDialogDetalleFactura();
+        panel.cargarDatos(movimiento, detalles);
+
+        javax.swing.JDialog ventana = new javax.swing.JDialog(parent, "Detalle factura " + safe(movimiento.getReferencia()), true);
+        panel.ventana = ventana;
+        ventana.add(panel);
+        ventana.setResizable(false);
+        ventana.pack();
+        ventana.setLocationRelativeTo(parent);
+        ventana.setVisible(true);
     }
 
     private static String safe(String texto) {
         return texto != null ? texto : "";
     }
 
-    public void cargarDatos(Modelo.MovimientoFinanciero movimiento, java.util.List<Modelo.DetalleFactura> detalles) {
+    private void cargarDatos(Modelo.MovimientoFinanciero movimiento, java.util.List<Modelo.DetalleFactura> detalles) {
         lblTitulo.setText("Detalle factura " + safe(movimiento.getReferencia()));
         lblSubtitulo.setText(safe(movimiento.getDetalle()) + " · " + safe(movimiento.getFecha())
                 + " · " + safe(movimiento.getEmpleado()));
@@ -37,10 +54,6 @@ public class PanelDialogDetalleFactura extends javax.swing.JPanel {
         tablaDetalle.setModel(modelo);
 
         lblTotal.setText("Total    " + String.format("$%.2f", movimiento.getMonto()));
-    }
-
-    public javax.swing.JButton getBtnCerrar() {
-        return btnCerrar;
     }
 
     @SuppressWarnings("unchecked")

@@ -2,6 +2,10 @@ package Vista.PRODUCTOS;
 
 public class PanelDialogModificarProducto extends javax.swing.JPanel {
 
+    private String codigoOriginal;
+    private boolean guardado = false;
+    private javax.swing.JDialog ventana;
+
     public PanelDialogModificarProducto() {
         initComponents();
         cboCategoria.setModel(new javax.swing.DefaultComboBoxModel<>(
@@ -10,9 +14,27 @@ public class PanelDialogModificarProducto extends javax.swing.JPanel {
         componentes.FiltrosTexto.aplicarSoloNumeros(txtCantidad, 8);
         componentes.FiltrosTexto.aplicarSoloDecimal(txtPrecio, 8);
         componentes.FiltrosTexto.aplicarSoloNumeros(txtStockMinimo, 8);
+        btnGuardar.addActionListener(e -> guardarCambios());
+        btnCancelar.addActionListener(e -> ventana.dispose());
     }
 
-    public void cargarDatos(Modelo.Producto producto) {
+    public static boolean mostrar(Modelo.Producto producto) {
+        PanelDialogModificarProducto panel = new PanelDialogModificarProducto();
+        panel.codigoOriginal = producto.getCodigo();
+        panel.cargarDatos(producto);
+
+        javax.swing.JDialog ventana = new javax.swing.JDialog((java.awt.Frame) null, "Modificar Producto", true);
+        panel.ventana = ventana;
+        ventana.add(panel);
+        ventana.pack();
+        ventana.setLocationRelativeTo(null);
+        ventana.setResizable(false);
+        ventana.setVisible(true);
+
+        return panel.guardado;
+    }
+
+    private void cargarDatos(Modelo.Producto producto) {
         txtCodigo.setText(producto.getCodigo());
         txtNombre.setText(producto.getNombre());
         cboCategoria.setSelectedItem(producto.getCategoria());
@@ -22,36 +44,24 @@ public class PanelDialogModificarProducto extends javax.swing.JPanel {
         chkTieneIva.setSelected(producto.isTieneIva());
     }
 
-    public String getNombre() {
-        return txtNombre.getText();
-    }
+    private void guardarCambios() {
+        String categoria = (cboCategoria.getSelectedItem() == null) ? "" : cboCategoria.getSelectedItem().toString();
 
-    public String getCategoria() {
-        return (cboCategoria.getSelectedItem() == null) ? "" : cboCategoria.getSelectedItem().toString();
-    }
+        boolean exito = Controladores.ControladorProducto.actualizarProducto(
+                ventana,
+                codigoOriginal,
+                txtNombre.getText(),
+                categoria,
+                txtCantidad.getText(),
+                txtPrecio.getText(),
+                chkTieneIva.isSelected(),
+                txtStockMinimo.getText()
+        );
 
-    public String getCantidad() {
-        return txtCantidad.getText();
-    }
-
-    public String getPrecio() {
-        return txtPrecio.getText();
-    }
-
-    public boolean isTieneIva() {
-        return chkTieneIva.isSelected();
-    }
-
-    public String getStockMinimo() {
-        return txtStockMinimo.getText();
-    }
-
-    public javax.swing.JButton getBtnGuardar() {
-        return btnGuardar;
-    }
-
-    public javax.swing.JButton getBtnCancelar() {
-        return btnCancelar;
+        if (exito) {
+            guardado = true;
+            ventana.dispose();
+        }
     }
 
     @SuppressWarnings("unchecked")

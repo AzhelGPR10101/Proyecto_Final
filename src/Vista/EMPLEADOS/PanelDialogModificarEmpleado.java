@@ -2,11 +2,30 @@ package Vista.EMPLEADOS;
 
 public class PanelDialogModificarEmpleado extends javax.swing.JPanel {
 
+    private String cedulaOriginal;
+    private javax.swing.JDialog ventana;
+
     public PanelDialogModificarEmpleado() {
         initComponents();
+        btnGuardar.addActionListener(e -> guardarCambios());
+        btnCancelar.addActionListener(e -> ventana.dispose());
     }
 
-    public void cargarDatos(Modelo.Empleado empleado) {
+    public static void mostrar(Modelo.Empleado empleado) {
+        PanelDialogModificarEmpleado panel = new PanelDialogModificarEmpleado();
+        panel.cedulaOriginal = empleado.getCedula();
+        panel.cargarDatos(empleado);
+
+        javax.swing.JDialog ventana = new javax.swing.JDialog((java.awt.Frame) null, "Modificar Empleado", true);
+        panel.ventana = ventana;
+        ventana.add(panel);
+        ventana.pack();
+        ventana.setLocationRelativeTo(null);
+        ventana.setResizable(false);
+        ventana.setVisible(true);
+    }
+
+    private void cargarDatos(Modelo.Empleado empleado) {
         txtNombres.setText(empleado.getNombres());
         txtApellidos.setText(empleado.getApellidos());
         txtCedula.setText(empleado.getCedula());
@@ -15,36 +34,21 @@ public class PanelDialogModificarEmpleado extends javax.swing.JPanel {
         txtUsuario.setText(empleado.getUsername());
     }
 
-    public String getNombres() {
-        return txtNombres.getText().trim();
-    }
+    private void guardarCambios() {
+        boolean exito = Controladores.EmpleadoControlador.actualizarEmpleado(
+                ventana,
+                cedulaOriginal,
+                txtNombres.getText().trim(),
+                txtApellidos.getText().trim(),
+                txtSueldo.getText().trim(),
+                txtTelefono.getText().trim(),
+                txtUsuario.getText().trim(),
+                new String(txtPassword.getPassword())
+        );
 
-    public String getApellidos() {
-        return txtApellidos.getText().trim();
-    }
-
-    public String getSueldo() {
-        return txtSueldo.getText().trim();
-    }
-
-    public String getTelefono() {
-        return txtTelefono.getText().trim();
-    }
-
-    public String getUsuario() {
-        return txtUsuario.getText().trim();
-    }
-
-    public String getPassword() {
-        return new String(txtPassword.getPassword());
-    }
-
-    public javax.swing.JButton getBtnGuardar() {
-        return btnGuardar;
-    }
-
-    public javax.swing.JButton getBtnCancelar() {
-        return btnCancelar;
+        if (exito) {
+            ventana.dispose();
+        }
     }
 
     @SuppressWarnings("unchecked")

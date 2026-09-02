@@ -56,14 +56,12 @@ public class PanelPagares extends javax.swing.JPanel {
         Window ventana = SwingUtilities.getWindowAncestor(this);
         Frame frame = (ventana instanceof Frame) ? (Frame) ventana : null;
 
-        DialogPagoProveedor dialog = new DialogPagoProveedor(frame, seleccionado.getNombreProveedor(),
-                seleccionado.getSaldoPendiente());
-        dialog.setLocationRelativeTo(this);
-        dialog.setVisible(true);
+        PanelDialogPagoProveedor.ResultadoPago resultado = PanelDialogPagoProveedor.mostrar(frame,
+                seleccionado.getNombreProveedor(), seleccionado.getSaldoPendiente());
 
-        if (dialog.isConfirmado()) {
+        if (resultado.confirmado()) {
             boolean exito = controladorEgreso.registrarPago(this, seleccionado,
-                    dialog.getMetodoPago(), dialog.getMontoIngresado());
+                    resultado.metodoPago(), resultado.monto());
             if (exito) {
                 cargarPagares();
             }

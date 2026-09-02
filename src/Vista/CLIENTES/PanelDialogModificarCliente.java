@@ -2,6 +2,9 @@ package Vista.CLIENTES;
 
 public class PanelDialogModificarCliente extends javax.swing.JPanel {
 
+    private String cedulaOriginal;
+    private javax.swing.JDialog ventana;
+
     public PanelDialogModificarCliente() {
         initComponents();
         componentes.FiltrosTexto.aplicarSoloNumeros(txtTelefono, 10);
@@ -19,9 +22,25 @@ public class PanelDialogModificarCliente extends javax.swing.JPanel {
                 }
             }
         });
+        btnGuardar.addActionListener(e -> guardarCambios());
+        btnCancelar.addActionListener(e -> ventana.dispose());
     }
 
-    public void cargarDatos(Modelo.Cliente cliente) {
+    public static void mostrar(Modelo.Cliente cliente) {
+        PanelDialogModificarCliente panel = new PanelDialogModificarCliente();
+        panel.cedulaOriginal = cliente.getCedula();
+        panel.cargarDatos(cliente);
+
+        javax.swing.JDialog ventana = new javax.swing.JDialog((java.awt.Frame) null, "Modificar Cliente", true);
+        panel.ventana = ventana;
+        ventana.add(panel);
+        ventana.pack();
+        ventana.setLocationRelativeTo(null);
+        ventana.setResizable(false);
+        ventana.setVisible(true);
+    }
+
+    private void cargarDatos(Modelo.Cliente cliente) {
         txtNombre.setText(cliente.getNombre());
         txtApellido.setText(cliente.getApellido());
         txtCedula.setText(cliente.getCedula());
@@ -30,32 +49,57 @@ public class PanelDialogModificarCliente extends javax.swing.JPanel {
         txtCorreo.setText(cliente.getCorreo());
     }
 
-    public String getNombre() {
-        return txtNombre.getText();
-    }
+    private void guardarCambios() {
+        String nombre = Controladores.Validaciones.aMayusculas(txtNombre.getText());
+        String apellido = Controladores.Validaciones.aMayusculas(txtApellido.getText());
+        String telefono = txtTelefono.getText().trim();
+        String correo = txtCorreo.getText().trim().toLowerCase();
+        String direccion = Controladores.Validaciones.aMayusculas(txtDireccion.getText());
 
-    public String getApellido() {
-        return txtApellido.getText();
-    }
+        if (nombre.isEmpty() || apellido.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(ventana,
+                "Los campos Nombre y Apellido son obligatorios.",
+                "Campos Incompletos", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (direccion.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(ventana,
+                "El campo Dirección es obligatorio.",
+                "Campos Incompletos", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (!Controladores.Validaciones.validarTelefono(telefono)) {
+            javax.swing.JOptionPane.showMessageDialog(ventana,
+                "El número de teléfono debe tener exactamente 10 dígitos numéricos.",
+                "Error de Validación", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (!Controladores.Validaciones.validarCorreo(correo)) {
+            javax.swing.JOptionPane.showMessageDialog(ventana,
+                "Por favor, ingrese un correo electrónico válido (ej: usuario@ejemplo.com).",
+                "Error de Validación", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-    public String getDireccion() {
-        return txtDireccion.getText();
-    }
+        Modelo.Cliente cliente = new Modelo.Cliente(
+                cedulaOriginal,
+                nombre,
+                apellido,
+                telefono,
+                correo,
+                direccion
+        );
 
-    public String getTelefono() {
-        return txtTelefono.getText();
-    }
+        boolean exito = new Controladores.ControladorCliente().modificar(cliente);
 
-    public String getCorreo() {
-        return txtCorreo.getText();
-    }
-
-    public javax.swing.JButton getBtnGuardar() {
-        return btnGuardar;
-    }
-
-    public javax.swing.JButton getBtnCancelar() {
-        return btnCancelar;
+        if (exito) {
+            javax.swing.JOptionPane.showMessageDialog(ventana, "Cliente modificado con éxito.");
+            ventana.dispose();
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(ventana,
+                "No se pudo modificar el cliente.",
+                "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     @SuppressWarnings("unchecked")

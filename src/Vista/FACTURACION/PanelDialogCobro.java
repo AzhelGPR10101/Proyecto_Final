@@ -2,7 +2,12 @@ package Vista.FACTURACION;
 
 public class PanelDialogCobro extends javax.swing.JPanel {
 
+    public record ResultadoCobro(boolean confirmado, String metodoPago, double efectivo) {}
+
     private double totalFactura;
+    private boolean confirmado = false;
+    private double efectivoIngresado = 0;
+    private javax.swing.JDialog ventana;
 
     public PanelDialogCobro() {
         initComponents();
@@ -11,9 +16,29 @@ public class PanelDialogCobro extends javax.swing.JPanel {
             public void removeUpdate(javax.swing.event.DocumentEvent e) { actualizarCambio(); }
             public void changedUpdate(javax.swing.event.DocumentEvent e) { actualizarCambio(); }
         });
+        btnConfirmarPago.addActionListener(e -> confirmarPago());
+        btnCancelar.addActionListener(e -> {
+            confirmado = false;
+            ventana.dispose();
+        });
     }
 
-    public void cargarDatos(double total) {
+    public static ResultadoCobro mostrar(java.awt.Frame parent, double total) {
+        PanelDialogCobro panel = new PanelDialogCobro();
+        panel.cargarDatos(total);
+
+        javax.swing.JDialog ventana = new javax.swing.JDialog(parent, "Cobrar Factura", true);
+        panel.ventana = ventana;
+        ventana.add(panel);
+        ventana.setResizable(false);
+        ventana.pack();
+        ventana.setLocationRelativeTo(parent);
+        ventana.setVisible(true);
+
+        return new ResultadoCobro(panel.confirmado, "Efectivo", panel.efectivoIngresado);
+    }
+
+    private void cargarDatos(double total) {
         this.totalFactura = total;
         lblTotalPagar.setText(String.format("$%.2f", total));
     }
@@ -33,16 +58,20 @@ public class PanelDialogCobro extends javax.swing.JPanel {
         }
     }
 
-    public String getEfectivoTexto() {
-        return txtEfectivo.getText();
-    }
+    private void confirmarPago() {
+        try {
+            efectivoIngresado = Double.parseDouble(txtEfectivo.getText().trim());
+            if (efectivoIngresado < totalFactura) {
+                javax.swing.JOptionPane.showMessageDialog(ventana, "El efectivo es menor al total a pagar.");
+                return;
+            }
+        } catch (NumberFormatException ex) {
+            javax.swing.JOptionPane.showMessageDialog(ventana, "Ingrese un valor de efectivo válido.");
+            return;
+        }
 
-    public javax.swing.JButton getBtnConfirmarPago() {
-        return btnConfirmarPago;
-    }
-
-    public javax.swing.JButton getBtnCancelar() {
-        return btnCancelar;
+        confirmado = true;
+        ventana.dispose();
     }
 
     @SuppressWarnings("unchecked")

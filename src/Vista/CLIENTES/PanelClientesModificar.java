@@ -224,8 +224,7 @@ public class PanelClientesModificar extends javax.swing.JPanel {
 
                     Modelo.Cliente cliente = new Controladores.ControladorCliente().buscarPorCedula(cedula);
                     if (cliente != null) {
-                        Vista.CLIENTES.DialogModificarCliente dialogo = new Vista.CLIENTES.DialogModificarCliente(cliente);
-                        dialogo.setVisible(true);
+                        Vista.CLIENTES.PanelDialogModificarCliente.mostrar(cliente);
                     }
 
                     javax.swing.SwingUtilities.invokeLater(() -> {

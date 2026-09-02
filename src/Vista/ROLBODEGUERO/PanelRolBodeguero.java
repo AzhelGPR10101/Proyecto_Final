@@ -118,21 +118,17 @@ public class PanelRolBodeguero extends javax.swing.JPanel {
     }
 
     private void btnRegistrarEntradaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarEntradaActionPerformed
-        DialogMovimientoBodega dialogo = new DialogMovimientoBodega(ventanaPadre(), DialogMovimientoBodega.Modo.ENTRADA);
-        dialogo.setVisible(true);
-        refrescarDashboard(dialogo.getResultado());
+        String resultado = PanelDialogMovimientoBodega.mostrar(ventanaPadre(), PanelDialogMovimientoBodega.Modo.ENTRADA);
+        refrescarDashboard(resultado);
     }//GEN-LAST:event_btnRegistrarEntradaActionPerformed
 
     private void btnConfirmarSalidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarSalidaActionPerformed
-        DialogMovimientoBodega dialogo = new DialogMovimientoBodega(ventanaPadre(), DialogMovimientoBodega.Modo.SALIDA);
-        dialogo.setVisible(true);
-        refrescarDashboard(dialogo.getResultado());
+        String resultado = PanelDialogMovimientoBodega.mostrar(ventanaPadre(), PanelDialogMovimientoBodega.Modo.SALIDA);
+        refrescarDashboard(resultado);
     }//GEN-LAST:event_btnConfirmarSalidaActionPerformed
 
     private void btnAjustarInventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAjustarInventarioActionPerformed
-        DialogAjustarInventario dialogo = new DialogAjustarInventario(ventanaPadre());
-        dialogo.setVisible(true);
-        if (dialogo.isGuardado()) {
+        if (PanelDialogAjustarInventario.mostrar(ventanaPadre())) {
             cargarInventario();
             cargarStockPorAgotarse();
         }

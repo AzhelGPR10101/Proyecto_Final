@@ -160,9 +160,7 @@ public class PanelReporte extends javax.swing.JPanel {
         }
         List<DetalleFactura> detalles = controladorReporte.obtenerDetallePorFactura(movimiento.getIdFactura());
         java.awt.Frame ventanaPadre = (java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(this);
-        Vista.FACTURACION.DialogDetalleFactura dialog = new Vista.FACTURACION.DialogDetalleFactura(ventanaPadre, movimiento, detalles);
-        dialog.setLocationRelativeTo(this);
-        dialog.setVisible(true);
+        Vista.FACTURACION.PanelDialogDetalleFactura.mostrar(ventanaPadre, movimiento, detalles);
     }
     private void exportarReporteExcel() {
     if (movimientosMostrados.isEmpty()) {

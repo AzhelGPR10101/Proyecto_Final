@@ -8,6 +8,8 @@ public class PanelDialogAjustarInventario extends javax.swing.JPanel {
 
     private final javax.swing.DefaultListModel<Producto> modeloResultados = new javax.swing.DefaultListModel<>();
     private Producto productoSeleccionado;
+    private boolean guardado = false;
+    private javax.swing.JDialog ventana;
 
     public PanelDialogAjustarInventario() {
         initComponents();
@@ -33,8 +35,41 @@ public class PanelDialogAjustarInventario extends javax.swing.JPanel {
 
         txtBusqueda.addActionListener(e -> buscarProductos());
         btnBuscar.addActionListener(e -> buscarProductos());
+        btnGuardar.addActionListener(e -> guardar());
+        btnCancelar.addActionListener(e -> ventana.dispose());
 
         habilitarCamposAjuste(false);
+    }
+
+    public static boolean mostrar(java.awt.Frame parent) {
+        PanelDialogAjustarInventario panel = new PanelDialogAjustarInventario();
+
+        javax.swing.JDialog ventana = new javax.swing.JDialog(parent, "Ajustar Inventario", true);
+        panel.ventana = ventana;
+        ventana.add(panel);
+        ventana.pack();
+        ventana.setLocationRelativeTo(parent);
+        ventana.setResizable(false);
+        componentes.escalado.KryptonPanelScrollable.envolverJDialog(ventana);
+        ventana.setVisible(true);
+
+        return panel.guardado;
+    }
+
+    private void guardar() {
+        if (!hayProductoSeleccionado()) {
+            javax.swing.JOptionPane.showMessageDialog(ventana, "Busca y selecciona un producto antes de continuar.",
+                    "Producto no seleccionado", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        boolean exito = ControladorInventarioBodega.ajustarInventario(ventana,
+                getCodigoSeleccionado(), getUbicacion(), getLote(),
+                getStockMinimoTexto(), getStockMaximoTexto(), getStockActualTexto());
+        if (exito) {
+            guardado = true;
+            ventana.dispose();
+        }
     }
 
     private void buscarProductos() {
@@ -129,14 +164,6 @@ public class PanelDialogAjustarInventario extends javax.swing.JPanel {
 
     public String getStockActualTexto() {
         return txtStockActual.getText();
-    }
-
-    public javax.swing.JButton getBtnGuardar() {
-        return btnGuardar;
-    }
-
-    public javax.swing.JButton getBtnCancelar() {
-        return btnCancelar;
     }
 
     @SuppressWarnings("unchecked")

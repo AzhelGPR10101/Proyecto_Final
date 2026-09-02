@@ -5,9 +5,24 @@ import java.util.List;
 
 public class PanelDialogMovimientoBodega extends javax.swing.JPanel {
 
+    public enum Modo {
+        ENTRADA("Registrar Entrada"),
+        SALIDA("Confirmar Salida"),
+        TRANSFERENCIA("Transferir Bodega");
+
+        final String titulo;
+
+        Modo(String titulo) {
+            this.titulo = titulo;
+        }
+    }
+
     private final javax.swing.DefaultListModel<Producto> modeloResultados = new javax.swing.DefaultListModel<>();
     private Producto productoSeleccionado;
     private boolean esTransferencia;
+    private Modo modo;
+    private String resultado;
+    private javax.swing.JDialog ventana;
 
     public PanelDialogMovimientoBodega() {
         initComponents();
@@ -33,16 +48,61 @@ public class PanelDialogMovimientoBodega extends javax.swing.JPanel {
 
         txtBusqueda.addActionListener(e -> buscarProductos());
         btnBuscar.addActionListener(e -> buscarProductos());
+        btnConfirmar.addActionListener(e -> confirmar());
+        btnCancelar.addActionListener(e -> ventana.dispose());
 
         limpiarSeleccion();
     }
 
-    public void configurarModo(String tituloModo) {
+    public static String mostrar(java.awt.Frame parent, Modo modo) {
+        PanelDialogMovimientoBodega panel = new PanelDialogMovimientoBodega();
+        panel.modo = modo;
+        panel.configurarModo(modo.titulo);
+
+        javax.swing.JDialog ventana = new javax.swing.JDialog(parent, modo.titulo, true);
+        panel.ventana = ventana;
+        ventana.add(panel);
+        ventana.pack();
+        ventana.setLocationRelativeTo(parent);
+        ventana.setResizable(false);
+        componentes.escalado.KryptonPanelScrollable.envolverJDialog(ventana);
+        ventana.setVisible(true);
+
+        return panel.resultado;
+    }
+
+    private void configurarModo(String tituloModo) {
         lblTitulo.setText(tituloModo.toUpperCase());
         btnConfirmar.setText(tituloModo.toUpperCase());
         esTransferencia = "Transferir Bodega".equals(tituloModo);
         lblDestino.setVisible(esTransferencia);
         txtDestino.setVisible(esTransferencia);
+    }
+
+    private void confirmar() {
+        if (!hayProductoSeleccionado()) {
+            javax.swing.JOptionPane.showMessageDialog(ventana, "Busca y selecciona un producto antes de continuar.",
+                    "Producto no seleccionado", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String codigo = getCodigoSeleccionado();
+        String cantidad = getCantidadTexto();
+
+        switch (modo) {
+            case ENTRADA:
+                resultado = Controladores.ControladorInventarioBodega.registrarEntrada(ventana, codigo, cantidad);
+                break;
+            case SALIDA:
+                resultado = Controladores.ControladorInventarioBodega.confirmarSalida(ventana, codigo, cantidad);
+                break;
+            default:
+                break;
+        }
+
+        if (resultado != null) {
+            ventana.dispose();
+        }
     }
 
     private void buscarProductos() {
@@ -111,14 +171,6 @@ public class PanelDialogMovimientoBodega extends javax.swing.JPanel {
 
     public String getCantidadTexto() {
         return txtCantidad.getText();
-    }
-
-    public javax.swing.JButton getBtnConfirmar() {
-        return btnConfirmar;
-    }
-
-    public javax.swing.JButton getBtnCancelar() {
-        return btnCancelar;
     }
 
     @SuppressWarnings("unchecked")

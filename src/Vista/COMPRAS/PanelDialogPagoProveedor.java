@@ -2,30 +2,63 @@ package Vista.COMPRAS;
 
 public class PanelDialogPagoProveedor extends javax.swing.JPanel {
 
+    public record ResultadoPago(boolean confirmado, String metodoPago, double monto) {}
+
+    private double saldoPendiente;
+    private boolean confirmado = false;
+    private String metodoPagoSeleccionado = "Efectivo";
+    private double montoIngresado = 0;
+    private javax.swing.JDialog ventana;
+
     public PanelDialogPagoProveedor() {
         initComponents();
+        btnConfirmar.addActionListener(e -> confirmarPago());
+        btnCancelar.addActionListener(e -> {
+            confirmado = false;
+            ventana.dispose();
+        });
     }
 
-    public void cargarDatos(String nombreProveedor, double saldoPendiente) {
+    public static ResultadoPago mostrar(java.awt.Frame parent, String nombreProveedor, double saldoPendiente) {
+        PanelDialogPagoProveedor panel = new PanelDialogPagoProveedor();
+        panel.saldoPendiente = saldoPendiente;
+        panel.cargarDatos(nombreProveedor, saldoPendiente);
+
+        javax.swing.JDialog ventana = new javax.swing.JDialog(parent, "Pagar a Proveedor", true);
+        panel.ventana = ventana;
+        ventana.add(panel);
+        ventana.setResizable(false);
+        ventana.pack();
+        ventana.setLocationRelativeTo(parent);
+        ventana.setVisible(true);
+
+        return new ResultadoPago(panel.confirmado, panel.metodoPagoSeleccionado, panel.montoIngresado);
+    }
+
+    private void cargarDatos(String nombreProveedor, double saldoPendiente) {
         lblTitulo.setText("PAGAR A " + nombreProveedor.toUpperCase());
         lblSaldoPendiente.setText(String.format("$%.2f", saldoPendiente));
         txtMonto.setText(String.format("%.2f", saldoPendiente));
     }
 
-    public String getMetodoPago() {
-        return (String) cbMetodoPago.getSelectedItem();
-    }
-
-    public String getMontoTexto() {
-        return txtMonto.getText();
-    }
-
-    public javax.swing.JButton getBtnConfirmar() {
-        return btnConfirmar;
-    }
-
-    public javax.swing.JButton getBtnCancelar() {
-        return btnCancelar;
+    private void confirmarPago() {
+        try {
+            montoIngresado = Double.parseDouble(txtMonto.getText().trim());
+        } catch (NumberFormatException ex) {
+            javax.swing.JOptionPane.showMessageDialog(ventana, "Ingrese un monto válido.");
+            return;
+        }
+        if (montoIngresado <= 0) {
+            javax.swing.JOptionPane.showMessageDialog(ventana, "El monto debe ser mayor a cero.");
+            return;
+        }
+        if (montoIngresado > saldoPendiente + 0.005) {
+            javax.swing.JOptionPane.showMessageDialog(ventana, "El monto no puede superar el saldo pendiente.");
+            return;
+        }
+        metodoPagoSeleccionado = (String) cbMetodoPago.getSelectedItem();
+        confirmado = true;
+        ventana.dispose();
     }
 
     @SuppressWarnings("unchecked")

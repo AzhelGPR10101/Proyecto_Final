@@ -2,11 +2,30 @@ package Vista.PROVEEDORES;
 
 public class PanelDialogModificarProveedor extends javax.swing.JPanel {
 
+    private String rucOriginal;
+    private javax.swing.JDialog ventana;
+
     public PanelDialogModificarProveedor() {
         initComponents();
+        btnGuardar.addActionListener(e -> guardarCambios());
+        btnCancelar.addActionListener(e -> ventana.dispose());
     }
 
-    public void cargarDatos(Modelo.Proveedores proveedor) {
+    public static void mostrar(Modelo.Proveedores proveedor) {
+        PanelDialogModificarProveedor panel = new PanelDialogModificarProveedor();
+        panel.rucOriginal = proveedor.getRuc();
+        panel.cargarDatos(proveedor);
+
+        javax.swing.JDialog ventana = new javax.swing.JDialog((java.awt.Frame) null, "Modificar Proveedor", true);
+        panel.ventana = ventana;
+        ventana.add(panel);
+        ventana.pack();
+        ventana.setLocationRelativeTo(null);
+        ventana.setResizable(false);
+        ventana.setVisible(true);
+    }
+
+    private void cargarDatos(Modelo.Proveedores proveedor) {
         txtNombreEmpresa.setText(proveedor.getNombreEmpresa());
         txtNombreContacto.setText(proveedor.getNombreContacto());
         txtRuc.setText(proveedor.getRuc());
@@ -15,32 +34,21 @@ public class PanelDialogModificarProveedor extends javax.swing.JPanel {
         txtCorreo.setText(proveedor.getCorreo());
     }
 
-    public String getNombreEmpresa() {
-        return txtNombreEmpresa.getText();
-    }
+    private void guardarCambios() {
+        Modelo.Proveedores proveedor = new Modelo.Proveedores(
+                rucOriginal,
+                txtNombreEmpresa.getText().trim(),
+                txtNombreContacto.getText().trim(),
+                txtTelefono.getText().trim(),
+                txtCorreo.getText().trim(),
+                txtDireccion.getText().trim()
+        );
 
-    public String getNombreContacto() {
-        return txtNombreContacto.getText();
-    }
+        boolean exito = new Controladores.ControladorProveedor().modificar(proveedor);
 
-    public String getDireccion() {
-        return txtDireccion.getText();
-    }
-
-    public String getTelefono() {
-        return txtTelefono.getText();
-    }
-
-    public String getCorreo() {
-        return txtCorreo.getText();
-    }
-
-    public javax.swing.JButton getBtnGuardar() {
-        return btnGuardar;
-    }
-
-    public javax.swing.JButton getBtnCancelar() {
-        return btnCancelar;
+        if (exito) {
+            ventana.dispose();
+        }
     }
 
     @SuppressWarnings("unchecked")
