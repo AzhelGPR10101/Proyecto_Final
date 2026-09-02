@@ -99,7 +99,7 @@ private void aplicarFiltro() {
 
         jcbOrden.setFont(new java.awt.Font("Lucida Bright", 1, 18)); // NOI18N
         jcbOrden.setForeground(new java.awt.Color(255, 255, 255));
-        jcbOrden.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Bodegero", "Cajero" }));
+        jcbOrden.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Cajero", "Bodeguero", "Recursos Humanos" }));
         panelRedondo1.add(jcbOrden, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 20, 230, 30));
 
         jPanel1.add(panelRedondo1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 100, 960, 70));

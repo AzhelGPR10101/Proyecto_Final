@@ -59,7 +59,7 @@ private void aplicarFiltro() {
     String rol = (String) jcbOrden.getSelectedItem();
     String orden = (String) jcbOrden1.getSelectedItem();
 
-    mostrandoInactivos = "Inactivos".equals(rol);
+    mostrandoInactivos = "Inactivo".equals(rol);
 
     if (mostrandoInactivos) {
         listaEmpleados = new java.util.ArrayList<>();
@@ -249,7 +249,7 @@ public Object getCellEditorValue() {
 
         jcbOrden.setFont(new java.awt.Font("Lucida Bright", 1, 18)); // NOI18N
         jcbOrden.setForeground(new java.awt.Color(255, 255, 255));
-        jcbOrden.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Bodegero", "Cajero", "Inactivos" }));
+        jcbOrden.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Cajero", "Bodeguero", "Recursos Humanos", "Inactivo" }));
         panelRedondo1.add(jcbOrden, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 20, 230, 30));
 
         add(panelRedondo1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 100, 950, 70));
