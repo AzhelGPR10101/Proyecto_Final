@@ -29,6 +29,9 @@ public class ControladorModulo {
     }
 
     public boolean desactivarModulo(String idNegocio, String nombreModulo) {
+        if ("Configuración".equals(nombreModulo)) {
+            return true;
+        }
         String idModulo = moduloDAO.buscarIdPorNombre(nombreModulo);
         if (idModulo == null) {
             return false;
