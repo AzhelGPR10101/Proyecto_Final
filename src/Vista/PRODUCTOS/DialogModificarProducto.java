@@ -63,7 +63,7 @@ public class DialogModificarProducto extends JDialog {
         txtPrecio = new JTextField(18);
         txtStockMinimo = new JTextField(18);
 
-        componentes.FiltrosTexto.aplicarSoloLetras(txtNombre, 15);
+        componentes.FiltrosTexto.aplicarLetrasYNumeros(txtNombre, 150);
         componentes.FiltrosTexto.aplicarSoloNumeros(txtCantidad, 8);
         componentes.FiltrosTexto.aplicarSoloDecimal(txtPrecio, 8);
 

@@ -9,6 +9,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import Modelo.ProductoMasSolicitado;
+import Modelo.MovimientoInventario;
 
 public class ProductoDAO {
 
@@ -264,6 +266,34 @@ public class ProductoDAO {
         }
     }
 
+    public List<Producto> buscarParaBodega(String idNegocio, String texto, int limite) {
+        List<Producto> lista = new ArrayList<>();
+        String sql = "SELECT p.codigo_barras, p.nombre_producto, cp.nombre_categoria, "
+                + "p.stock_actual, p.stock_minimo, p.precio_venta, ti.porcentaje, p.fecha_vencimiento, "
+                + "p.fecha_elaboracion, p.ubicacion_pasillo, p.lote, p.stock_maximo "
+                + "FROM producto p "
+                + "JOIN categoria_producto cp ON cp.id_categoria = p.id_categoria "
+                + "JOIN tasa_iva ti ON ti.id_tasa_iva = p.id_tasa_iva "
+                + "WHERE p.id_negocio = ? AND p.estado = 'activo' "
+                + "AND (p.codigo_barras ILIKE ? OR p.nombre_producto ILIKE ?) "
+                + "ORDER BY p.nombre_producto LIMIT ?";
+        try (Connection con = Conexion.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            String comodin = "%" + texto.trim() + "%";
+            ps.setString(1, idNegocio);
+            ps.setString(2, comodin);
+            ps.setString(3, comodin);
+            ps.setInt(4, limite);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(mapearProductoBodega(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
     public List<Producto> listarBajoStock(String idNegocio, int limite) {
         List<Producto> lista = new ArrayList<>();
         String sql = "SELECT p.codigo_barras, p.nombre_producto, cp.nombre_categoria, "
@@ -288,8 +318,8 @@ public class ProductoDAO {
         return lista;
     }
 
-    public List<Object[]> listarMasSolicitados(String idNegocio, int limite) {
-        List<Object[]> lista = new ArrayList<>();
+    public List<ProductoMasSolicitado> listarMasSolicitados(String idNegocio, int limite) {
+        List<ProductoMasSolicitado> lista = new ArrayList<>();
         String sql = "SELECT p.nombre_producto, SUM(fp.cantidad) AS total_despachado "
                 + "FROM factura_producto fp "
                 + "JOIN factura f ON f.id_factura = fp.id_factura "
@@ -302,7 +332,11 @@ public class ProductoDAO {
             ps.setInt(2, limite);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    lista.add(new Object[]{rs.getString("nombre_producto"), rs.getInt("total_despachado")});
+                    ProductoMasSolicitado p = new ProductoMasSolicitado(
+                            rs.getString("nombre_producto"),
+                            rs.getInt("total_despachado")
+                    );
+                    lista.add(p);
                 }
             }
         } catch (SQLException e) {
@@ -360,8 +394,8 @@ public class ProductoDAO {
         }
     }
 
-    public List<Object[]> listarMovimientosRecientes(String idNegocio, int limite) {
-        List<Object[]> lista = new ArrayList<>();
+    public List<MovimientoInventario> listarMovimientosRecientes(String idNegocio, int limite) {
+        List<MovimientoInventario> lista = new ArrayList<>();
         String sql = "SELECT tipo, nombre_producto, cantidad, fecha, hora FROM ("
                 + "SELECT 'Entrada' AS tipo, p.nombre_producto, cp.cantidad, "
                 + "c.fecha_compra AS fecha, NULL::time AS hora, c.id_compra AS orden "
@@ -383,13 +417,13 @@ public class ProductoDAO {
             ps.setInt(3, limite);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    lista.add(new Object[]{
-                        rs.getString("tipo"),
-                        rs.getString("nombre_producto"),
-                        rs.getInt("cantidad"),
-                        rs.getDate("fecha"),
-                        rs.getTime("hora")
-                    });
+                    lista.add(new MovimientoInventario(
+                            rs.getString("tipo"),
+                            rs.getString("nombre_producto"),
+                            rs.getInt("cantidad"),
+                            rs.getDate("fecha"),
+                            rs.getTime("hora")
+                    ));
                 }
             }
         } catch (SQLException e) {

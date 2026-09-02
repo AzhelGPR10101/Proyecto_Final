@@ -109,7 +109,7 @@ public class EmpleadoDAO {
             ps.setString(1, idUsuario);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return idUsuario; // el dueño ya tiene su fila de empleado, no hay que crear nada
+                    return idUsuario;
                 }
             }
         }
@@ -170,13 +170,6 @@ public class EmpleadoDAO {
         return lista;
     }
 
-    /**
-     * "Eliminar" empleado ya NO borra el registro de la base de datos.
-     * En su lugar marca al empleado como inactivo (estado = 'inactivo'),
-     * de modo que deja de aparecer en los listados y ya no puede iniciar
-     * sesión, pero se conserva su historial de facturas y pagos, evitando
-     * el error de llave foránea que ocurría antes al intentar el DELETE.
-     */
     public boolean eliminar(String idNegocio, String cedula) {
         String sql = "UPDATE empleado SET estado = 'inactivo' WHERE id_empleado = "
                 + "(SELECT id_usuario FROM usuario WHERE cedula = ?) AND id_negocio = ?";
@@ -191,7 +184,6 @@ public class EmpleadoDAO {
         }
     }
 
-    /** Reactiva a un empleado previamente desactivado. */
     public boolean reactivar(String idNegocio, String cedula) {
         String sql = "UPDATE empleado SET estado = 'activo' WHERE id_empleado = "
                 + "(SELECT id_usuario FROM usuario WHERE cedula = ?) AND id_negocio = ?";
@@ -236,6 +228,22 @@ public class EmpleadoDAO {
         String estado = rs.getString("estado");
         emp.setEstado(estado == null ? "activo" : estado);
         return emp;
+    }
+
+    public Empleado buscarPorId(String idEmpleado) {
+        String sql = SELECT_BASE + "WHERE e.id_empleado = ?";
+        try (Connection con = Conexion.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, idEmpleado);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapear(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public String obtenerIdNegocioDeEmpleado(String idEmpleado) {

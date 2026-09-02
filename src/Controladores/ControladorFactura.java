@@ -101,6 +101,13 @@ public class ControladorFactura {
             String fecha, Cliente cliente, String metodoPago,
             List<DetalleFactura> detalles, double descuento, String idEmpleado) {
 
+        if (!new ControladorCierreCaja().facturacionHabilitadaParaSesionActual()) {
+            JOptionPane.showMessageDialog(parent,
+                    "No puedes registrar la venta: la caja está cerrada. Abre caja antes de facturar.",
+                    "Caja cerrada", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
         if (cliente == null) {
             JOptionPane.showMessageDialog(parent, "Debe seleccionar un cliente.");
             return false;

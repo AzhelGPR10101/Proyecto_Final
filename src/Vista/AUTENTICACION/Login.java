@@ -10,6 +10,7 @@ public class Login extends javax.swing.JFrame {
 
     public Login() {
         initComponents();
+        habilitarScrollSiNoCabe();
 
         setLocationRelativeTo(null);
         txtUsuario.setPlaceholder("Correo electrónico");
@@ -17,6 +18,25 @@ public class Login extends javax.swing.JFrame {
 
         txtUsuario.addActionListener(evt -> BtnIngresar.doClick());
         txtContrasenia.addActionListener(evt -> BtnIngresar.doClick());
+    }
+
+    private void habilitarScrollSiNoCabe() {
+        java.awt.Component contenido = getContentPane().getComponent(0);
+        javax.swing.JScrollPane scroll = new javax.swing.JScrollPane(contenido);
+        scroll.setBorder(null);
+        scroll.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.getVerticalScrollBar().setUnitIncrement(24);
+
+        getContentPane().removeAll();
+        getContentPane().setLayout(new java.awt.BorderLayout());
+        getContentPane().add(scroll, java.awt.BorderLayout.CENTER);
+
+        java.awt.Dimension pantalla = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+        int margenAlto = 90;
+        int anchoFinal = Math.min(getWidth(), pantalla.width);
+        int altoFinal = Math.min(getHeight(), pantalla.height - margenAlto);
+        setSize(anchoFinal, altoFinal);
     }
 
     @SuppressWarnings("unchecked")

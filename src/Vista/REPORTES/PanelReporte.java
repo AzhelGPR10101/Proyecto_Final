@@ -47,8 +47,6 @@ public class PanelReporte extends javax.swing.JPanel {
 
         txtBuscarTexto = new componentes.TextFieldModerno();
         add(txtBuscarTexto, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 190, 220, 30));
-        // Filtrado en tiempo real: igual que en Productos/Clientes, cada
-        // tecla vuelve a aplicar el filtro sin necesidad de un boton "Buscar".
         txtBuscarTexto.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             public void insertUpdate(javax.swing.event.DocumentEvent e) {
                 aplicarFiltro();
@@ -146,7 +144,6 @@ public class PanelReporte extends javax.swing.JPanel {
             txtCliente5.setText(String.format("$ %,.2f", resultado.totalEgresos));
             txtCliente2.setText(String.format("$ %,.2f", resultado.balanceNeto));
         } else {
-            // Con busqueda activa, los totales reflejan solo lo que quedo visible.
             double ingresos = 0, egresos = 0;
             for (MovimientoFinanciero m : movimientosMostrados) {
                 if (m.esIngreso()) ingresos += m.getMonto(); else egresos += m.getMonto();
@@ -388,15 +385,12 @@ public class PanelReporte extends javax.swing.JPanel {
     }//GEN-LAST:event_txtCliente2ActionPerformed
 
     private void txtClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtClienteActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_txtClienteActionPerformed
 
     private void cbCedulaClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbCedulaClienteActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_cbCedulaClienteActionPerformed
 
     private void cbUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbUsuarioActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_cbUsuarioActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

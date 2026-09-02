@@ -39,7 +39,7 @@ public class ControladorProducto {
         }
 
         if (!Validaciones.validarNombreProducto(nombre)) {
-            JOptionPane.showMessageDialog(parent, "El nombre solo puede contener letras, numeros y un maximo de 15 caracteres.", "Nombre Invalido", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(parent, "El nombre solo puede contener letras, numeros y un maximo de 150 caracteres.", "Nombre Invalido", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
@@ -168,7 +168,7 @@ public class ControladorProducto {
         }
 
         if (!Validaciones.validarNombreProducto(nombre)) {
-            JOptionPane.showMessageDialog(parent, "El nombre solo puede contener letras y un maximo de 15 caracteres.", "Nombre Invalido", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(parent, "El nombre solo puede contener letras, numeros y un maximo de 150 caracteres.", "Nombre Invalido", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 

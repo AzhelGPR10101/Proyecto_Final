@@ -6,6 +6,8 @@ public class PanelFacturacion extends javax.swing.JPanel {
     private final Controladores.ControladorCliente controladorCliente = new Controladores.ControladorCliente();
 
     private java.util.List<Modelo.DetalleFactura> listaDetalles = new java.util.ArrayList<>();
+    private java.util.List<Modelo.Producto> listaProductosDisponibles = new java.util.ArrayList<>();
+    private java.util.List<Modelo.Producto> listaProductosFiltrados = new java.util.ArrayList<>();
     private javax.swing.table.DefaultTableModel modeloTabla;
     private final javax.swing.ButtonGroup grupoTipoCliente = new javax.swing.ButtonGroup();
     private static final Modelo.Cliente CONSUMIDOR_FINAL = new Modelo.Cliente("CF", "Consumidor", "Final", "9999999999", "", "");
@@ -43,6 +45,11 @@ public class PanelFacturacion extends javax.swing.JPanel {
             }
         });
 
+        tablaProductosRegistrados.getSelectionModel().addListSelectionListener(evt -> {
+            if (!evt.getValueIsAdjusting()) {
+                seleccionarProductoDesdeBuscador();
+            }
+        });
     }
 
     @Override
@@ -51,6 +58,7 @@ public class PanelFacturacion extends javax.swing.JPanel {
         if (visible) {
             cargarClientes();
             cargarProductos();
+            cargarListaProductos();
         }
     }
 
@@ -86,8 +94,9 @@ public class PanelFacturacion extends javax.swing.JPanel {
     }
 
     private void cargarProductos() {
+        listaProductosDisponibles = Controladores.ControladorProducto.listarProductos();
         JCProductos.removeAllItems();
-        for (Modelo.Producto p : Controladores.ControladorProducto.listarProductos()) {
+        for (Modelo.Producto p : listaProductosDisponibles) {
             JCProductos.addItem(p);
         }
     }
@@ -494,28 +503,45 @@ public class PanelFacturacion extends javax.swing.JPanel {
     }
 
     private void cargarListaProductos() {
-        String texto = txtBuscarProductoLista.getText().trim();
+        String texto = txtBuscarProductoLista.getText().trim().toLowerCase();
         String categoria = (String) JCCatalogoLista.getSelectedItem();
 
         javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
-                new String[]{"Nombre", "Categoria", "Precio Unit."}, 0) {
+                new String[]{"Nombre", "Categoria", "Cantidad", "Precio Unit."}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
 
-        for (Modelo.Producto p : Controladores.ControladorProducto.filtrarProductos(texto, null)) {
-            if (categoria == null || categoria.equals("Todos") || categoria.equals(p.getCategoria())) {
+        listaProductosFiltrados = new java.util.ArrayList<>();
+        for (Modelo.Producto p : listaProductosDisponibles) {
+            boolean coincideTexto = texto.isEmpty()
+                    || p.getNombre().toLowerCase().contains(texto)
+                    || p.getCodigo().toLowerCase().contains(texto);
+            boolean coincideCategoria = categoria == null || categoria.equals("Todos") || categoria.equals(p.getCategoria());
+
+            if (coincideTexto && coincideCategoria) {
+                listaProductosFiltrados.add(p);
                 modelo.addRow(new Object[]{
                     p.getNombre(),
                     p.getCategoria(),
+                    p.getCantidad(),
                     String.format("%.2f", p.getPrecioUnitario())
                 });
             }
         }
 
         tablaProductosRegistrados.setModel(modelo);
+    }
+
+    private void seleccionarProductoDesdeBuscador() {
+        int fila = tablaProductosRegistrados.getSelectedRow();
+        if (fila < 0 || fila >= listaProductosFiltrados.size()) {
+            return;
+        }
+        Modelo.Producto seleccionado = listaProductosFiltrados.get(fila);
+        JCProductos.setSelectedItem(seleccionado);
     }
 
     private void llenarDatosCliente() {
@@ -533,6 +559,18 @@ public class PanelFacturacion extends javax.swing.JPanel {
             txtClienteDireccion.setText("");
             txtClienteCorreo.setText("");
             txtClienteTelefono.setText("");
+        }
+    }
+
+    private void ajustarCantidadEnCatalogo(String nombreProducto, int delta) {
+        javax.swing.table.DefaultTableModel modeloCatalogo
+                = (javax.swing.table.DefaultTableModel) tablaProductosRegistrados.getModel();
+        for (int i = 0; i < modeloCatalogo.getRowCount(); i++) {
+            if (modeloCatalogo.getValueAt(i, 0).equals(nombreProducto)) {
+                int actual = (int) modeloCatalogo.getValueAt(i, 2);
+                modeloCatalogo.setValueAt(actual + delta, i, 2);
+                break;
+            }
         }
     }
     private void BtnAñadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAñadirActionPerformed
@@ -568,10 +606,10 @@ public class PanelFacturacion extends javax.swing.JPanel {
         Modelo.DetalleFactura detalle = resultado.detalle;
 
         if (resultado.indiceActualizado != -1) {
-            // El producto ya estaba en el carrito: sumamos cantidad en vez de duplicar fila
             listaDetalles.set(resultado.indiceActualizado, detalle);
             modeloTabla.setValueAt(detalle.getCantidad(), resultado.indiceActualizado, 3);
             modeloTabla.setValueAt(String.format("%.2f", detalle.getSubtotal()), resultado.indiceActualizado, 6);
+            ajustarCantidadEnCatalogo(seleccionado.getNombre(), -cantidad);
         } else {
             listaDetalles.add(detalle);
 
@@ -587,6 +625,7 @@ public class PanelFacturacion extends javax.swing.JPanel {
                 textoIva,
                 String.format("%.2f", detalle.getSubtotal())
             });
+            ajustarCantidadEnCatalogo(seleccionado.getNombre(), -cantidad);
         }
 
         txt_cantidad.setText("");
@@ -609,8 +648,9 @@ public class PanelFacturacion extends javax.swing.JPanel {
         );
 
         if (respuesta == javax.swing.JOptionPane.YES_OPTION) {
-            listaDetalles.remove(filaSeleccionada);
+            Modelo.DetalleFactura eliminado = listaDetalles.remove(filaSeleccionada);
             modeloTabla.removeRow(filaSeleccionada);
+            ajustarCantidadEnCatalogo(eliminado.getNombreProducto(), eliminado.getCantidad());
 
             for (int i = 0; i < modeloTabla.getRowCount(); i++) {
                 int nuevoNum = i + 1;
@@ -695,11 +735,9 @@ public class PanelFacturacion extends javax.swing.JPanel {
     }//GEN-LAST:event_JCClienteActionPerformed
 
     private void JCProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JCProductosActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_JCProductosActionPerformed
 
     private void txtBuscarProductoListaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarProductoListaActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_txtBuscarProductoListaActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

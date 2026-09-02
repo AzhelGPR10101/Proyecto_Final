@@ -49,15 +49,15 @@ public class PanelRolBodeguero extends javax.swing.JPanel {
     }
 
     private void cargarMasSolicitados() {
-        List<Object[]> masSolicitados = ControladorInventarioBodega.listarMasSolicitados(3);
+        List<Modelo.ProductoMasSolicitado> masSolicitados = ControladorInventarioBodega.listarMasSolicitados(3);
         javax.swing.JLabel[] nombres = {lblMasSolNombre1, lblMasSolNombre2, lblMasSolNombre3};
         javax.swing.JLabel[] cantidades = {lblMasSolCantidad1, lblMasSolCantidad2, lblMasSolCantidad3};
 
         for (int i = 0; i < nombres.length; i++) {
             if (i < masSolicitados.size()) {
-                Object[] fila = masSolicitados.get(i);
-                nombres[i].setText((String) fila[0]);
-                cantidades[i].setText(fila[1] + " vend.");
+                Modelo.ProductoMasSolicitado p = masSolicitados.get(i);
+                nombres[i].setText(p.getNombreProducto());
+                cantidades[i].setText(p.getTotalDespachado() + " vend.");
             } else {
                 nombres[i].setText("-");
                 cantidades[i].setText("");
@@ -93,18 +93,14 @@ public class PanelRolBodeguero extends javax.swing.JPanel {
 
     private void cargarMovimientosRecientes() {
         DefaultListModel<String> modelo = new DefaultListModel<>();
-        List<Object[]> movimientos = ControladorInventarioBodega.listarMovimientosRecientes(8);
+        List<Modelo.MovimientoInventario> movimientos = ControladorInventarioBodega.listarMovimientosRecientes(8);
 
         if (movimientos.isEmpty()) {
             modelo.addElement("Aun no hay movimientos registrados.");
         } else {
-            for (Object[] m : movimientos) {
-                String tipo = String.valueOf(m[0]);
-                String nombre = String.valueOf(m[1]);
-                int cantidad = ((Number) m[2]).intValue();
-                java.sql.Date fecha = (java.sql.Date) m[3];
-                String fechaTexto = fecha == null ? "" : fecha.toLocalDate().toString();
-                modelo.addElement(tipo + "  |  " + nombre + "  |  " + cantidad + " uds.  |  " + fechaTexto);
+            for (Modelo.MovimientoInventario m : movimientos) {
+                String fechaTexto = m.getFecha() == null ? "" : m.getFecha().toLocalDate().toString();
+                modelo.addElement(m.getTipo() + "  |  " + m.getNombreProducto() + "  |  " + m.getCantidad() + " uds.  |  " + fechaTexto);
             }
         }
         listaMovimientos.setModel(modelo);
@@ -156,6 +152,7 @@ public class PanelRolBodeguero extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jDialog1 = new javax.swing.JDialog();
         lblTituloDashboard = new javax.swing.JLabel();
         panelInventario = new componentes.PanelRedondo();
         lblTituloInventario = new javax.swing.JLabel();
@@ -225,6 +222,9 @@ public class PanelRolBodeguero extends javax.swing.JPanel {
             }
         });
         jScrollPaneInventario.setViewportView(tablaInventario);
+        if (tablaInventario.getColumnModel().getColumnCount() > 0) {
+            tablaInventario.getColumnModel().getColumn(0).setPreferredWidth(100);
+        }
 
         panelInventario.add(jScrollPaneInventario, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 55, 1110, 700));
 
@@ -360,6 +360,7 @@ public class PanelRolBodeguero extends javax.swing.JPanel {
     private componentes.BotonModerno btnRegistrarEntrada;
     private javax.swing.JLabel iconMasSolicitados;
     private javax.swing.JLabel iconStockAgotarse;
+    private javax.swing.JDialog jDialog1;
     private javax.swing.JScrollPane jScrollPaneInventario;
     private javax.swing.JScrollPane jScrollPaneMovimientos;
     private javax.swing.JScrollPane jScrollPaneNotas;

@@ -106,23 +106,9 @@ public class NotificacionDAO {
             return false;
         }
     }
-    // Cerrojo en memoria: evita que dos hilos de esta misma aplicacion
-    // (por ejemplo MenuPrincipal al iniciar sesion y PanelNotificaciones
-    // revisando en segundo plano) ejecuten "verificar y luego insertar"
-    // al mismo tiempo y generen una notificacion duplicada.
+
     private static final Object LOCK_INSERCION = new Object();
 
-    /**
-     * Inserta la notificacion solo si no existe ya una del mismo tipo sin
-     * leer para ese usuario. A diferencia de la version anterior (que hacia
-     * un SELECT y despues un INSERT en dos pasos separados, dejando una
-     * ventana de tiempo donde dos hilos podian pasar el mismo chequeo),
-     * esto se resuelve en dos capas:
-     *   1) Un bloque "synchronized" serializa los hilos de este proceso.
-     *   2) El propio INSERT es atomico: usa "INSERT ... SELECT ... WHERE
-     *      NOT EXISTS" en una sola sentencia SQL, en vez de un SELECT
-     *      separado seguido de un INSERT.
-     */
     public boolean insertarSiNoExiste(Notificacion n) {
         synchronized (LOCK_INSERCION) {
             String sql = "INSERT INTO notificacion (id_usuario, tipo, mensaje) "

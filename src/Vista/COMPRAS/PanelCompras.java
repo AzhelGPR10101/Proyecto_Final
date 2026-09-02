@@ -94,8 +94,6 @@ public class PanelCompras extends javax.swing.JPanel {
         listaProveedores = controladorCompra.filtrarProveedores(texto);
         llenarComboProveedores(listaProveedores);
 
-        // Autocompletar: si la busqueda deja un unico proveedor coincidiendo,
-        // se selecciona automaticamente en el combo para agilizar el registro.
         if (!texto.isEmpty() && listaProveedores.size() == 1) {
             cbProveedor.setSelectedIndex(1);
         }
@@ -530,31 +528,24 @@ Proveedores proveedor = (idxProveedor > 0) ? listaProveedores.get(idxProveedor -
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void txtBuscarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarProveedorActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_txtBuscarProveedorActionPerformed
 
     private void txtNumFacturaProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNumFacturaProveedorActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_txtNumFacturaProveedorActionPerformed
 
     private void txtCostoUnitarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCostoUnitarioActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_txtCostoUnitarioActionPerformed
 
     private void txtCantidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCantidadActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_txtCantidadActionPerformed
 
     private void cbProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbProveedorActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_cbProveedorActionPerformed
 
     private void cbProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbProductoActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_cbProductoActionPerformed
 
     private void cbMetodoPagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbMetodoPagoActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_cbMetodoPagoActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

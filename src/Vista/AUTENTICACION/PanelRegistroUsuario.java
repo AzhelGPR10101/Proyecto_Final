@@ -1,7 +1,6 @@
 package Vista.AUTENTICACION;
 
 import java.awt.Window;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 

@@ -84,8 +84,6 @@ public class PanelHistorialCierreCaja extends javax.swing.JPanel {
                 c.getFechaFin() != null ? c.getFechaFin() : "-",
                 String.format("$%.2f", c.getMontoInicial()),
                 String.format("$%.2f", c.getTotalEfectivo()),
-                String.format("$%.2f", c.getTotalTarjeta()),
-                String.format("$%.2f", c.getTotalTransferencia()),
                 String.format("$%.2f", c.getMontoEsperado()),
                 String.format("$%.2f", c.getMontoReal()),
                 String.format("$%.2f", c.getDiferencia()),
@@ -126,7 +124,7 @@ public class PanelHistorialCierreCaja extends javax.swing.JPanel {
             return;
         }
         try {
-            String[] encabezados = {"Empleado", "Apertura", "Cierre", "Monto Inicial", "Efectivo", "Tarjeta", "Transferencia", "Esperado", "Real", "Diferencia", "Estado"};
+            String[] encabezados = {"Empleado", "Apertura", "Cierre", "Monto Inicial", "Efectivo", "Esperado", "Real", "Diferencia", "Estado"};
             List<String[]> filas = new ArrayList<>();
             for (CierreCaja c : listaCierres) {
                 filas.add(new String[]{
@@ -135,8 +133,6 @@ public class PanelHistorialCierreCaja extends javax.swing.JPanel {
                     c.getFechaFin() != null ? c.getFechaFin() : "-",
                     String.format("%.2f", c.getMontoInicial()),
                     String.format("%.2f", c.getTotalEfectivo()),
-                    String.format("%.2f", c.getTotalTarjeta()),
-                    String.format("%.2f", c.getTotalTransferencia()),
                     String.format("%.2f", c.getMontoEsperado()),
                     String.format("%.2f", c.getMontoReal()),
                     String.format("%.2f", c.getDiferencia()),
@@ -182,11 +178,11 @@ public class PanelHistorialCierreCaja extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Empleado", "Apertura", "Cierre", "Monto Inicial", "Efectivo", "Tarjeta", "Transferencia", "Esperado", "Real", "Diferencia", "Estado"
+                "Empleado", "Apertura", "Cierre", "Monto Inicial", "Efectivo", "Esperado", "Real", "Diferencia", "Estado"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {

@@ -17,11 +17,73 @@ public class ControladorCierreCaja {
     }
 
     public EstadoTurno obtenerEstadoTurno() {
+        cerrarTurnoVencidoSilenciosamente();
         CierreCaja cierre = cierreCajaDAO.obtenerCierreDeHoy();
         if (cierre == null) {
             return EstadoTurno.SIN_ABRIR;
         }
         return cierre.estaAbierta() ? EstadoTurno.ABIERTO : EstadoTurno.YA_CERRADO;
+    }
+
+    private CierreCaja cerrarTurnoVencidoSilenciosamente() {
+        CierreCaja turnoVencido = cierreCajaDAO.obtenerCierreAbiertoAnteriorAHoy();
+        if (turnoVencido == null) {
+            return null;
+        }
+        try {
+            String fechaInicio = turnoVencido.getFechaInicio();
+            java.sql.Date fecha = java.sql.Date.valueOf(fechaInicio.substring(0, 10));
+
+            Map<MetodoPago, Double> totales = cierreCajaDAO.calcularTotalesPorFecha(
+                    turnoVencido.getIdEmpleado(), fecha);
+            double efectivo = totales.getOrDefault(MetodoPago.EFECTIVO, 0.0);
+            double tarjeta = totales.getOrDefault(MetodoPago.TARJETA, 0.0);
+            double transferencia = totales.getOrDefault(MetodoPago.TRANSFERENCIA, 0.0);
+            double montoEsperado = turnoVencido.getMontoInicial() + efectivo;
+
+            turnoVencido.setTotalEfectivo(efectivo);
+            turnoVencido.setTotalTarjeta(tarjeta);
+            turnoVencido.setTotalTransferencia(transferencia);
+            turnoVencido.setMontoEsperado(montoEsperado);
+            turnoVencido.setMontoReal(montoEsperado);
+            turnoVencido.setDiferencia(0);
+
+            cierreCajaDAO.cerrarTurno(turnoVencido);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return turnoVencido;
+    }
+
+    public String cerrarAutomaticamenteTurnoVencidoSiExiste() {
+        CierreCaja turnoVencido = cerrarTurnoVencidoSilenciosamente();
+        if (turnoVencido == null) {
+            return null;
+        }
+        String fechaBonita = turnoVencido.getFechaInicio();
+        try {
+            fechaBonita = java.time.LocalDate.parse(turnoVencido.getFechaInicio().substring(0, 10))
+                    .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        } catch (Exception e) {
+        }
+        return String.format(
+                "Se detecto que la caja del %s quedo abierta y no se cerro manualmente.%n"
+                + "Se cerro automaticamente con un monto esperado de $%.2f (sin diferencia registrada).%n"
+                + "Ya puedes abrir la caja de hoy con normalidad.",
+                fechaBonita, turnoVencido.getMontoEsperado());
+    }
+
+    public boolean esRolCajero(String rol) {
+        return rol != null
+                && ("Cajero".equalsIgnoreCase(rol) || "Vendedor".equalsIgnoreCase(rol));
+    }
+
+    public boolean facturacionHabilitadaParaSesionActual() {
+        String rol = Modelo.Sesion.getRolUsuario();
+        if (!esRolCajero(rol)) {
+            return true;
+        }
+        return obtenerEstadoTurno() == EstadoTurno.ABIERTO;
     }
 
     public CierreCaja obtenerTurnoDeHoy() {

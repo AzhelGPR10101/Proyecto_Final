@@ -65,14 +65,12 @@
             <Component class="javax.swing.JTable" name="tabla">
               <Properties>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                  <Table columnCount="11" rowCount="0">
+                  <Table columnCount="9" rowCount="0">
                     <Column editable="false" title="Empleado" type="java.lang.Object"/>
                     <Column editable="false" title="Apertura" type="java.lang.Object"/>
                     <Column editable="false" title="Cierre" type="java.lang.Object"/>
                     <Column editable="false" title="Monto Inicial" type="java.lang.Object"/>
                     <Column editable="false" title="Efectivo" type="java.lang.Object"/>
-                    <Column editable="false" title="Tarjeta" type="java.lang.Object"/>
-                    <Column editable="false" title="Transferencia" type="java.lang.Object"/>
                     <Column editable="false" title="Esperado" type="java.lang.Object"/>
                     <Column editable="false" title="Real" type="java.lang.Object"/>
                     <Column editable="false" title="Diferencia" type="java.lang.Object"/>

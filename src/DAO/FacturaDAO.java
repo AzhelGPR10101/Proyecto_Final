@@ -70,6 +70,9 @@ public class FacturaDAO {
                 + "VALUES (?,?,?,?,?,?,?,?,?,?) RETURNING id_factura";
         String sqlDetalle = "INSERT INTO factura_producto (id_factura, id_producto, cantidad, precio_unitario, valor_iva, subtotal) "
                 + "VALUES (?,?,?,?,?,?)";
+        String sqlMovimiento = "INSERT INTO movimiento_inventario "
+        + "(id_producto, id_tipo_movimiento, id_factura, cantidad, stock_anterior, stock_nuevo) "
+        + "VALUES (?,?,?,?,?,?)";
 
         try (Connection con = Conexion.getConnection()) {
             con.setAutoCommit(false);

@@ -236,23 +236,18 @@ public class PanelAperturaCaja extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAbrirCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbrirCajaActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_btnAbrirCajaActionPerformed
 
     private void txtNotasAperturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNotasAperturaActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_txtNotasAperturaActionPerformed
 
     private void txtMontoInicialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMontoInicialActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_txtMontoInicialActionPerformed
 
     private void txtFechaHoraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFechaHoraActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_txtFechaHoraActionPerformed
 
     private void txtCajeroResponsableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCajeroResponsableActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_txtCajeroResponsableActionPerformed
 
 

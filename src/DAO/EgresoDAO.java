@@ -13,9 +13,6 @@ public class EgresoDAO {
 
     public List<Egreso> listarPorNegocio(String idNegocio) {
         List<Egreso> lista = new ArrayList<>();
-        // Se unen egreso -> pago_proveedor -> pagare -> compra -> proveedor para poder
-        // mostrar el numero de factura del proveedor y el nombre del proveedor en
-        // columnas separadas, en vez de tenerlo todo mezclado en "concepto".
         String sql = "SELECT e.id_egreso, e.fecha, e.monto, e.concepto, mp.nombre_metodo_pago, "
                 + "c.num_factura_proveedor, "
                 + "TRIM(COALESCE(prov.nombre_proveedor, '') || ' ' || COALESCE(prov.apellido_proveedor, '')) AS proveedor "

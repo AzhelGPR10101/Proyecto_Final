@@ -37,6 +37,54 @@ public class CierreCajaDAO {
         return null;
     }
 
+    public CierreCaja obtenerCierreAbiertoAnteriorAHoy() {
+        String idEmpleado = Sesion.getIdUsuario();
+        String sql = "SELECT id_cierre, id_empleado, fecha_inicio, fecha_fin, "
+                + "monto_inicial, notas_apertura, "
+                + "total_efectivo, total_tarjeta, total_transferencia, "
+                + "monto_esperado, monto_real, diferencia "
+                + "FROM cierre_caja "
+                + "WHERE id_empleado = ? AND fecha_fin IS NULL AND fecha_inicio::date < CURRENT_DATE "
+                + "ORDER BY fecha_inicio DESC LIMIT 1";
+        try (Connection con = Conexion.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, idEmpleado);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapear(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Map<MetodoPago, Double> calcularTotalesPorFecha(String idEmpleado, java.sql.Date fecha) {
+        Map<MetodoPago, Double> totales = new HashMap<>();
+        String sql = "SELECT mp.nombre_metodo_pago, SUM(f.total) AS total "
+                + "FROM factura f "
+                + "JOIN metodo_pago mp ON mp.id_metodo_pago = f.id_metodo_pago "
+                + "WHERE f.id_empleado = ? AND f.fecha = ? "
+                + "GROUP BY mp.nombre_metodo_pago";
+        try (Connection con = Conexion.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, idEmpleado);
+            ps.setDate(2, fecha);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    MetodoPago metodo = MetodoPago.desdeNombreEnBD(rs.getString("nombre_metodo_pago"));
+                    if (metodo != null) {
+                        totales.put(metodo, rs.getDouble("total"));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return totales;
+    }
+
     public String abrirTurno(double montoInicial, String notasApertura) {
         String idNegocio = Sesion.getIdNegocio();
         String idEmpleado = Sesion.getIdUsuario();

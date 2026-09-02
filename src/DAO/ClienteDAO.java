@@ -59,7 +59,6 @@ public class ClienteDAO {
             return false;
         }
 
-        // Si ya existe (activo o inactivo) ese documento en este negocio, revisamos su estado.
         String sqlBuscar = "SELECT activo FROM cliente WHERE numero_documento = ? AND id_negocio = ?";
         try (Connection con = Conexion.getConnection();
              PreparedStatement ps = con.prepareStatement(sqlBuscar)) {
@@ -69,9 +68,8 @@ public class ClienteDAO {
                 if (rs.next()) {
                     boolean estaActivo = rs.getBoolean("activo");
                     if (estaActivo) {
-                        return false; // ya existe y esta activo: no se duplica
+                        return false;
                     }
-                    // Estaba eliminado (inactivo): lo reactivamos con los datos nuevos.
                     String sqlReactivar = "UPDATE cliente SET nombre_cliente = ?, telefono = ?, correo = ?, direccion = ?, activo = TRUE "
                             + "WHERE numero_documento = ? AND id_negocio = ?";
                     try (PreparedStatement psReact = con.prepareStatement(sqlReactivar)) {

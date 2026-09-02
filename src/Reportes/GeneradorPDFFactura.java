@@ -107,7 +107,6 @@ public class GeneradorPDFFactura {
         yTot -= 20;
         texto(cs, "F1", 8, MARGEN_IZQ, yTot, "Estado SRI: " + safe(factura.getEstadoSri()));
 
-        // ===== Firma y agradecimiento =====
         int yFirma = yTot - 60;
         texto(cs, "F2", 10, 240, yFirma, "Cancelacion y firma");
         linea(cs, 220, yFirma - 35, 400, yFirma - 35);

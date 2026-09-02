@@ -103,7 +103,6 @@ public class PanelClientesModificar extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jcbOrdenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbOrdenActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_jcbOrdenActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

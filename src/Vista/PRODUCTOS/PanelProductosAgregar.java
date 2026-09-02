@@ -395,7 +395,6 @@ public class PanelProductosAgregar extends javax.swing.JPanel {
     }//GEN-LAST:event_jTextField6ActionPerformed
 
     private void jtStockMinimoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtStockMinimoActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_jtStockMinimoActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

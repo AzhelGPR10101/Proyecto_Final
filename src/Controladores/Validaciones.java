@@ -108,7 +108,7 @@ public class Validaciones {
             return false;
         }
         String limpio = nombre.trim();
-        if (limpio.isEmpty() || limpio.length() > 15) {
+        if (limpio.isEmpty() || limpio.length() > 150) {
             return false;
         }
         return limpio.matches("[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+");

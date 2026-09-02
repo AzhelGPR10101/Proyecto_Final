@@ -11,17 +11,45 @@ import java.util.List;
 
 public class PagoEmpleadoDAO {
 
-    public String registrar(PagoEmpleado pago) {
-        String sql = "INSERT INTO pago_empleado (id_empleado, periodo, monto, observaciones) "
+    public String registrarConEgreso(PagoEmpleado pago, String idNegocio, String conceptoEgreso) {
+        String sqlPago = "INSERT INTO pago_empleado (id_empleado, periodo, monto, observaciones) "
                 + "VALUES (?, ?, ?, ?) RETURNING id_pago";
-        try (Connection con = Conexion.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, pago.getIdEmpleado());
-            ps.setString(2, pago.getPeriodo());
-            ps.setDouble(3, pago.getMonto());
-            ps.setString(4, pago.getObservaciones());
-            try (ResultSet rs = ps.executeQuery()) {
-                return rs.next() ? rs.getString(1) : null;
+        String sqlEgreso = "INSERT INTO egreso (id_negocio, fecha, monto, concepto) "
+                + "VALUES (?, CURRENT_DATE, ?, ?)";
+
+        try (Connection con = Conexion.getConnection()) {
+            con.setAutoCommit(false);
+            try {
+                String idPago;
+                try (PreparedStatement ps = con.prepareStatement(sqlPago)) {
+                    ps.setString(1, pago.getIdEmpleado());
+                    ps.setString(2, pago.getPeriodo());
+                    ps.setDouble(3, pago.getMonto());
+                    ps.setString(4, pago.getObservaciones());
+                    try (ResultSet rs = ps.executeQuery()) {
+                        if (!rs.next()) {
+                            con.rollback();
+                            return null;
+                        }
+                        idPago = rs.getString(1);
+                    }
+                }
+
+                try (PreparedStatement ps = con.prepareStatement(sqlEgreso)) {
+                    ps.setString(1, idNegocio);
+                    ps.setDouble(2, pago.getMonto());
+                    ps.setString(3, conceptoEgreso);
+                    ps.executeUpdate();
+                }
+
+                con.commit();
+                return idPago;
+            } catch (SQLException e) {
+                con.rollback();
+                e.printStackTrace();
+                return null;
+            } finally {
+                con.setAutoCommit(true);
             }
         } catch (SQLException e) {
             e.printStackTrace();

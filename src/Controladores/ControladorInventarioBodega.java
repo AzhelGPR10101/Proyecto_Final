@@ -5,6 +5,8 @@ import Modelo.Producto;
 import Modelo.Sesion;
 import javax.swing.JOptionPane;
 import java.util.List;
+import Modelo.ProductoMasSolicitado;
+import Modelo.MovimientoInventario;
 
 public class ControladorInventarioBodega {
 
@@ -30,7 +32,7 @@ public class ControladorInventarioBodega {
         return productoDAO.listarBajoStock(idNegocio, limite);
     }
 
-    public static List<Object[]> listarMovimientosRecientes(int limite) {
+    public static List<MovimientoInventario> listarMovimientosRecientes(int limite) {
         String idNegocio = Sesion.getIdNegocio();
         if (idNegocio == null) {
             return new java.util.ArrayList<>();
@@ -38,12 +40,20 @@ public class ControladorInventarioBodega {
         return productoDAO.listarMovimientosRecientes(idNegocio, limite);
     }
 
-    public static List<Object[]> listarMasSolicitados(int limite) {
+    public static List<ProductoMasSolicitado> listarMasSolicitados(int limite) {
         String idNegocio = Sesion.getIdNegocio();
         if (idNegocio == null) {
             return new java.util.ArrayList<>();
         }
         return productoDAO.listarMasSolicitados(idNegocio, limite);
+    }
+
+    public static List<Producto> buscarParaBodega(String texto) {
+        String idNegocio = Sesion.getIdNegocio();
+        if (idNegocio == null || texto == null || texto.trim().isEmpty()) {
+            return new java.util.ArrayList<>();
+        }
+        return productoDAO.buscarParaBodega(idNegocio, texto.trim(), 15);
     }
 
     public static Producto buscarPorCodigo(java.awt.Component parent, String codigo) {

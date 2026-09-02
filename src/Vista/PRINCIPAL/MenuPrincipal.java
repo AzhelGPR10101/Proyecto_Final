@@ -39,7 +39,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
         registrarPanelDiferido("PanelHistorialEgresos", Vista.COMPRAS.PanelHistorialEgresos::new);
         registrarPanelDiferido("DashboardBodeguero", Vista.ROLBODEGUERO.PanelRolBodeguero::new);
         registrarPanelDiferido("HistorialCierreCaja", Vista.RolCajero.PanelHistorialCierreCaja::new);
-        registrarPanelDiferido("Cajero", Vista.RolCajero.PanelCajero::new);
+        registrarPanelDiferido("Cajero", () -> {
+            Vista.RolCajero.PanelCajero panelCajero = new Vista.RolCajero.PanelCajero();
+            panelCajero.setAlCambiarEstadoCaja(this::actualizarEstadoFacturacionPorCaja);
+            return panelCajero;
+        });
         registrarPanelDiferido("DashboardRH", Vista.RECURSOSHUMANOS.PanelDashboardRH::new);
         panelNotasInstancia.setAlGuardarOEliminar(() -> {
             cargarListaNotas();
@@ -49,6 +53,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         });
 
         habilitarScrollDelContenido();
+        habilitarScrollDelTopbar();
 
         int anchoDiseno = getContentPane().getWidth();
         int altoDiseno = getContentPane().getHeight();
@@ -56,6 +61,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
         activarClickEnNombreDeApartado();
         activarNavegacionCaja();
         aplicarVisibilidadPorModulosYRol();
+        avisarSiSeCerroCajaVencidaAutomaticamente();
+        actualizarEstadoFacturacionPorCaja();
         activarNotas();
 
         componentes.AsistenteFlotante asistenteFlotante = new componentes.AsistenteFlotante();
@@ -94,7 +101,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 || "Talento Humano".equalsIgnoreCase(rol)) {
             mostrarPanel("DashboardRH");
         } else if ("Vendedor".equalsIgnoreCase(rol) || "Cajero".equalsIgnoreCase(rol)) {
-            mostrarPanel("PanelFacturacion");
+            if (facturacionHabilitadaPorCaja()) {
+                mostrarPanel("PanelFacturacion");
+            } else {
+                mostrarPanel("Cajero");
+            }
         } else {
             cargarDashboardPrincipal();
             mostrarPanel("card2");
@@ -304,7 +315,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         });
         VENTASYFACTURAS.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                mostrarPanel("PanelFacturacion");
+                irAFacturacionSiCorresponde();
             }
         });
         BODEGA.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -348,6 +359,52 @@ public class MenuPrincipal extends javax.swing.JFrame {
         }
     }
 
+    private boolean facturacionHabilitadaPorCaja() {
+        return new Controladores.ControladorCierreCaja().facturacionHabilitadaParaSesionActual();
+    }
+
+    private void avisarSiSeCerroCajaVencidaAutomaticamente() {
+        String rol = Modelo.Sesion.getRolUsuario();
+        if (!new Controladores.ControladorCierreCaja().esRolCajero(rol)) {
+            return;
+        }
+        String aviso = new Controladores.ControladorCierreCaja().cerrarAutomaticamenteTurnoVencidoSiExiste();
+        if (aviso != null) {
+            javax.swing.JOptionPane.showMessageDialog(this, aviso,
+                    "Cierre automático de caja", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    private void actualizarEstadoFacturacionPorCaja() {
+        boolean habilitado = facturacionHabilitadaPorCaja();
+        VENTASYFACTURAS.setEnabled(habilitado);
+        MenuFacturas.setEnabled(habilitado);
+    }
+
+    private void irAFacturacionSiCorresponde() {
+        if (!facturacionHabilitadaPorCaja()) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Debes abrir caja antes de facturar. Serás redirigido al módulo de Caja.",
+                    "Caja cerrada", javax.swing.JOptionPane.WARNING_MESSAGE);
+            mostrarPanel("Cajero");
+            return;
+        }
+        mostrarPanel("PanelFacturacion");
+    }
+
+    private void habilitarScrollDelTopbar() {
+        setJMenuBar(null);
+
+        javax.swing.JScrollPane scrollTopbar = new javax.swing.JScrollPane(jMenuBar1);
+        scrollTopbar.setBorder(null);
+        scrollTopbar.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollTopbar.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        scrollTopbar.setPreferredSize(new java.awt.Dimension(0, jMenuBar1.getPreferredSize().height));
+        scrollTopbar.getHorizontalScrollBar().setUnitIncrement(24);
+
+        getContentPane().add(scrollTopbar, java.awt.BorderLayout.NORTH);
+    }
+
     private void habilitarScrollDelContenido() {
         java.awt.Dimension preferido = Panelcontenido.getPreferredSize();
         int pixelesPorCm = (int) Math.round(java.awt.Toolkit.getDefaultToolkit().getScreenResolution() / 2.54);
@@ -356,7 +413,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
         javax.swing.JScrollPane scroll = new javax.swing.JScrollPane(Panelcontenido);
         scroll.setBorder(null);
-        scroll.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroll.getVerticalScrollBar().setUnitIncrement(24);
 
@@ -368,14 +425,6 @@ public class MenuPrincipal extends javax.swing.JFrame {
         activarScrollDinamicoPorPagina();
     }
 
-    /**
-     * El JScrollPane de arriba se arma una sola vez, con el tamaño de la
-     * pantalla mas grande de todas (asi funciona CardLayout.getPreferredSize).
-     * Esto hace que en pantallas chicas el scroll se pase de largo. En vez
-     * de tocar los ~30 lugares que hacen cl.show(Panelcontenido, "..."),
-     * se le pone un listener a cada tarjeta ya agregada: cada vez que una
-     * se hace visible, el area de scroll se ajusta a SU tamaño real.
-     */
     private void activarScrollDinamicoPorPagina() {
         for (java.awt.Component tarjeta : Panelcontenido.getComponents()) {
             tarjeta.addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -1139,7 +1188,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_MenuVentasActionPerformed
 
     private void MenuFacturasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuFacturasActionPerformed
-        mostrarPanel("PanelFacturacion");
+        irAFacturacionSiCorresponde();
     }//GEN-LAST:event_MenuFacturasActionPerformed
 
     private void ComprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComprasActionPerformed
