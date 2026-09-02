@@ -124,7 +124,10 @@ public class UsuarioDAO {
     }
 
     public boolean intentarIniciarSesion(String idUsuario) {
-        String sql = "UPDATE usuario SET sesion_activa = TRUE WHERE id_usuario = ? AND sesion_activa = FALSE";
+        String sql = "UPDATE usuario SET sesion_activa = TRUE, sesion_actualizada_en = NOW() "
+                + "WHERE id_usuario = ? AND (sesion_activa = FALSE "
+                + "OR sesion_actualizada_en IS NULL "
+                + "OR sesion_actualizada_en < NOW() - INTERVAL '5 minutes')";
         try (Connection con = Conexion.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, idUsuario);
@@ -132,6 +135,17 @@ public class UsuarioDAO {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public void actualizarLatidoSesion(String idUsuario) {
+        String sql = "UPDATE usuario SET sesion_actualizada_en = NOW() WHERE id_usuario = ? AND sesion_activa = TRUE";
+        try (Connection con = Conexion.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, idUsuario);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 

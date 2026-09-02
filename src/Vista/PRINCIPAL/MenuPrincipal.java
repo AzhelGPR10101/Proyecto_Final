@@ -65,6 +65,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         actualizarEstadoFacturacionPorCaja();
         activarNotas();
         iniciarVigilanciaDeCuentaActiva();
+        iniciarLatidoDeSesion();
 
         componentes.AsistenteFlotante asistenteFlotante = new componentes.AsistenteFlotante();
         asistenteFlotante.setNavegador(this::navegarA);
@@ -1160,6 +1161,14 @@ public class MenuPrincipal extends javax.swing.JFrame {
                     javax.swing.SwingUtilities.invokeLater(this::forzarCierrePorCuentaDesactivada);
                 }
             }).start();
+        });
+        timer.start();
+    }
+
+    private void iniciarLatidoDeSesion() {
+        String idUsuario = Modelo.Sesion.getIdUsuario();
+        javax.swing.Timer timer = new javax.swing.Timer(120000, evt -> {
+            new Thread(() -> new DAO.UsuarioDAO().actualizarLatidoSesion(idUsuario)).start();
         });
         timer.start();
     }
