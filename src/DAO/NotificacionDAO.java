@@ -27,18 +27,30 @@ public class NotificacionDAO {
         }
     }
 
+    private static final int INTENTOS_MAXIMOS_ID_DUPLICADO = 3;
+
+    private static boolean esClaveDuplicada(SQLException e) {
+        return "23505".equals(e.getSQLState());
+    }
+
     public boolean insertar(Notificacion n) {
         String sql = "INSERT INTO notificacion (id_usuario, tipo, mensaje) VALUES (?, ?, ?)";
-        try (Connection con = Conexion.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, n.getIdUsuario());
-            ps.setString(2, n.getTipo());
-            ps.setString(3, n.getMensaje());
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+        for (int intento = 1; intento <= INTENTOS_MAXIMOS_ID_DUPLICADO; intento++) {
+            try (Connection con = Conexion.getConnection();
+                 PreparedStatement ps = con.prepareStatement(sql)) {
+                ps.setString(1, n.getIdUsuario());
+                ps.setString(2, n.getTipo());
+                ps.setString(3, n.getMensaje());
+                return ps.executeUpdate() > 0;
+            } catch (SQLException e) {
+                if (esClaveDuplicada(e) && intento < INTENTOS_MAXIMOS_ID_DUPLICADO) {
+                    continue;
+                }
+                e.printStackTrace();
+                return false;
+            }
         }
+        return false;
     }
 
     public List<Notificacion> listarPorUsuario(String idUsuario, boolean soloNoLeidas) {
@@ -117,18 +129,24 @@ public class NotificacionDAO {
                     + "  SELECT 1 FROM notificacion "
                     + "  WHERE id_usuario = ? AND tipo = ? AND leido = false"
                     + ")";
-            try (Connection con = Conexion.getConnection();
-                 PreparedStatement ps = con.prepareStatement(sql)) {
-                ps.setString(1, n.getIdUsuario());
-                ps.setString(2, n.getTipo());
-                ps.setString(3, n.getMensaje());
-                ps.setString(4, n.getIdUsuario());
-                ps.setString(5, n.getTipo());
-                return ps.executeUpdate() > 0;
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return false;
+            for (int intento = 1; intento <= INTENTOS_MAXIMOS_ID_DUPLICADO; intento++) {
+                try (Connection con = Conexion.getConnection();
+                     PreparedStatement ps = con.prepareStatement(sql)) {
+                    ps.setString(1, n.getIdUsuario());
+                    ps.setString(2, n.getTipo());
+                    ps.setString(3, n.getMensaje());
+                    ps.setString(4, n.getIdUsuario());
+                    ps.setString(5, n.getTipo());
+                    return ps.executeUpdate() > 0;
+                } catch (SQLException e) {
+                    if (esClaveDuplicada(e) && intento < INTENTOS_MAXIMOS_ID_DUPLICADO) {
+                        continue;
+                    }
+                    e.printStackTrace();
+                    return false;
+                }
             }
+            return false;
         }
     }
     public String obtenerIdUsuarioDuenoPorNegocio(String idNegocio) {
