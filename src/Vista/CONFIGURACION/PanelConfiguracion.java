@@ -191,6 +191,7 @@ public class PanelConfiguracion extends javax.swing.JPanel {
 
     private void avisarYCerrarSesion() {
         javax.swing.Timer temporizador = new javax.swing.Timer(5000, evt -> {
+            new DAO.UsuarioDAO().cerrarSesion(idUsuario);
             Sesion.cerrar();
             java.awt.Window ventanaActual = javax.swing.SwingUtilities.getWindowAncestor(this);
             Vista.AUTENTICACION.Login login = new Vista.AUTENTICACION.Login();

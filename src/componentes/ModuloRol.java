@@ -162,7 +162,7 @@ public class ModuloRol extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
 
-                if (e.getSource() != checkActivo) {
+                if (e.getSource() != checkActivo && checkActivo.isEnabled()) {
 
                     checkActivo.setSelected(
                             !checkActivo.isSelected()
