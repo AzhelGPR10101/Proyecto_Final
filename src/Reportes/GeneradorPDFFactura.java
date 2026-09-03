@@ -142,7 +142,22 @@ public class GeneradorPDFFactura {
     }
 
     private static String safe(String s) {
-        return s == null ? "" : s;
+        if (s == null) {
+            return "";
+        }
+        StringBuilder out = new StringBuilder(s.length());
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            switch (c) {
+                case '‘': case '’': c = '\''; break;
+                case '“': case '”': c = '"'; break;
+                case '–': case '—': c = '-'; break;
+                case '…': out.append("..."); continue;
+                default: break;
+            }
+            out.append(c <= 0xFF ? c : '?');
+        }
+        return out.toString();
     }
 
     private static String recortar(String s, int max) {

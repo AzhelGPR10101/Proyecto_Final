@@ -37,6 +37,11 @@ public class ControladorNota {
     }
 
     public boolean actualizar(java.awt.Component parent, String idNota, String titulo, String cuerpo) {
+        String idUsuario = Sesion.getIdUsuario();
+        if (idUsuario == null) {
+            JOptionPane.showMessageDialog(parent, "No hay una sesión activa.", "Sesión requerida", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
         if (titulo == null || titulo.trim().isEmpty()) {
             JOptionPane.showMessageDialog(parent, "El título de la nota es obligatorio.", "Campo vacío", JOptionPane.WARNING_MESSAGE);
             return false;
@@ -45,7 +50,7 @@ public class ControladorNota {
         nota.setIdNota(idNota);
         nota.setTitulo(titulo.trim());
         nota.setCuerpo(cuerpo);
-        boolean exito = notaDAO.actualizar(nota);
+        boolean exito = notaDAO.actualizar(nota, idUsuario);
         if (!exito) {
             JOptionPane.showMessageDialog(parent, "No se pudo actualizar la nota.", "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -61,7 +66,12 @@ public class ControladorNota {
     }
 
     public boolean eliminar(java.awt.Component parent, String idNota) {
-        boolean exito = notaDAO.eliminar(idNota);
+        String idUsuario = Sesion.getIdUsuario();
+        if (idUsuario == null) {
+            JOptionPane.showMessageDialog(parent, "No hay una sesión activa.", "Sesión requerida", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        boolean exito = notaDAO.eliminar(idNota, idUsuario);
         if (!exito) {
             JOptionPane.showMessageDialog(parent, "No se pudo eliminar la nota.", "Error", JOptionPane.ERROR_MESSAGE);
         }

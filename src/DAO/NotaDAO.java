@@ -45,13 +45,14 @@ public class NotaDAO {
         return lista;
     }
 
-    public boolean actualizar(Nota nota) {
-        String sql = "UPDATE nota SET titulo = ?, cuerpo = ?, fecha_modificacion = CURRENT_TIMESTAMP WHERE id_nota = ?";
+    public boolean actualizar(Nota nota, String idUsuario) {
+        String sql = "UPDATE nota SET titulo = ?, cuerpo = ?, fecha_modificacion = CURRENT_TIMESTAMP WHERE id_nota = ? AND id_usuario = ?";
         try (Connection con = Conexion.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, nota.getTitulo());
             ps.setString(2, nota.getCuerpo());
             ps.setString(3, nota.getIdNota());
+            ps.setString(4, idUsuario);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -59,11 +60,12 @@ public class NotaDAO {
         }
     }
 
-    public boolean eliminar(String idNota) {
-        String sql = "DELETE FROM nota WHERE id_nota = ?";
+    public boolean eliminar(String idNota, String idUsuario) {
+        String sql = "DELETE FROM nota WHERE id_nota = ? AND id_usuario = ?";
         try (Connection con = Conexion.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, idNota);
+            ps.setString(2, idUsuario);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
