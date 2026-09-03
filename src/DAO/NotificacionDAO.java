@@ -27,7 +27,7 @@ public class NotificacionDAO {
         }
     }
 
-    private static final int INTENTOS_MAXIMOS_ID_DUPLICADO = 3;
+    private static final int INTENTOS_MAXIMOS_ID_DUPLICADO = 15;
 
     private static boolean esClaveDuplicada(SQLException e) {
         return "23505".equals(e.getSQLState());
