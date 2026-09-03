@@ -57,6 +57,21 @@ public class Conexion {
         return DriverManager.getConnection(url, usuario, password);
     }
 
+    private static boolean conexionEnEstadoUtilizable(Connection real) {
+        try {
+            if (real.isClosed()) {
+                return false;
+            }
+            if (!real.getAutoCommit()) {
+                real.rollback();
+                real.setAutoCommit(true);
+            }
+            return true;
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
     public static Connection getConnection() throws SQLException {
         asegurarConfiguracion();
 
@@ -82,9 +97,10 @@ public class Conexion {
                 new Class<?>[]{Connection.class},
                 (Object proxy, Method method, Object[] args) -> {
                     if ("close".equals(method.getName())) {
-                        if (!POOL.offer(real)) {
-                            real.close();
+                        if (conexionEnEstadoUtilizable(real) && POOL.offer(real)) {
+                            return null;
                         }
+                        real.close();
                         return null;
                     }
                     try {
