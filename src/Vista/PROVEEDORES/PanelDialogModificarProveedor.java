@@ -35,19 +35,54 @@ public class PanelDialogModificarProveedor extends javax.swing.JPanel {
     }
 
     private void guardarCambios() {
+        String nombreEmpresa = txtNombreEmpresa.getText().trim();
+        String nombreContacto = txtNombreContacto.getText().trim();
+        String telefono = txtTelefono.getText().trim();
+        String correo = txtCorreo.getText().trim().toLowerCase();
+        String direccion = txtDireccion.getText().trim();
+
+        if (nombreEmpresa.isEmpty() || nombreContacto.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(ventana,
+                "Los campos Empresa y Contacto son obligatorios.",
+                "Campos Incompletos", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (direccion.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(ventana,
+                "El campo Dirección es obligatorio.",
+                "Campos Incompletos", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (!Controladores.Validaciones.validarTelefono(telefono)) {
+            javax.swing.JOptionPane.showMessageDialog(ventana,
+                "El número de teléfono debe tener exactamente 10 dígitos numéricos.",
+                "Error de Validación", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (!Controladores.Validaciones.validarCorreo(correo)) {
+            javax.swing.JOptionPane.showMessageDialog(ventana,
+                "Por favor, ingrese un correo electrónico válido (ej: usuario@ejemplo.com).",
+                "Error de Validación", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         Modelo.Proveedores proveedor = new Modelo.Proveedores(
                 rucOriginal,
-                txtNombreEmpresa.getText().trim(),
-                txtNombreContacto.getText().trim(),
-                txtTelefono.getText().trim(),
-                txtCorreo.getText().trim(),
-                txtDireccion.getText().trim()
+                nombreEmpresa,
+                nombreContacto,
+                telefono,
+                correo,
+                direccion
         );
 
         boolean exito = new Controladores.ControladorProveedor().modificar(proveedor);
 
         if (exito) {
             ventana.dispose();
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(ventana,
+                "No se pudo modificar el proveedor.",
+                "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
     }
 

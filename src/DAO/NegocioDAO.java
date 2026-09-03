@@ -58,18 +58,29 @@ public class NegocioDAO {
     public String registrar(Negocio negocio) {
         String sql = "INSERT INTO negocio (id_usuario, id_direccion, nombre_negocio, ruc_negocio, correo_contacto) VALUES (?,?,?,?,?) RETURNING id_negocio";
         try (Connection con = Conexion.getConnection()) {
-            String idDireccion = crearDireccion(con, negocio.getCallePrincipal(), negocio.getCalleSecundaria(), negocio.getCiudad());
-            try (PreparedStatement ps = con.prepareStatement(sql)) {
-                ps.setString(1, negocio.getIdUsuario());
-                ps.setString(2, idDireccion);
-                ps.setString(3, negocio.getNombreNegocio());
-                ps.setString(4, negocio.getRucNegocio());
-                ps.setString(5, negocio.getCorreoContacto());
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        return rs.getString(1);
+            con.setAutoCommit(false);
+            try {
+                String idDireccion = crearDireccion(con, negocio.getCallePrincipal(), negocio.getCalleSecundaria(), negocio.getCiudad());
+                try (PreparedStatement ps = con.prepareStatement(sql)) {
+                    ps.setString(1, negocio.getIdUsuario());
+                    ps.setString(2, idDireccion);
+                    ps.setString(3, negocio.getNombreNegocio());
+                    ps.setString(4, negocio.getRucNegocio());
+                    ps.setString(5, negocio.getCorreoContacto());
+                    try (ResultSet rs = ps.executeQuery()) {
+                        if (rs.next()) {
+                            String idNegocio = rs.getString(1);
+                            con.commit();
+                            return idNegocio;
+                        }
                     }
                 }
+                con.rollback();
+            } catch (SQLException e) {
+                con.rollback();
+                e.printStackTrace();
+            } finally {
+                con.setAutoCommit(true);
             }
         } catch (SQLException e) {
             e.printStackTrace();
