@@ -87,14 +87,12 @@ public class PanelDialogModificarEmpleado extends javax.swing.JPanel {
         lblNombres.setForeground(new java.awt.Color(255, 255, 255));
         lblNombres.setText("Nombres*:");
         add(lblNombres, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 65, 120, 25));
-
         add(txtNombres, new org.netbeans.lib.awtextra.AbsoluteConstraints(155, 65, 225, 25));
 
         lblApellidos.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
         lblApellidos.setForeground(new java.awt.Color(255, 255, 255));
         lblApellidos.setText("Apellidos*:");
         add(lblApellidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 100, 120, 25));
-
         add(txtApellidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(155, 100, 225, 25));
 
         lblCedula.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
@@ -111,28 +109,24 @@ public class PanelDialogModificarEmpleado extends javax.swing.JPanel {
         lblSueldo.setForeground(new java.awt.Color(255, 255, 255));
         lblSueldo.setText("Sueldo*:");
         add(lblSueldo, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 170, 120, 25));
-
         add(txtSueldo, new org.netbeans.lib.awtextra.AbsoluteConstraints(155, 170, 225, 25));
 
         lblTelefono.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
         lblTelefono.setForeground(new java.awt.Color(255, 255, 255));
         lblTelefono.setText("Teléfono*:");
         add(lblTelefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 205, 120, 25));
-
         add(txtTelefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(155, 205, 225, 25));
 
         lblUsuario.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
         lblUsuario.setForeground(new java.awt.Color(255, 255, 255));
         lblUsuario.setText("Usuario*:");
         add(lblUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 240, 120, 25));
-
         add(txtUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(155, 240, 225, 25));
 
         lblPassword.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
         lblPassword.setForeground(new java.awt.Color(255, 255, 255));
         lblPassword.setText("Nueva Contraseña:");
         add(lblPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 275, 125, 25));
-
         add(txtPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(155, 275, 225, 25));
 
         lblNotaPassword.setFont(new java.awt.Font("Segoe UI", 2, 11)); // NOI18N

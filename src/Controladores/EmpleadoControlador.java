@@ -2,6 +2,7 @@
 package Controladores;
 
 import DAO.EmpleadoDAO;
+import DAO.UsuarioDAO;
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
 public class EmpleadoControlador {
 
     private static final EmpleadoDAO empleadoDAO = new EmpleadoDAO();
+    private static final UsuarioDAO usuarioDAO = new UsuarioDAO();
 
     public static Modelo.Empleado buscarEmpleadoPorCedula(String cedula) {
         return empleadoDAO.buscarPorCedula(cedula);
@@ -44,6 +46,11 @@ public class EmpleadoControlador {
             JOptionPane.showMessageDialog(parent,
                     "La contraseña debe tener entre 8 y 16 caracteres, con mayúscula, minúscula, número y carácter especial.",
                     "Contraseña Inválida", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (usuarioDAO.existeCorreoExcluyendoPorCedula(usuario.trim(), cedulaOriginal)) {
+            JOptionPane.showMessageDialog(parent, "Ya existe otra cuenta registrada con ese correo.", "Correo Duplicado", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 

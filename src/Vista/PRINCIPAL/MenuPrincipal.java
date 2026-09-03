@@ -15,6 +15,9 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private Controladores.ControladorEstadistica.TipoPeriodo periodoActualInicio = Controladores.ControladorEstadistica.TipoPeriodo.HOY;
     private final java.util.Map<String, java.util.function.Supplier<javax.swing.JComponent>> fabricasPanel = new java.util.HashMap<>();
     private final java.util.Set<String> panelesCargados = new java.util.HashSet<>();
+    private componentes.PanelNotificaciones panelNotificacionesInstancia;
+    private javax.swing.Timer timerVigilanciaCuenta;
+    private javax.swing.Timer timerLatidoSesion;
 
     public MenuPrincipal() {
         initComponents();
@@ -73,6 +76,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         capas.add(asistenteFlotante, javax.swing.JLayeredPane.PALETTE_LAYER);
         asistenteFlotante.setBounds(0, 0, capas.getWidth(), capas.getHeight());
         componentes.PanelNotificaciones panelNotificaciones = new componentes.PanelNotificaciones();
+        panelNotificacionesInstancia = panelNotificaciones;
         capas.add(panelNotificaciones, javax.swing.JLayeredPane.PALETTE_LAYER);
         panelNotificaciones.setBounds(0, 0, capas.getWidth(), capas.getHeight());
         centrarCampanaEnTopbar(panelNotificaciones, capas);
@@ -1145,14 +1149,27 @@ public class MenuPrincipal extends javax.swing.JFrame {
         login.setVisible(true);
         login.setLocationRelativeTo(null);
         Vista.IA.VozAsistente.detener();
+        detenerTareasDeSegundoPlano();
         this.dispose();
     }//GEN-LAST:event_CERRARSESIONMouseClicked
+
+    private void detenerTareasDeSegundoPlano() {
+        if (panelNotificacionesInstancia != null) {
+            panelNotificacionesInstancia.detener();
+        }
+        if (timerVigilanciaCuenta != null) {
+            timerVigilanciaCuenta.stop();
+        }
+        if (timerLatidoSesion != null) {
+            timerLatidoSesion.stop();
+        }
+    }
 
     private void iniciarVigilanciaDeCuentaActiva() {
         if (Modelo.Sesion.getRolUsuario() == null) {
             return;
         }
-        javax.swing.Timer timer = new javax.swing.Timer(30000, evt -> {
+        timerVigilanciaCuenta = new javax.swing.Timer(30000, evt -> {
             String idUsuario = Modelo.Sesion.getIdUsuario();
             new Thread(() -> {
                 Modelo.Empleado empleado = new DAO.EmpleadoDAO().buscarPorId(idUsuario);
@@ -1162,20 +1179,21 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 }
             }).start();
         });
-        timer.start();
+        timerVigilanciaCuenta.start();
     }
 
     private void iniciarLatidoDeSesion() {
         String idUsuario = Modelo.Sesion.getIdUsuario();
-        javax.swing.Timer timer = new javax.swing.Timer(120000, evt -> {
+        timerLatidoSesion = new javax.swing.Timer(120000, evt -> {
             new Thread(() -> new DAO.UsuarioDAO().actualizarLatidoSesion(idUsuario)).start();
         });
-        timer.start();
+        timerLatidoSesion.start();
     }
 
     private void forzarCierrePorCuentaDesactivada() {
         new DAO.UsuarioDAO().cerrarSesion(Modelo.Sesion.getIdUsuario());
         Vista.IA.VozAsistente.detener();
+        detenerTareasDeSegundoPlano();
         javax.swing.JOptionPane.showMessageDialog(this,
                 "Tu cuenta fue desactivada por el administrador. Se cerrará tu sesión.",
                 "Cuenta desactivada", javax.swing.JOptionPane.WARNING_MESSAGE);

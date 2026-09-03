@@ -137,7 +137,19 @@ public class ControladorFactura {
             return false;
         }
 
+        if (descuento < 0) {
+            JOptionPane.showMessageDialog(parent, "El descuento no puede ser negativo.", "Descuento inválido", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
         double[] totales = calcularTotales(detalles, descuento);
+
+        if (totales[2] <= 0) {
+            JOptionPane.showMessageDialog(parent,
+                    "El descuento no puede ser mayor o igual al total de la factura.",
+                    "Descuento inválido", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
 
         cliente.setIdCliente(idCliente);
 

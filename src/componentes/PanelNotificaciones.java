@@ -14,6 +14,7 @@ public class PanelNotificaciones extends JPanel {
     private final PanelRedondo panelLista;
     private final JPanel contenedorItems;
     private final ControladorNotificacion controlador = new ControladorNotificacion();
+    private final javax.swing.Timer timerAutoRefresco;
     private boolean abierto = false;
     private int centroYTopbar = -1;
 
@@ -88,8 +89,12 @@ public class PanelNotificaciones extends JPanel {
         panelLista.add(scroll, BorderLayout.CENTER);
 
         revisarEnSegundoPlano();
-        javax.swing.Timer timerAutoRefresco = new javax.swing.Timer(60000, evt -> revisarEnSegundoPlano());
+        timerAutoRefresco = new javax.swing.Timer(60000, evt -> revisarEnSegundoPlano());
         timerAutoRefresco.start();
+    }
+
+    public void detener() {
+        timerAutoRefresco.stop();
     }
 
     @Override

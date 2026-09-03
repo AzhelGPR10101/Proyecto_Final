@@ -79,6 +79,21 @@ public class UsuarioDAO {
         return null;
     }
 
+    public boolean existeCorreoExcluyendoPorCedula(String correo, String cedula) {
+        String sql = "SELECT 1 FROM usuario WHERE correo = ? AND cedula <> ?";
+        try (Connection con = Conexion.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, correo);
+            ps.setString(2, cedula);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public boolean existeCorreoExcluyendo(String correo, String idUsuario) {
         String sql = "SELECT 1 FROM usuario WHERE correo = ? AND id_usuario <> ?";
         try (Connection con = Conexion.getConnection();
