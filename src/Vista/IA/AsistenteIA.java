@@ -121,11 +121,14 @@ public class AsistenteIA {
                 .uri(URI.create(URL))
                 .header("Authorization", "Bearer " + apiKey)
                 .header("Content-Type", "application/json")
+                .timeout(java.time.Duration.ofSeconds(15))
                 .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .build();
 
-        HttpResponse<String> response = HttpClient.newHttpClient()
-                .send(request, HttpResponse.BodyHandlers.ofString());
+        HttpClient cliente = HttpClient.newBuilder()
+                .connectTimeout(java.time.Duration.ofSeconds(8))
+                .build();
+        HttpResponse<String> response = cliente.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() != 200) {
             return "Error (codigo " + response.statusCode() + "). Revisa tu API KEY.";
