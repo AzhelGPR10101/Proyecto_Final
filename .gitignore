@@ -1,15 +1,15 @@
 # Datos sensibles (usar config.properties.example como plantilla)
 config.properties
 
-# Documentacion interna: contiene backup completo de la BD y credenciales reales
-/documentacion/
-
 # Build artifacts de NetBeans/Ant
 /build/
 /dist/
 
 # Configuración privada de NetBeans
 nbproject/private/
+
+# Documentacion interna: contiene backup completo de la BD y credenciales reales
+/documentacion/
 
 # Sistema
 Thumbs.db
