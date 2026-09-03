@@ -53,17 +53,27 @@ public class ProveedorDAO {
         }
         String sql = "INSERT INTO proveedor (id_negocio, id_direccion, ruc, nombre_proveedor, apellido_proveedor, correo, telefono) VALUES (?,?,?,?,?,?,?)";
         try (Connection con = Conexion.getConnection()) {
-            String idDireccion = obtenerOCrearDireccion(con, nuevoProveedor.getDireccion());
-            try (PreparedStatement ps = con.prepareStatement(sql)) {
-                ps.setString(1, idNegocio);
-                ps.setString(2, idDireccion);
-                ps.setString(3, nuevoProveedor.getRuc());
-                ps.setString(4, nuevoProveedor.getNombreEmpresa());
-                ps.setString(5, nuevoProveedor.getNombreContacto());
-                ps.setString(6, nuevoProveedor.getCorreo());
-                ps.setString(7, nuevoProveedor.getTelefono());
-                ps.executeUpdate();
+            con.setAutoCommit(false);
+            try {
+                String idDireccion = obtenerOCrearDireccion(con, nuevoProveedor.getDireccion());
+                try (PreparedStatement ps = con.prepareStatement(sql)) {
+                    ps.setString(1, idNegocio);
+                    ps.setString(2, idDireccion);
+                    ps.setString(3, nuevoProveedor.getRuc());
+                    ps.setString(4, nuevoProveedor.getNombreEmpresa());
+                    ps.setString(5, nuevoProveedor.getNombreContacto());
+                    ps.setString(6, nuevoProveedor.getCorreo());
+                    ps.setString(7, nuevoProveedor.getTelefono());
+                    ps.executeUpdate();
+                }
+                con.commit();
                 return true;
+            } catch (SQLException e) {
+                con.rollback();
+                e.printStackTrace();
+                return false;
+            } finally {
+                con.setAutoCommit(true);
             }
         } catch (SQLException e) {
             e.printStackTrace();

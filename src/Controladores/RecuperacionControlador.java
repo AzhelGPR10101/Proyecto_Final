@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 public class RecuperacionControlador {
 
     private static final long VIGENCIA_CODIGO_MS = TimeUnit.MINUTES.toMillis(10);
+    private static final int INTENTOS_MAXIMOS = 5;
     private static final SecureRandom RANDOM = new SecureRandom();
     private static final UsuarioDAO usuarioDAO = new UsuarioDAO();
 
@@ -17,6 +18,7 @@ public class RecuperacionControlador {
     private static String correoEnRecuperacion = null;
     private static String idUsuarioEnRecuperacion = null;
     private static long momentoGeneracion = 0L;
+    private static int intentosFallidos = 0;
 
     public static UsuarioCuenta buscarPorCorreo(String correo) {
         if (correo == null || correo.trim().isEmpty()) {
@@ -62,6 +64,7 @@ public class RecuperacionControlador {
             correoEnRecuperacion = usuario.getCorreo();
             idUsuarioEnRecuperacion = usuario.getIdUsuario();
             momentoGeneracion = System.currentTimeMillis();
+            intentosFallidos = 0;
 
             JOptionPane.showMessageDialog(parent,
                     "Hemos enviado un código de verificación a:\n" + usuario.getCorreo(),
@@ -91,12 +94,20 @@ public class RecuperacionControlador {
         }
 
         boolean vigente = (System.currentTimeMillis() - momentoGeneracion) <= VIGENCIA_CODIGO_MS;
-        if (!vigente) {
+        if (!vigente || intentosFallidos >= INTENTOS_MAXIMOS) {
+            limpiarSesionRecuperacion();
             return false;
         }
 
         String ingresado = codigoIngresado == null ? "" : codigoIngresado.trim();
-        return codigoGenerado.equals(ingresado);
+        boolean coincide = codigoGenerado.equals(ingresado);
+        if (!coincide) {
+            intentosFallidos++;
+            if (intentosFallidos >= INTENTOS_MAXIMOS) {
+                limpiarSesionRecuperacion();
+            }
+        }
+        return coincide;
     }
 
     public static boolean actualizarPassword(Component parent, String correo, String nuevaPassword) {
@@ -144,5 +155,6 @@ public class RecuperacionControlador {
         correoEnRecuperacion = null;
         idUsuarioEnRecuperacion = null;
         momentoGeneracion = 0L;
+        intentosFallidos = 0;
     }
 }

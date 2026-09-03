@@ -48,8 +48,18 @@ public class PanelRegistroNegocio extends javax.swing.JPanel {
     }
 
     private void guardarCatalogosEnBD(String idNegocio) {
+        java.util.List<String> noGuardados = new java.util.ArrayList<>();
         for (int i = 0; i < modeloCatalogos.size(); i++) {
-            controladorCategoria.registrarCategoria(this, idNegocio, modeloCatalogos.get(i));
+            String nombreCatalogo = modeloCatalogos.get(i);
+            if (controladorCategoria.registrarCategoria(this, idNegocio, nombreCatalogo) == null) {
+                noGuardados.add(nombreCatalogo);
+            }
+        }
+        if (!noGuardados.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudieron guardar estos catálogos: " + String.join(", ", noGuardados)
+                    + "\nPuedes agregarlos después desde Configuración.",
+                    "Catálogos incompletos", JOptionPane.WARNING_MESSAGE);
         }
     }
 
