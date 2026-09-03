@@ -18,6 +18,25 @@ public class FacturaDAO {
     private final ClienteDAO clienteDAO = new ClienteDAO();
     private final ProductoDAO productoDAO = new ProductoDAO();
 
+    private String obtenerOCrearTipoMovimiento(Connection con, String nombre) throws SQLException {
+        String buscar = "SELECT id_tipo_movimiento FROM tipo_movimiento WHERE nombre_tipo_movimiento = ?";
+        try (PreparedStatement ps = con.prepareStatement(buscar)) {
+            ps.setString(1, nombre);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString(1);
+                }
+            }
+        }
+        String insertar = "INSERT INTO tipo_movimiento (nombre_tipo_movimiento) VALUES (?) RETURNING id_tipo_movimiento";
+        try (PreparedStatement ps = con.prepareStatement(insertar)) {
+            ps.setString(1, nombre);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getString(1) : null;
+            }
+        }
+    }
+
     public String obtenerOCrearClienteConsumidorFinal() {
         String idExistente = clienteDAO.obtenerIdPorDocumento(DOCUMENTO_CONSUMIDOR_FINAL);
         if (idExistente != null) {
@@ -112,12 +131,25 @@ public class FacturaDAO {
                     ps.setString(4, "Venta factura " + factura.getNumFactura());
                     ps.executeUpdate();
                 }
+                String idTipoMovSalida = obtenerOCrearTipoMovimiento(con, "Salida");
+                if (idTipoMovSalida == null) {
+                    con.rollback();
+                    return null;
+                }
+
                 for (DetalleFactura d : factura.getDetalles()) {
                     String idProducto = productoDAO.obtenerIdProductoPorCodigoBarras(d.getIdProducto());
-                    if (idProducto == null || !productoDAO.descontarStock(con, idProducto, d.getCantidad())) {
+                    if (idProducto == null) {
                         con.rollback();
                         return null;
                     }
+                    int stockAnterior = productoDAO.obtenerStockActual(con, idProducto);
+                    if (!productoDAO.descontarStock(con, idProducto, d.getCantidad())) {
+                        con.rollback();
+                        return null;
+                    }
+                    int stockNuevo = stockAnterior - d.getCantidad();
+
                     try (PreparedStatement ps = con.prepareStatement(sqlDetalle)) {
                         ps.setString(1, idFactura);
                         ps.setString(2, idProducto);
@@ -125,6 +157,16 @@ public class FacturaDAO {
                         ps.setDouble(4, d.getPrecioUnitario());
                         ps.setDouble(5, d.getValorIva());
                         ps.setDouble(6, d.getSubtotal());
+                        ps.executeUpdate();
+                    }
+
+                    try (PreparedStatement ps = con.prepareStatement(sqlMovimiento)) {
+                        ps.setString(1, idProducto);
+                        ps.setString(2, idTipoMovSalida);
+                        ps.setString(3, idFactura);
+                        ps.setInt(4, d.getCantidad());
+                        ps.setInt(5, stockAnterior);
+                        ps.setInt(6, stockNuevo);
                         ps.executeUpdate();
                     }
                 }

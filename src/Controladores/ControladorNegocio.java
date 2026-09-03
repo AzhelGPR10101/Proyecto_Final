@@ -40,7 +40,9 @@ public class ControladorNegocio {
         String idNegocio = negocioDAO.registrar(negocio);
         if (idNegocio == null) {
             JOptionPane.showMessageDialog(parent, "Ocurrió un error al registrar el negocio.", "Error de Base de Datos", JOptionPane.ERROR_MESSAGE);
+            return null;
         }
+        new ControladorModulo().activarModulo(idNegocio, "Configuración");
         return idNegocio;
     }
 
