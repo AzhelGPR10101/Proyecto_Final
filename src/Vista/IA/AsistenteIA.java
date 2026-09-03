@@ -128,7 +128,18 @@ public class AsistenteIA {
         HttpClient cliente = HttpClient.newBuilder()
                 .connectTimeout(java.time.Duration.ofSeconds(8))
                 .build();
-        HttpResponse<String> response = cliente.send(request, HttpResponse.BodyHandlers.ofString());
+
+        HttpResponse<String> response = null;
+        int intentosMaximos = 3;
+        for (int intento = 1; intento <= intentosMaximos; intento++) {
+            response = cliente.send(request, HttpResponse.BodyHandlers.ofString());
+            int codigo = response.statusCode();
+            boolean esTransitorio = codigo == 409 || codigo == 429 || codigo >= 500;
+            if (!esTransitorio || intento == intentosMaximos) {
+                break;
+            }
+            Thread.sleep(800L * intento);
+        }
 
         if (response.statusCode() != 200) {
             return "Error (codigo " + response.statusCode() + "). Revisa tu API KEY.";
